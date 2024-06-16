@@ -4,16 +4,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
-
-import java.util.Objects;
 
 public class InmobiGestorApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent loginRoot = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+        Parent loginRoot = FXMLLoader.load(getClass().getResource("/fxml/Login.fxml"));
         Scene scene = new Scene(loginRoot);
 
         scene.getStylesheets().add((getClass().getResource("/css/styles.css")).toExternalForm());
