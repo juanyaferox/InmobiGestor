@@ -3,6 +3,7 @@ package com.feroxdev.inmobigestor.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,9 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
+import org.kordamp.bootstrapfx.BootstrapFX;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
+@Controller
 public class LoginController  {
 
     @FXML
@@ -29,13 +33,16 @@ public class LoginController  {
     private Button btnSingIn;
 
     @FXML
+    private Label lblForgotPassword;
+
+    @FXML
     private void initialize() {
         Font roboto = Font.loadFont(getClass().getResourceAsStream("/fonts/roboto/Roboto-Regular.ttf"), 30);
         loginLbl.setFont(roboto);
     }
 
     @FXML
-    private void handleLogin() {
+    private void handleLogin() throws IOException {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
@@ -44,6 +51,10 @@ public class LoginController  {
                     .title("Login Successful")
                     .text("Welcome, " + username)
                     .showInformation();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Admin_MainView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
         } else {
             Notifications.create()
                     .title("Login Failed")
@@ -52,8 +63,22 @@ public class LoginController  {
         }
     }
 
+    @FXML
+    private void handleMouseEntered() {
+        lblForgotPassword.setStyle("-fx-text-fill: #D1EBBF;");
+    }
+
+    @FXML
+    private void handleMouseExited() {
+        lblForgotPassword.setStyle("-fx-text-fill: #AEE486;");
+    }
+
+    @FXML
+    private void handleForgotPassword() {
+        lblForgotPassword.setStyle("-fx-text-fill: #477624;");
+    }
+
     private boolean isValidCredentials(String username, String password) {
-        // Here you can add your authentication logic, for simplicity we just check if both fields are non-empty
         return username != null && !username.isEmpty() && password != null && !password.isEmpty();
     }
 

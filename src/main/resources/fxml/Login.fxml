@@ -13,15 +13,6 @@
 
 <AnchorPane prefHeight="660" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feroxdev.inmobigestor.controller.LoginController">
                   <NotificationPane fx:id="notificationPane" />
-                  <HBox spacing="10" styleClass="row mb-8">
-                      <VBox styleClass="col d-flex justify-content-center" />
-                  </HBox>
-                    <!-- Checkbox -->
-                    <CheckBox layoutX="106.0" layoutY="195.0" selected="true" styleClass="form-check-input" text="Remember me">
-            <padding>
-               <Insets left="10.0" />
-            </padding>
-         </CheckBox>
    <BorderPane prefHeight="660.0" prefWidth="1080.0" style="-fx-background-color: #ffff;">
       <left>
          <Pane prefHeight="200.0" prefWidth="439.0" style="-fx-background-color: #ECFADC;" BorderPane.alignment="CENTER">
@@ -64,6 +55,11 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                                     </Button>
+                     <Label fx:id="lblForgotPassword" layoutX="114.0" layoutY="434.0" onMouseClicked="#handleForgotPassword" onMouseEntered="#handleMouseEntered" onMouseExited="#handleMouseExited" style="-fx-text-fill: #aee486;" text="¿Te olvidaste la contraseña?">
+                        <padding>
+                           <Insets top="15.0" />
+                        </padding>
+                     </Label>
                   </children>
                </Pane>
             </children>
