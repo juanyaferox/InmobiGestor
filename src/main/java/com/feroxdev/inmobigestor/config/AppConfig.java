@@ -2,6 +2,7 @@ package com.feroxdev.inmobigestor.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import jakarta.persistence.EntityManagerFactory;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +49,7 @@ public class AppConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
                                                                        Environment env) {
         LocalContainerEntityManagerFactoryBean entityManager = new LocalContainerEntityManagerFactoryBean();
-        entityManager.setPackagesToScan("com.feroxdev.model");
+        entityManager.setPackagesToScan("com.feroxdev.inmobigestor.model");
         entityManager.setDataSource(dataSource);
         entityManager.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 

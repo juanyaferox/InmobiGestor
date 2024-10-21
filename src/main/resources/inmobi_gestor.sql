@@ -52,7 +52,8 @@ CREATE TABLE `clients` (
   `email` varchar(255) DEFAULT NULL,
   `dni` varchar(9) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL
+  `address` varchar(255) DEFAULT NULL,
+  `type` int(10) UNSIGNED DEFAULT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

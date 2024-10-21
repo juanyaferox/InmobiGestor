@@ -1,4 +1,4 @@
 package com.feroxdev.inmobigestor.service;
 
-public class HSaleService {
+public interface HSaleService {
 }

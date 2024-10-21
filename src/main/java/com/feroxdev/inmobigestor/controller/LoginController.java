@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -51,7 +50,7 @@ public class LoginController  {
                     .title("Login Successful")
                     .text("Welcome, " + username)
                     .showInformation();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Admin_MainView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_MainView.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -93,4 +92,15 @@ public class LoginController  {
             e.printStackTrace();
         }
     }
+
+    /*public void onLoginSuccess(Users user) {
+        if (user.getRole().equals("ADMIN")) {
+            sceneManager.switchToAdminView();
+        } else if (user.getRole().equals("USER")) {
+            sceneManager.switchToUserView();
+        } else if (user.getRole().equals("MANAGER")) {
+            sceneManager.switchToManagerView();
+        }
+    }*/
+
 }

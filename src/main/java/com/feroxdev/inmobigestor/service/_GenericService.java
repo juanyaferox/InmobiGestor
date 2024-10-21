@@ -1,4 +1,4 @@
 package com.feroxdev.inmobigestor.service;
 
-public interface HRentService {
+public interface _GenericService {
 }

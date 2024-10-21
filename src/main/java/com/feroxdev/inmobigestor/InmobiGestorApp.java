@@ -1,20 +1,16 @@
 package com.feroxdev.inmobigestor;
 
-import com.feroxdev.inmobigestor.config.AppConfig;
+import com.feroxdev.inmobigestor.navigation.LoginView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 @SpringBootApplication
 public class InmobiGestorApp extends Application {
-
     private ConfigurableApplicationContext applicationContext;
 
     //protected StageManager stageManager;
@@ -25,15 +21,11 @@ public class InmobiGestorApp extends Application {
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Cargar el FXML y establecer el controlador desde el contexto de Spring
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
-        loader.setControllerFactory(applicationContext::getBean);  // Inyecta las dependencias de Spring en el controlador
-        Parent loginRoot = loader.load();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
+        loader.setControllerFactory(applicationContext::getBean); // Usar el contexto de Spring para la creación de controladores
+        Parent root = loader.load();
 
-        Scene scene = new Scene(loginRoot);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Login");
         primaryStage.show();
@@ -48,5 +40,9 @@ public class InmobiGestorApp extends Application {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(InmobiGestorApp.class);
         String[] args = getParameters().getRaw().stream().toArray(String[]::new);
         return builder.run(args);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

@@ -1,4 +1,4 @@
 package com.feroxdev.inmobigestor.service;
 
-public class ClientService {
+public interface ClientService {
 }
