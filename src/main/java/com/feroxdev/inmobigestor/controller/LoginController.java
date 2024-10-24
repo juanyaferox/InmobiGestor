@@ -1,9 +1,12 @@
 package com.feroxdev.inmobigestor.controller;
 
+import com.feroxdev.inmobigestor.model.Users;
+import com.feroxdev.inmobigestor.navigation.AdminView;
 
+import com.feroxdev.inmobigestor.service.UserServiceImpl;
+import com.feroxdev.inmobigestor.service.UserSessionService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,12 +15,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
 @Controller
 public class LoginController  {
+
+    @Autowired
+    AdminView adminView;
+
+    @Autowired
+    UserServiceImpl userService;
+    @Autowired
+    UserSessionService userSessionService;
 
     @FXML
     private TextField usernameField;
@@ -50,10 +62,8 @@ public class LoginController  {
                     .title("Login Successful")
                     .text("Welcome, " + username)
                     .showInformation();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_MainView.fxml"));
-            Parent root = loader.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            adminView.showAdminView(stage);
         } else {
             Notifications.create()
                     .title("Login Failed")
@@ -78,6 +88,10 @@ public class LoginController  {
     }
 
     private boolean isValidCredentials(String username, String password) {
+        Users user = userService.GetUserByUsername(username);
+        if (user != null) {
+            userSessionService.setLoggedInUser(user);
+        }
         return username != null && !username.isEmpty() && password != null && !password.isEmpty();
     }
 

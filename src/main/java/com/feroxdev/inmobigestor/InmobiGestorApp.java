@@ -6,29 +6,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class InmobiGestorApp extends Application {
-    private ConfigurableApplicationContext applicationContext;
 
-    //protected StageManager stageManager;
+    private ConfigurableApplicationContext applicationContext;
+    private LoginView loginView;
+
     @Override
     public void init() throws Exception{
-        // Inicia el contexto de Spring, AppConfig debe estar bien configurado
         applicationContext = springBootApplicationContext();
+        loginView = applicationContext.getBean(LoginView.class);
+        //Obtiene el bean de loginView desde el contexto de Spring
+        //Sucede porque la MainClass extienede desde Appliaction de JavaFX
+        //la cual no es gestionada por Spring
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Login.fxml"));
-        loader.setControllerFactory(applicationContext::getBean); // Usar el contexto de Spring para la creación de controladores
-        Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Login");
-        primaryStage.show();
+        loginView.showLogin(primaryStage);
     }
     @Override
     public void stop() throws Exception {
