@@ -36,7 +36,7 @@
             <VBox fx:id="optionModifyuser" prefHeight="563.0" prefWidth="838.0" visible="false" BorderPane.alignment="CENTER">
                <AnchorPane prefHeight="607.0" prefWidth="1080.0">
                   <children>
-                     <Label fx:id="lblSucess" layoutX="262.0" layoutY="410.0" text="Cambio realizado con éxito" textFill="#00ff4400" visible="false" />
+                     <Label fx:id="lblSucess" layoutX="262.0" layoutY="410.0" text="Cambio realizado con éxito" textFill="#00ff4400" visible="true" />
                      <Label layoutX="348.0" layoutY="119.0" text="MODIFACIÓN DE DATOS DEL USUARIO">
                         <font>
                            <Font size="25.0" />

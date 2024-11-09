@@ -22,33 +22,26 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUser(user);
     }
 
+    /**
+     *
+     * @param user usua
+     * @return
+     */
     @Override
     public Users changeInfoUser(Users user) {
+
+        //copia del usuario de la bbdd
         Users userToChange = userRepository.getReferenceById(user.getIdUser());
 
-        if (!userToChange.getUser().equals(user.getUser()))
+        //se cambia campo por campo
             userToChange.setUser(user.getUser());
-
-        if (!userToChange.getPassword().equals(user.getPassword()))
             userToChange.setPassword(user.getPassword());
-
-        if (!userToChange.getLastname1().equals(user.getLastname1()))
             userToChange.setLastname1(user.getLastname1());
-
-        if (!userToChange.getLastname2().equals(user.getLastname2()))
             userToChange.setLastname2(user.getLastname2());
-
-        if (!userToChange.getDni().equals(user.getDni()))
             userToChange.setDni(user.getDni());
-
-        if (!userToChange.getName().equals(user.getName()))
             userToChange.setName(user.getName());
-
-        if (!userToChange.getEmail().equals(user.getEmail()))
             userToChange.setEmail(user.getEmail());
 
-        userRepository.save(userToChange);
-
-        return userToChange;
+        return userRepository.save(userToChange);
     }
 }

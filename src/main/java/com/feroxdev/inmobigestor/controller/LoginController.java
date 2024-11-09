@@ -95,7 +95,7 @@ public class LoginController  {
         return username != null && !username.isEmpty() && password != null && !password.isEmpty();
     }
 
-    private void openMainWindow() {
+    /*private void openMainWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Main.fxml"));
             Stage stage = new Stage();
@@ -105,7 +105,7 @@ public class LoginController  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /*public void onLoginSuccess(Users user) {
         if (user.getRole().equals("ADMIN")) {
