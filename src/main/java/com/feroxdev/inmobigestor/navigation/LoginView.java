@@ -24,6 +24,7 @@ public class LoginView {
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("Login");
         stage.show();

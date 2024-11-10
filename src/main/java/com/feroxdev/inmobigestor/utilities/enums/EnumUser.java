@@ -1,4 +1,4 @@
-package com.feroxdev.inmobigestor.utilities;
+package com.feroxdev.inmobigestor.utilities.enums;
 
 public enum EnumUser {
     ADMIN_G, //if(idBranch==null)

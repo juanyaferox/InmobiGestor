@@ -1,4 +1,4 @@
-package com.feroxdev.inmobigestor.utilities;
+package com.feroxdev.inmobigestor.utilities.enums;
 
 public enum EnumEstate {
     ON_SALE, //1

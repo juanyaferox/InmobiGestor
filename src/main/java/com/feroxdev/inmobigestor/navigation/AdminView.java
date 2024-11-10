@@ -22,6 +22,7 @@ public class AdminView {
 
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         stage.setTitle("Admin View");
         stage.setScene(scene);
         stage.show();

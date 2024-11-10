@@ -16,3 +16,38 @@
     -fx-fill: white;
     -fx-font-size: 24px; /* Ajusta el tamaño según sea necesario */
 }
+.menu-bar {
+    -fx-background-color: transparent; /* Fondo transparente para el MenuBar */
+}
+
+/* Estilo para el Menu */
+.menu {
+    -fx-background-color: transparent; /* Fondo transparente para el menú */
+    -fx-text-fill: black;              /* Texto negro para el menú */
+}
+
+.menu .label {
+-fx-text-fill: black;
+}
+
+/* Estilo para los elementos del menú */
+.menu-item {
+    -fx-background-color: transparent; /* Fondo transparente para el MenuItem */
+    -fx-text-fill: black;              /* Texto negro por defecto */
+    -fx-border-color: transparent;    /* Sin borde visible */
+    -fx-color: black;
+}
+
+/* Estilo para los elementos del menú en estado hover */
+.menu-item:hover {
+    -fx-background-color: transparent; /* Fondo transparente al pasar el ratón */
+    -fx-text-fill: black;              /* Texto negro al pasar el ratón */
+    -fx-cursor: hand;
+}
+
+/* Estilo para los elementos del menú cuando están enfocados */
+.menu-item:focused {
+    -fx-background-color: transparent; /* Fondo transparente cuando está enfocado */
+    -fx-text-fill: black;              /* Texto negro cuando está enfocado */
+    -fx-cursor: hand;
+}

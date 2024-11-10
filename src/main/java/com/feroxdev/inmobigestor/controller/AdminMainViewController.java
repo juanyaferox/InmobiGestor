@@ -4,6 +4,7 @@ import com.feroxdev.inmobigestor.model.Users;
 import com.feroxdev.inmobigestor.navigation.LoginView;
 import com.feroxdev.inmobigestor.service.UserServiceImpl;
 import com.feroxdev.inmobigestor.service.UserSessionService;
+import com.feroxdev.inmobigestor.validation.ModifyUserValidation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -28,25 +28,27 @@ public class AdminMainViewController {
     UserSessionService userSessionService;
     @Autowired
     UserServiceImpl userService;
+    @Autowired
+    ModifyUserValidation userValidation;
 
     @FXML
     Button adminLogout;
     @FXML
     Button btnUserModify;
     @FXML
-    TextField TextUser;
+    TextField textUser;
     @FXML
-    TextField TextPassword;
+    TextField textPassword;
     @FXML
-    TextField Text1Surname;
+    TextField text1Surname;
     @FXML
-    TextField Text2Surname;
+    TextField text2Surname;
     @FXML
-    TextField TextID;
+    TextField textID;
     @FXML
-    TextField TextName;
+    TextField textName;
     @FXML
-    TextField TextEmail;
+    TextField textEmail;
     @FXML
     VBox optionModifyuser;
     @FXML
@@ -56,8 +58,15 @@ public class AdminMainViewController {
     @FXML
     Label lblSucess;
 
+    //variable global del usuario actual
+    Users user;
 
-    Users user = null;//variable global del usuario actual
+    /**
+     * A ejecutar al acceder a la vista asociada al controlador
+     */
+    public void initialize(){
+        user = userSessionService.getLoggedInUser();
+    }
 
     /**
      * Obtiene el Stage actual y lo sustituye por la pantalla de Login
@@ -75,16 +84,18 @@ public class AdminMainViewController {
      */
     @FXML
     private void handleUserModify() {
-        user = userSessionService.getLoggedInUser();//hacer que esto se haga al instante de entrar en la vista
+        //Se obtiene el usuario al momento de modificar
+
         changeVisibility(optionModifyuser);
+        textUser.setEditable(false);
         int idUser = user.getIdUser();
-        TextUser.setText(userService.GetUserById(idUser).getUser());
-        TextPassword.setText(userService.GetUserById(idUser).getPassword());
-        Text1Surname.setText(userService.GetUserById(idUser).getLastname1());
-        Text2Surname.setText(userService.GetUserById(idUser).getLastname2());
-        TextID.setText(userService.GetUserById(idUser).getDni());
-        TextName.setText(userService.GetUserById(idUser).getName());
-        TextEmail.setText(userService.GetUserById(idUser).getEmail());
+        textUser.setText(userService.GetUserById(idUser).getUser());
+        textPassword.setText(userService.GetUserById(idUser).getPassword());
+        text1Surname.setText(userService.GetUserById(idUser).getLastname1());
+        text2Surname.setText(userService.GetUserById(idUser).getLastname2());
+        textID.setText(userService.GetUserById(idUser).getDni());
+        textName.setText(userService.GetUserById(idUser).getName());
+        textEmail.setText(userService.GetUserById(idUser).getEmail());
     }
 
     /**
@@ -92,15 +103,15 @@ public class AdminMainViewController {
      */
     @FXML
     private void handleChangeUserInfo() {
-        user.setUser(TextUser.getText());
-        user.setPassword(TextPassword.getText());
-        user.setLastname1(Text1Surname.getText());
-        user.setLastname2(Text2Surname.getText());
-        user.setDni(TextID.getText());
-        user.setName(TextName.getText());
-        user.setEmail(TextEmail.getText());
+        user.setUser(textUser.getText());
+        user.setPassword(textPassword.getText());
+        user.setLastname1(text1Surname.getText());
+        user.setLastname2(text2Surname.getText());
+        user.setDni(textID.getText());
+        user.setName(textName.getText());
+        user.setEmail(textEmail.getText());
         //VALIDACIONES
-        if (validationUser(user)) {
+        if (userValidation.validationUser(user)) {
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
             userService.changeInfoUser(user);
             handleUserModify();
@@ -113,7 +124,7 @@ public class AdminMainViewController {
 
 
     /**
-     * Cambia la visilidad de las distintas vbox, permitiendo el cambio entre opciones de manera orgánica
+     * Cambia la visilidad de las distintas vbox, permitiendo el cambio entre opciones
      *
      * @param vbox: Opción que se quiere mostrar
      */
@@ -124,66 +135,5 @@ public class AdminMainViewController {
         vbox.setVisible(true);
     }
 
-    private void validationNotification(String text, int num) {
-        Notifications.create()
-                .title("Campo " + text + " inválido")
-                .text("Asegurese de que el campo " + text + " es correcto")
-                .showError();
-    }
 
-    private void validationNotification(String text) {
-        validationNotification(text, 0);
-    }
-
-    /**
-     * @param user: Usuario a ser validado
-     * @return true si está todo correcto, false si no paso alguna validacion
-     */
-    private boolean validationUser(Users user) {
-        boolean isValid = true;
-
-        if (user.getUser().length() > 50 || user.getUser().isEmpty()) {
-            validationNotification("Usuario");
-            isValid = false;
-        }
-        if (user.getPassword().length() > 255 || user.getPassword().isEmpty()) {
-            validationNotification("Contraseña");
-            isValid = false;
-        }
-        if (user.getEmail().length() > 255) {
-            validationNotification("Correo");
-            isValid = false;
-        }
-        if (user.getName().length() > 50 || user.getName().isEmpty()) {
-            validationNotification("Nombre");
-            isValid = false;
-        }
-        if (user.getLastname1().length() > 50 || user.getLastname1().isEmpty()) {
-            validationNotification("Primer apellido");
-            isValid = false;
-        }
-        if (user.getLastname2().length() > 50) {
-            validationNotification("Segundo apellido");
-            isValid = false;
-        }
-        if (user.getDni().length() > 9 || user.getDni().isEmpty()) {
-            validationNotification("DNI");
-            isValid = false;
-        }
-        return isValid;
-    }
-
-
-    //función para calcular el dni (no se usar para evitar molestias)
-    private static boolean isDNIValid(String dni) {
-        if (dni == null || !dni.matches("\\d{8}[A-Z]")) {
-            return false;
-        }
-        int numeroDNI = Integer.parseInt(dni.substring(0, 8));
-        char letraDNI = dni.charAt(8);
-        String letras_DNI = "TRWAGMYFPDXBNJZSQVHLCKE";
-        char letraCorrecta = letras_DNI.charAt(numeroDNI % 23);
-
-        return letraDNI == letraCorrecta;
-    }
 }
