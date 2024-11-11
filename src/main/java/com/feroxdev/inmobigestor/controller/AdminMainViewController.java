@@ -170,6 +170,9 @@ public class AdminMainViewController {
             gridPaneUserList.add(new Label(user.getUser()), 0, i + 1);
             gridPaneUserList.add(new Label(user.getEmail()), 1, i + 1);
             gridPaneUserList.add(new Label(fullName), 2, i + 1);
+            var userBranch = user.getBranch();
+            Integer idBranch = (userBranch != null) ? (idBranch = userBranch.getIdBranch()) : null;
+            gridPaneUserList.add(new Label(String.valueOf(idBranch)), 3, i + 1);
 
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();
@@ -194,7 +197,7 @@ public class AdminMainViewController {
 
             buttonBox.getChildren().addAll(btnDelete, btnEdit);
 
-            gridPaneUserList.add(buttonBox, 3, i + 1);
+            gridPaneUserList.add(buttonBox, 4, i + 1);
         }
     }
     //endregion
