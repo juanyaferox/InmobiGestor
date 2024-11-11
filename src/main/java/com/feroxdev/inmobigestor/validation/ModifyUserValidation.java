@@ -51,8 +51,4 @@ public class ModifyUserValidation {
                 .text("Asegurese de que el campo " + text + " es correcto")
                 .showError();
     }
-
-
-    //función para calcular el dni (no se usar para evitar molestias)
-
 }

@@ -4,14 +4,16 @@
     background-color: #337ab7;
     border-color: #2e6da4;
 }
+
 @font-face {
     font-family: 'Roboto';
-    src: url('Roboto-Medium.ttf');
+    src: url('../fonts/roboto/Roboto-Regular.ttf'); /* Relativo a la ubicación de styles.css */
+}
+@font-face {
+    font-family: 'Roboto-Bold';
+    src: url('../fonts/roboto/Roboto-Bold.ttf'); /* Relativo a la ubicación de styles.css */
 }
 
-.text {
-    -fx-font-family: "Roboto";
-}
 .white-icon {
     -fx-fill: white;
     -fx-font-size: 24px; /* Ajusta el tamaño según sea necesario */
@@ -50,4 +52,20 @@
     -fx-background-color: transparent; /* Fondo transparente cuando está enfocado */
     -fx-text-fill: black;              /* Texto negro cuando está enfocado */
     -fx-cursor: hand;
+}
+/* Aquí acaban los estilos del menu*/
+
+#gridPaneUserList {
+    -fx-alignment: CENTER;
+
+}
+
+#gridPaneUserList .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-padding: 10px;
+}
+
+.label-bold {
+    -fx-font-weight: bold;
 }

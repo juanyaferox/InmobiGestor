@@ -5,6 +5,9 @@ import com.feroxdev.inmobigestor.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -52,5 +55,25 @@ public class UserServiceImpl implements UserService {
             userToChange.setEmail(user.getEmail());
 
         return userRepository.save(userToChange);
+    }
+
+    @Override
+    public List<Users> allUsersList() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public Users deleteUser(Users user) {
+        Integer id= user.getIdUser();
+        Optional<Users> optionalUsers = userRepository.findById(id);
+        if (optionalUsers.isPresent()){
+            var userGet = optionalUsers.get();
+            if (userGet.getBranch() != null || userGet.getIdUser() != 0){//nos aseguramos de que no sea el admin general
+                userRepository.delete(user);
+                return user;
+            }
+            return null;
+        }
+        return null;
     }
 }

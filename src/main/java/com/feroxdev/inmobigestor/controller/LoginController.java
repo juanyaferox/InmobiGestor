@@ -95,18 +95,6 @@ public class LoginController  {
         return username != null && !username.isEmpty() && password != null && !password.isEmpty();
     }
 
-    /*private void openMainWindow() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Main.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Main Application");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     /*public void onLoginSuccess(Users user) {
         if (user.getRole().equals("ADMIN")) {
             sceneManager.switchToAdminView();
