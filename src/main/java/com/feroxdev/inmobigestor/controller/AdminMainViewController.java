@@ -82,6 +82,7 @@ public class AdminMainViewController {
             user = userSessionService.getLoggedInUser();
     }
 
+    //region Logout
     /**
      * Obtiene el Stage actual y lo sustituye por la pantalla de Login
      *
@@ -92,7 +93,9 @@ public class AdminMainViewController {
         Stage stage = (Stage) adminLogout.getScene().getWindow();
         loginView.showLogin(stage);
     }
+//endregion
 
+    //region Modificacion de datos proprios del usuario
     /**
      * Muestra en pantalla los datos del usuario en text boxs modificables
      */
@@ -133,9 +136,24 @@ public class AdminMainViewController {
                     .title("Éxito")
                     .text("Se han realizado los cambios correctamente")
                     .showWarning();
+            reloadView();
+            showUserModify();
         }
     }
+//endregion
 
+    //region Gestión
+
+    //MÉTODOS A CREAR
+    //metodo para que al acceder a sucursales se muestre un listado con la información básica de las sucursales
+    //método para crear sucursal
+    //método para editar sucursal
+    //método para borrar sucursal
+    //(reutilizar del listado de usuarios)
+    //inventarse algo para meter sucursales en los usuarios (que manda cojones)
+
+    //region Administradores
+    //region Listado de usuarios
     /**
      * Maneja la opción de listado de administradores (usuarios), mostrando todos junto a algunos datos y botones
      * para editar y borrar
@@ -179,7 +197,9 @@ public class AdminMainViewController {
             gridPaneUserList.add(buttonBox, 3, i + 1);
         }
     }
+    //endregion
 
+    //region Edición de usuarios del listado
     /**
      * Se trata de un "mini" controlador para manejar la ventana emergente para la edición de usuario
      * @param user: usuario a editar
@@ -266,7 +286,9 @@ public class AdminMainViewController {
                     .showWarning();
         }
     }
+    //endregion
 
+    //region Borrado de usuarios del listado
     /**
      * Borra el usuario, si branch es null o id=0 no borra y lanza mensaje de error
      * @param user: usuario a ser borrado
@@ -279,8 +301,15 @@ public class AdminMainViewController {
         reloadView();
         showAllUsersList();
     }
+    //endregion
 
+    //region Creación de usuarios del listado
+    //endregion
+    //endregion
 
+    //endregion
+
+    //region Cambiar visibilidad
     /**
      * Cambia la visilidad de las distintas vbox, permitiendo el cambio entre opciones
      *
@@ -313,6 +342,7 @@ public class AdminMainViewController {
         optionModifyUser.setVisible(false);
         optionListUsers.setVisible(false);
     }
+    //endregion
 
     @FXML
     private void reloadView() {
