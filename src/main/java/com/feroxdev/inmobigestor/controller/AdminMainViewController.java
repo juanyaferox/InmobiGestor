@@ -1,17 +1,23 @@
 package com.feroxdev.inmobigestor.controller;
 
-import com.feroxdev.inmobigestor.model.Users;
+import com.feroxdev.inmobigestor.model.Branch;
+import com.feroxdev.inmobigestor.model.Town;
+import com.feroxdev.inmobigestor.model.User;
 import com.feroxdev.inmobigestor.navigation.AdminView;
 import com.feroxdev.inmobigestor.navigation.LoginView;
+import com.feroxdev.inmobigestor.repository.CityRepository;
+import com.feroxdev.inmobigestor.service.BranchServiceImpl;
 import com.feroxdev.inmobigestor.service.UserServiceImpl;
 import com.feroxdev.inmobigestor.service.UserSessionService;
-import com.feroxdev.inmobigestor.validation.ModifyUserValidation;
+import com.feroxdev.inmobigestor.validation.Validation;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -20,10 +26,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.Notifications;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -36,13 +44,19 @@ public class AdminMainViewController {
     @Autowired
     LoginView loginView;
     @Autowired
+    AdminView adminView;
+
+    @Autowired
     UserSessionService userSessionService;
     @Autowired
     UserServiceImpl userService;
     @Autowired
-    ModifyUserValidation userValidation;
+    BranchServiceImpl branchService;
     @Autowired
-    AdminView adminView;
+    CityRepository cityRepository;
+
+    @Autowired
+    Validation validation;
 
     @FXML
     Button adminLogout;
@@ -72,7 +86,7 @@ public class AdminMainViewController {
     GridPane gridPaneUserList;
 
     //variable global del usuario actual
-    Users user;
+    User user;
 
     /**
      * A ejecutar al acceder a la vista asociada al controlador
@@ -128,7 +142,7 @@ public class AdminMainViewController {
         user.setName(textName.getText());
         user.setEmail(textEmail.getText());
         //VALIDACIONES
-        if (userValidation.validationUser(user)) {
+        if (validation.validationUser(user)) {
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
             userService.changeInfoUser(user);
             showUserModify();
@@ -149,8 +163,6 @@ public class AdminMainViewController {
     //método para crear sucursal
     //método para editar sucursal
     //método para borrar sucursal
-    //(reutilizar del listado de usuarios)
-    //inventarse algo para meter sucursales en los usuarios (que manda cojones)
 
     //region Administradores
     //region Listado de usuarios
@@ -161,10 +173,10 @@ public class AdminMainViewController {
     @FXML
     private void showAllUsersList() {
         changeVisibility(optionListUsers);
-        List<Users> UsersList = userService.allUsersList();
-        log.warn("LISTA DE USUARIOS;---------------------- "+UsersList.toString());
-        for (int i = 0; i < UsersList.size(); i++) {
-            Users user = UsersList.get(i);
+        List<User> userList = userService.allUsersList();
+        log.warn("LISTA DE USUARIOS;---------------------- "+ userList.toString());
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
             String fullName = user.getName()+" "+user.getLastname1()+" "+user.getLastname2();
             // Añadir las celdas correspondientes en cada columna de la fila actual
             gridPaneUserList.add(new Label(user.getUser()), 0, i + 1);
@@ -208,7 +220,7 @@ public class AdminMainViewController {
      * @param user: usuario a editar
      */
     @FXML
-    private void showModalUserEdit(Users user){
+    private void showModalUserEdit(User user){
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_EditUser_ModalWindow.fxml"));
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
@@ -229,10 +241,15 @@ public class AdminMainViewController {
             TextField textID = (TextField) root.lookup("#textID");
             TextField textName = (TextField) root.lookup("#textName");
             TextField textEmail = (TextField) root.lookup("#textEmail");
+            @SuppressWarnings ("unchecked")
+            ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
             Button btnConfirmEditUserModal = (Button) root.lookup("#btnConfirmEditUserModal");
 
-            textUser.setEditable(false);
             int idUser = user.getIdUser();
+            List<Town> towns = cityRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+            log.warn("Ciudades---------"+towns.toString());
+
+            textUser.setEditable(false);
             textUser.setText(userService.GetUserById(idUser).getUser());
             textPassword.setText(userService.GetUserById(idUser).getPassword());
             text1Surname.setText(userService.GetUserById(idUser).getLastname1());
@@ -240,8 +257,23 @@ public class AdminMainViewController {
             textID.setText(userService.GetUserById(idUser).getDni());
             textName.setText(userService.GetUserById(idUser).getName());
             textEmail.setText(userService.GetUserById(idUser).getEmail());
-            btnConfirmEditUserModal.setOnAction(e -> handleListUserEdit(user, root));//solucioname este boton llegar nulo
-            //quiero obtenerlo directamente del stage
+            boxTown.setItems(FXCollections.observableArrayList(towns));
+            boxTown.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Town town) {
+                    return town != null ? town.getName() : "";
+                }
+
+                @Override
+                public Town fromString(String string) {
+                    return boxTown.getItems().stream()
+                            .filter(town -> town.getName().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+            btnConfirmEditUserModal.setOnAction(e -> handleListUserEdit(user, root));
+
             stage.showAndWait();//Bloquea la interacción con la ventana principal hasta que cierre la emergente
             reloadView();//recargo la ventana
             showAllUsersList();//muestro la lista de usuarios
@@ -260,7 +292,7 @@ public class AdminMainViewController {
      * @param root: ventana emergente
      */
     @FXML
-    private void handleListUserEdit(Users user, Parent root){
+    private void handleListUserEdit(User user, Parent root){
         TextField textUser = (TextField) root.lookup("#textUser");
         TextField textPassword = (TextField) root.lookup("#textPassword");
         TextField text1Surname = (TextField) root.lookup("#text1Surname");
@@ -268,8 +300,11 @@ public class AdminMainViewController {
         TextField textID = (TextField) root.lookup("#textID");
         TextField textName = (TextField) root.lookup("#textName");
         TextField textEmail = (TextField) root.lookup("#textEmail");
+        TextField textBranch = (TextField) root.lookup("#textBranch");//va ser la ciudad
+        @SuppressWarnings ("unchecked")
+        ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
 
-        log.warn(user.toString());
+        log.warn("User antes de cambios-----------------\n"+user.toString());
         user.setUser(textUser.getText());
         user.setPassword(textPassword.getText());
         user.setLastname1(text1Surname.getText());
@@ -277,9 +312,17 @@ public class AdminMainViewController {
         user.setDni(textID.getText());
         user.setName(textName.getText());
         user.setEmail(textEmail.getText());
+
+        Town selectedTown = boxTown.getValue();
+        Branch branch = branchService.verifyIfCityInBranch(selectedTown);
+        log.warn("Branch despues de cambios-----------------\n"+branch.toString());
+        user.setBranch(branch);
+        log.warn("User despues de cambios-----------------\n"+ user.toString());
+
         //VALIDACIONES
-        if (userValidation.validationUser(user)) {
-            log.warn("CAMPOS A ENVIAR;------" + user.toString());
+        if (validation.validationUser(user) && validation.validationBranch(branch)) {
+            //Crear objeto sucursal en base a la id
+            log.warn("CAMPOS A ENVIAR;------\n" + user.toString()+"\n"+branch.toString());
             userService.changeInfoUser(user);
             showAllUsersList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
@@ -297,7 +340,7 @@ public class AdminMainViewController {
      * @param user: usuario a ser borrado
      */
     @FXML
-    private void handleUserDelete(Users user){
+    private void handleUserDelete(User user){
         userService.deleteUser(user);//en teoría tiene que existir por cojones
         //si devuelve null notification de error, caso contrario de éxito
         //**hay que recargar la ventana

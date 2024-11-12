@@ -1,6 +1,6 @@
 package com.feroxdev.inmobigestor.service;
 
-import com.feroxdev.inmobigestor.model.Users;
+import com.feroxdev.inmobigestor.model.User;
 import com.feroxdev.inmobigestor.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,17 +20,17 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public Users GetUserById(int id) {
+    public User GetUserById(int id) {
         return userRepository.getReferenceById(id);
     }
 
     /**
      * Obtiene el Usuario segun su nombre de usuario
      * @param user: nombre del usuario
-     * @return objeto Users
+     * @return objeto User
      */
     @Override
-    public Users GetUserByUsername(String user) {
+    public User GetUserByUsername(String user) {
         return userRepository.findByUser(user);
     }
 
@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
      * @return usuario con la información alterada
      */
     @Override
-    public Users changeInfoUser(Users user) {
+    public User changeInfoUser(User user) {
 
         //copia del usuario de la bbdd
-        Users userToChange = userRepository.getReferenceById(user.getIdUser());
+        User userToChange = userRepository.getReferenceById(user.getIdUser());
 
         //se cambia campo por campo
             userToChange.setUser(user.getUser());
@@ -53,19 +53,20 @@ public class UserServiceImpl implements UserService {
             userToChange.setDni(user.getDni());
             userToChange.setName(user.getName());
             userToChange.setEmail(user.getEmail());
+            userToChange.setBranch(user.getBranch());
 
         return userRepository.save(userToChange);
     }
 
     @Override
-    public List<Users> allUsersList() {
+    public List<User> allUsersList() {
         return userRepository.findAll();
     }
 
     @Override
-    public Users deleteUser(Users user) {
+    public User deleteUser(User user) {
         Integer id= user.getIdUser();
-        Optional<Users> optionalUsers = userRepository.findById(id);
+        Optional<User> optionalUsers = userRepository.findById(id);
         if (optionalUsers.isPresent()){
             var userGet = optionalUsers.get();
             if (userGet.getBranch() != null || userGet.getIdUser() != 0){//nos aseguramos de que no sea el admin general

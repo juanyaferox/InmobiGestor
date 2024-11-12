@@ -1,7 +1,6 @@
 package com.feroxdev.inmobigestor.service;
 
-import com.feroxdev.inmobigestor.model.Users;
-import lombok.Data;
+import com.feroxdev.inmobigestor.model.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -10,5 +9,5 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 public class UserSessionService {
-    private Users loggedInUser;
+    private User loggedInUser;
 }

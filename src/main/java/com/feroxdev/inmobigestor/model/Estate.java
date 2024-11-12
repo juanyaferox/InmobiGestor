@@ -9,29 +9,27 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Estates {
+public class Estate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idEstate;
 
     @ManyToOne
-    @JoinColumn(name = "idClient", nullable = true)
-    private Clients client;
+    @JoinColumn(name = "idClient")
+    private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "idBranch", nullable = false)
-    private Branchs branch;
+    @JoinColumn(name = "idBranch")
+    private Branch branch;
 
-    @Column(nullable = true)
     private Integer reference;
 
-    @Column(nullable = true, length = 500)
+    @Column(length = 500)
     private String fullAddress;
 
-    @Column(nullable = true, length = 500)
+    @Column(length = 500)
     private String imagePath;
 
-    @Column(nullable = true)
     private Integer state;
 }

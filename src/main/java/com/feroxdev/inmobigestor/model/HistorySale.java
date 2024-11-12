@@ -18,20 +18,19 @@ public class HistorySale {
     private Integer idHistorySale;
 
     @ManyToOne
-    @JoinColumn(name = "idEstate", nullable = false)
-    private Estates estate;
+    @JoinColumn(name = "idEstate")
+    private Estate estate;
 
     @ManyToOne
-    @JoinColumn(name = "idClientPrevious", nullable = true)
-    private Clients clientPrevious;
+    @JoinColumn(name = "idClientPrevious")
+    private Client clientPrevious;
 
     @ManyToOne
-    @JoinColumn(name = "idClientActual", nullable = true)
-    private Clients clientActual;
+    @JoinColumn(name = "idClientActual")
+    private Client clientActual;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal salePrice;
 
-    @Column(nullable = false)
     private LocalDate saleDate;
 }

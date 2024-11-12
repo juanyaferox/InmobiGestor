@@ -9,16 +9,13 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Branchs {
+public class Branch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idBranch;
 
-    @Column(nullable = false)
-    private Integer idTown;
-
     @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false)
-    private Users user;
+    @JoinColumn(name = "idTown")
+    private Town town;
 }

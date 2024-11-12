@@ -1,14 +1,13 @@
 package com.feroxdev.inmobigestor.service;
 
-import com.feroxdev.inmobigestor.model.Users;
+import com.feroxdev.inmobigestor.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    Users GetUserById(int id);
-    Users GetUserByUsername(String user);
-    Users changeInfoUser(Users user);
-    List<Users> allUsersList();
-
-    Users deleteUser(Users user);
+    User GetUserById(int id);
+    User GetUserByUsername(String user);
+    User changeInfoUser(User user);
+    List<User> allUsersList();
+    User deleteUser(User user);
 }

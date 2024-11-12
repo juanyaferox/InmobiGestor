@@ -17,20 +17,20 @@ public class HistoryRent {
     private Integer idHistoryRent;
 
     @ManyToOne
-    @JoinColumn(name = "idEstate", nullable = false)
-    private Estates estate;
+    @JoinColumn(name = "idEstate")
+    private Estate estate;
 
     @ManyToOne
-    @JoinColumn(name = "idClient", nullable = false)
-    private Clients client;
+    @JoinColumn(name = "idClient")
+    private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "idClientRented", nullable = false)
-    private Clients clientRented;
+    @JoinColumn(name = "idClientRented")
+    private Client clientRented;
 
-    @Column(nullable = false)
     private LocalDate startDate;
 
     private LocalDate endDate;
+
     private LocalDate exitDate;
 }

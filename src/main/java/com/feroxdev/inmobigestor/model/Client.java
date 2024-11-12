@@ -11,35 +11,40 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Clients {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idClient;
 
     @ManyToOne
-    @JoinColumn(name = "idUser", nullable = true)
-    private Users user;
+    @JoinColumn(name = "idUser")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "idBranch", nullable = false)
-    private Branchs branch;
+    @JoinColumn(name = "idBranch")
+    private Branch branch;
 
     private Integer idEstateRented;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String name;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String lastname1;
 
+    @Column(length = 50)
     private String lastname2;
+
     private String email;
 
-    @Column(nullable = false, length = 9)
+    @Column(length = 9)
     private String dni;
 
+    @Column(length = 20)
     private String phone;
+
     private String address;
+
     private Integer type;
 }

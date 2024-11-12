@@ -1,19 +1,26 @@
 package com.feroxdev.inmobigestor.validation;
 
-import com.feroxdev.inmobigestor.model.Users;
+import com.feroxdev.inmobigestor.model.Branch;
+import com.feroxdev.inmobigestor.model.Town;
+import com.feroxdev.inmobigestor.model.User;
+import com.feroxdev.inmobigestor.utilities.CsvUtils;
 import org.controlsfx.control.Notifications;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ModifyUserValidation {
+public class Validation {
 
     /**
      * @param user: Usuario a ser validado
      * @return true si está todo correcto, false si no paso alguna validacion
      */
-    public boolean validationUser(Users user) {
+    public boolean validationUser(User user) {
         boolean isValid = true;
 
+        if (user==null){    // evitamos posible nullPointerException
+            validationNotification("Usuario");
+            return false;
+        }
         if (user.getUser().length() > 50 || user.getUser().isEmpty()) {
             validationNotification("Usuario");
             isValid = false;
@@ -44,6 +51,25 @@ public class ModifyUserValidation {
         }
         return isValid;
     }
+
+    public boolean validationBranch(Branch branch){
+        boolean isValid = true;
+
+        if (branch==null){   // evitamos posible nullPointerException
+            validationNotification("Sucursal");
+            return false;
+        }
+        if (branch.getIdBranch()==null){
+            validationNotification("Sucursal");
+            isValid = false;
+        }
+        if (branch.getTown()==null || branch.getTown().equals(new Town())){
+            validationNotification("Sucursal");
+            isValid = false;
+        }
+        return isValid;
+    }
+
 
     private void validationNotification(String text) {
         Notifications.create()

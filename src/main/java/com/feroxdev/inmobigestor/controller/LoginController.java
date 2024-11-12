@@ -1,13 +1,11 @@
 package com.feroxdev.inmobigestor.controller;
 
-import com.feroxdev.inmobigestor.model.Users;
+import com.feroxdev.inmobigestor.model.User;
 import com.feroxdev.inmobigestor.navigation.AdminView;
 
 import com.feroxdev.inmobigestor.service.UserServiceImpl;
 import com.feroxdev.inmobigestor.service.UserSessionService;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -88,14 +86,14 @@ public class LoginController  {
     }
 
     private boolean isValidCredentials(String username, String password) {
-        Users user = userService.GetUserByUsername(username);
+        User user = userService.GetUserByUsername(username);
         if (user != null) {
             userSessionService.setLoggedInUser(user);
         }
         return username != null && !username.isEmpty() && password != null && !password.isEmpty();
     }
 
-    /*public void onLoginSuccess(Users user) {
+    /*public void onLoginSuccess(User user) {
         if (user.getRole().equals("ADMIN")) {
             sceneManager.switchToAdminView();
         } else if (user.getRole().equals("USER")) {

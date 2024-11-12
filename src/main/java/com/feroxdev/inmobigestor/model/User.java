@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,7 @@ public class Users {
     @Column(nullable = false, length = 50)
     private String user;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
     private String email;
@@ -35,7 +35,7 @@ public class Users {
     @Column(nullable = false, length = 9)
     private String dni;
 
-    @ManyToOne
-    @JoinColumn(name = "idBranch", nullable = true)
-    private Branchs branch;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "idBranch")
+    private Branch branch;
 }

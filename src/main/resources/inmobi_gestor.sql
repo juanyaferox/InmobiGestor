@@ -31,8 +31,7 @@ USE `inmobi_gestor`;
 
 CREATE TABLE `branchs` (
   `idBranch` int(10) UNSIGNED NOT NULL,
-  `idTown` int(10) UNSIGNED NOT NULL,
-  `idUser` int(10) UNSIGNED NOT NULL
+  `idTown` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -53,7 +52,7 @@ CREATE TABLE `clients` (
   `dni` varchar(9) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
-  `type` int(10) UNSIGNED DEFAULT NULL,
+  `type` int(10) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -129,8 +128,7 @@ CREATE TABLE `users` (
 -- Indices de la tabla `branchs`
 --
 ALTER TABLE `branchs`
-  ADD PRIMARY KEY (`idBranch`),
-  ADD KEY `idUser` (`idUser`);
+  ADD PRIMARY KEY (`idBranch`);
 
 --
 -- Indices de la tabla `clients`
@@ -178,16 +176,10 @@ ALTER TABLE `users`
 --
 
 --
--- Filtros para la tabla `branchs`
---
-ALTER TABLE `branchs`
-  ADD CONSTRAINT `branchs_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
 -- Filtros para la tabla `clients`
 --
 ALTER TABLE `clients`
-  ADD CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON UPDATE NO ACTION,
+  ADD CONSTRAINT `clients_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`),
   ADD CONSTRAINT `clients_ibfk_2` FOREIGN KEY (`idBranch`) REFERENCES `branchs` (`idBranch`);
 
 --
@@ -202,22 +194,22 @@ ALTER TABLE `estates`
 --
 ALTER TABLE `historyrent`
   ADD CONSTRAINT `historyrent_ibfk_1` FOREIGN KEY (`idEstate`) REFERENCES `estates` (`idEstate`),
-  ADD CONSTRAINT `historyrent_ibfk_2` FOREIGN KEY (`idClient`) REFERENCES `clients` (`idClient`) ON UPDATE NO ACTION,
-  ADD CONSTRAINT `historyrent_ibfk_3` FOREIGN KEY (`idClientRented`) REFERENCES `clients` (`idClient`) ON UPDATE NO ACTION;
+  ADD CONSTRAINT `historyrent_ibfk_2` FOREIGN KEY (`idClient`) REFERENCES `clients` (`idClient`),
+  ADD CONSTRAINT `historyrent_ibfk_3` FOREIGN KEY (`idClientRented`) REFERENCES `clients` (`idClient`) ;
 
 --
 -- Filtros para la tabla `historysale`
 --
 ALTER TABLE `historysale`
   ADD CONSTRAINT `historysale_ibfk_1` FOREIGN KEY (`idEstate`) REFERENCES `estates` (`idEstate`),
-  ADD CONSTRAINT `historysale_ibfk_2` FOREIGN KEY (`idClientPrevious`) REFERENCES `clients` (`idClient`) ON UPDATE NO ACTION,
-  ADD CONSTRAINT `historysale_ibfk_3` FOREIGN KEY (`idClientActual`) REFERENCES `clients` (`idClient`) ON UPDATE NO ACTION;
+  ADD CONSTRAINT `historysale_ibfk_2` FOREIGN KEY (`idClientPrevious`) REFERENCES `clients` (`idClient`),
+  ADD CONSTRAINT `historysale_ibfk_3` FOREIGN KEY (`idClientActual`) REFERENCES `clients` (`idClient`);
 
 --
 -- Filtros para la tabla `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`idBranch`) REFERENCES `branchs` (`idBranch`) ON UPDATE NO ACTION;
+  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`idBranch`) REFERENCES `branchs` (`idBranch`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
