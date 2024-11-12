@@ -11,6 +11,7 @@ import com.feroxdev.inmobigestor.service.UserServiceImpl;
 import com.feroxdev.inmobigestor.service.UserSessionService;
 import com.feroxdev.inmobigestor.validation.Validation;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -183,7 +184,7 @@ public class AdminMainViewController {
             gridPaneUserList.add(new Label(user.getEmail()), 1, i + 1);
             gridPaneUserList.add(new Label(fullName), 2, i + 1);
             var userBranch = user.getBranch();
-            Integer idBranch = (userBranch != null) ? (idBranch = userBranch.getIdBranch()) : null;
+            Integer idBranch = (userBranch != null) ? userBranch.getIdBranch() : null;
             gridPaneUserList.add(new Label(String.valueOf(idBranch)), 3, i + 1);
 
             // Crear un HBox para contener los botones
@@ -202,7 +203,7 @@ public class AdminMainViewController {
             editIcon.setIconLiteral("mdi2h-human-edit");
             editIcon.setIconSize(14);
             btnEdit.setGraphic(editIcon);
-            btnEdit.setOnAction(e -> showModalUserEdit(user));//aqui tiene que abrirse
+            btnEdit.setOnAction(e -> showModalUserEdit(user));//aquí tiene que abrirse
 
             HBox.setMargin(btnEdit, new Insets(10));
             HBox.setMargin(btnDelete, new Insets(10));
@@ -247,6 +248,7 @@ public class AdminMainViewController {
 
             int idUser = user.getIdUser();
             List<Town> towns = cityRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+            var branchItems = FXCollections.observableArrayList(towns);
             log.warn("Ciudades---------"+towns.toString());
 
             textUser.setEditable(false);
@@ -257,7 +259,8 @@ public class AdminMainViewController {
             textID.setText(userService.GetUserById(idUser).getDni());
             textName.setText(userService.GetUserById(idUser).getName());
             textEmail.setText(userService.GetUserById(idUser).getEmail());
-            boxTown.setItems(FXCollections.observableArrayList(towns));
+            boxTown.setItems(branchItems);
+            //para mostrar en el desplegable los nombres de ciudades y que al seleccionar funcione correctamente
             boxTown.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(Town town) {
@@ -266,10 +269,22 @@ public class AdminMainViewController {
 
                 @Override
                 public Town fromString(String string) {
-                    return boxTown.getItems().stream()
+                    return branchItems.stream()
                             .filter(town -> town.getName().equals(string))
                             .findFirst()
                             .orElse(null);
+                }
+            });
+            TextField editor = boxTown.getEditor();
+            editor.textProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    boxTown.setItems(branchItems); // Restaurar la lista completa si el texto está vacío
+                } else {
+                    String search = newValue.toLowerCase();
+                    ObservableList<Town> filteredItems = branchItems.filtered(town ->
+                            town.getName().toLowerCase().contains(search));
+                    boxTown.setItems(filteredItems); // Mostrar solo los resultados que coinciden
+                    boxTown.show(); // Mantener el menú desplegado mientras se escribe
                 }
             });
             btnConfirmEditUserModal.setOnAction(e -> handleListUserEdit(user, root));
@@ -300,7 +315,6 @@ public class AdminMainViewController {
         TextField textID = (TextField) root.lookup("#textID");
         TextField textName = (TextField) root.lookup("#textName");
         TextField textEmail = (TextField) root.lookup("#textEmail");
-        TextField textBranch = (TextField) root.lookup("#textBranch");//va ser la ciudad
         @SuppressWarnings ("unchecked")
         ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
 
@@ -321,7 +335,7 @@ public class AdminMainViewController {
 
         //VALIDACIONES
         if (validation.validationUser(user) && validation.validationBranch(branch)) {
-            //Crear objeto sucursal en base a la id
+            //Crear objeto sucursal basándose en la id
             log.warn("CAMPOS A ENVIAR;------\n" + user.toString()+"\n"+branch.toString());
             userService.changeInfoUser(user);
             showAllUsersList();
@@ -351,6 +365,7 @@ public class AdminMainViewController {
 
     //region Creación de usuarios del listado
     //endregion
+
     //endregion
 
     //endregion
