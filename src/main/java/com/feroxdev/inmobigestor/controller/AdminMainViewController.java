@@ -5,7 +5,7 @@ import com.feroxdev.inmobigestor.model.Town;
 import com.feroxdev.inmobigestor.model.User;
 import com.feroxdev.inmobigestor.navigation.AdminView;
 import com.feroxdev.inmobigestor.navigation.LoginView;
-import com.feroxdev.inmobigestor.repository.CityRepository;
+import com.feroxdev.inmobigestor.repository.TownRepository;
 import com.feroxdev.inmobigestor.service.BranchServiceImpl;
 import com.feroxdev.inmobigestor.service.UserServiceImpl;
 import com.feroxdev.inmobigestor.service.UserSessionService;
@@ -54,7 +54,7 @@ public class AdminMainViewController {
     @Autowired
     BranchServiceImpl branchService;
     @Autowired
-    CityRepository cityRepository;
+    TownRepository townRepository;
 
     @Autowired
     Validation validation;
@@ -247,7 +247,8 @@ public class AdminMainViewController {
             Button btnConfirmEditUserModal = (Button) root.lookup("#btnConfirmEditUserModal");
 
             int idUser = user.getIdUser();
-            List<Town> towns = cityRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+            //List<Town> towns = townRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+            List<Town> towns = townRepository.findAllTownsWithBranches();
             var branchItems = FXCollections.observableArrayList(towns);
             log.warn("Ciudades---------"+towns.toString());
 
