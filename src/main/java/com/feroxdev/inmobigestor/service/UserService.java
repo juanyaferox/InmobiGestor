@@ -10,4 +10,5 @@ public interface UserService {
     User changeInfoUser(User user);
     List<User> allUsersList();
     User deleteUser(User user);
+    User addUser (User user);
 }

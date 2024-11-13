@@ -113,26 +113,33 @@
                      <Button fx:id="btnConfirmChanges" layoutX="795.0" layoutY="419.0" mnemonicParsing="false" onAction="#handleUserModify" prefHeight="54.0" prefWidth="167.0" text="Confirmar" />
                   </children>
                </AnchorPane>
-               <HBox fx:id="optionListUsers" alignment="TOP_CENTER" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <GridPane fx:id="gridPaneUserList" gridLinesVisible="true" layoutX="10.0" layoutY="10.0" prefHeight="604.0" prefWidth="932.0">
-                     <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                     </columnConstraints>
-                     <children>
-                        <Label text="Nombre" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="label-bold"/>
-                        <Label text="Correo" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="label-bold"/>
-                        <Label text="Nombre Completo" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="label-bold"/>
-                        <Label text="Cod Sucursal" GridPane.columnIndex="3" GridPane.rowIndex="0" styleClass="label-bold"/>
-                        <Label text="Acciones" GridPane.columnIndex="4" GridPane.rowIndex="0" styleClass="label-bold"/>
-                     </children>
-                  <rowConstraints>
-                     <RowConstraints />
-                  </rowConstraints>
-                  </GridPane>
-               </HBox>
+               <AnchorPane fx:id="optionListUsers" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                  <ScrollPane fx:id="scrollPaneUserList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
+                     <content>
+                        <GridPane fx:id="gridPaneUserList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <children>
+                              <Label styleClass="label-bold" text="Nombre" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Correo" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Nombre Completo" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Cod Sucursal" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Acciones" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                           </children>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                        </GridPane>
+                     </content>
+                  </ScrollPane>
+               <Button fx:id="btnAddNewUser" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+               </AnchorPane>
             </StackPane>
 
 

@@ -23,4 +23,9 @@ public class BranchServiceImpl implements BranchService {
         Optional<Branch> branchCoincident = branchRepository.findByTown(town);
         return branchCoincident.orElse(new Branch());
     }
+
+    @Override
+    public Branch findById(Branch branch) {
+        return branchRepository.findById(branch.getIdBranch()).orElse(null);
+    }
 }

@@ -21,9 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -64,6 +62,8 @@ public class AdminMainViewController {
     @FXML
     Button btnUserModify;
     @FXML
+    Button btnAddNewUser;
+    @FXML
     TextField textUser;
     @FXML
     TextField textPassword;
@@ -80,7 +80,7 @@ public class AdminMainViewController {
     @FXML
     AnchorPane optionModifyUser;
     @FXML
-    HBox optionListUsers;
+    AnchorPane optionListUsers;
     @FXML
     Button btnConfirmChanges;
     @FXML
@@ -157,15 +157,22 @@ public class AdminMainViewController {
     }
 //endregion
 
-    //region Gestión
+    //region GESTIÓN
 
     //MÉTODOS A CREAR
     //metodo para que al acceder a sucursales se muestre un listado con la información básica de las sucursales
-    //método para crear sucursal
-    //método para editar sucursal
+    //método para crear sucursal <-crear ventana modal para editar
+    //método para editar sucursal <-crear ventana modal para editar
     //método para borrar sucursal
+    //método para crear usuario desde el listado <-crear ventana modal para editar
+    //(practicamente es copiar usuarios cambiando 3 cosas)
 
-    //region Administradores
+    //region SUCURSALES
+
+    //endregion
+
+    //region USUARIOS (administradores)
+
     //region Listado de usuarios
     /**
      * Maneja la opción de listado de administradores (usuarios), mostrando todos junto a algunos datos y botones
@@ -178,7 +185,7 @@ public class AdminMainViewController {
         log.warn("LISTA DE USUARIOS;---------------------- "+ userList.toString());
         for (int i = 0; i < userList.size(); i++) {
             User user = userList.get(i);
-            String fullName = user.getName()+" "+user.getLastname1()+" "+user.getLastname2();
+            String fullName = user.getName()+" "+user.getLastname1()+" "+(user.getLastname2() != null ? user.getLastname2(): "");
             // Añadir las celdas correspondientes en cada columna de la fila actual
             gridPaneUserList.add(new Label(user.getUser()), 0, i + 1);
             gridPaneUserList.add(new Label(user.getEmail()), 1, i + 1);
@@ -247,19 +254,21 @@ public class AdminMainViewController {
             Button btnConfirmEditUserModal = (Button) root.lookup("#btnConfirmEditUserModal");
 
             int idUser = user.getIdUser();
+            var userToShow = userService.GetUserById(idUser);
             //List<Town> towns = townRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
             List<Town> towns = townRepository.findAllTownsWithBranches();
             var branchItems = FXCollections.observableArrayList(towns);
             log.warn("Ciudades---------"+towns.toString());
 
             textUser.setEditable(false);
-            textUser.setText(userService.GetUserById(idUser).getUser());
-            textPassword.setText(userService.GetUserById(idUser).getPassword());
-            text1Surname.setText(userService.GetUserById(idUser).getLastname1());
-            text2Surname.setText(userService.GetUserById(idUser).getLastname2());
-            textID.setText(userService.GetUserById(idUser).getDni());
-            textName.setText(userService.GetUserById(idUser).getName());
-            textEmail.setText(userService.GetUserById(idUser).getEmail());
+            textUser.setText(userToShow.getUser());
+            textPassword.setText(userToShow.getPassword());
+            text1Surname.setText(userToShow.getLastname1());
+            text2Surname.setText(userToShow.getLastname2());
+            textID.setText(userToShow.getDni());
+            textName.setText(userToShow.getName());
+            textEmail.setText(userToShow.getEmail());
+            boxTown.setValue(userToShow.getBranch() != null ? userToShow.getBranch().getTown() : new Town());
             boxTown.setItems(branchItems);
             //para mostrar en el desplegable los nombres de ciudades y que al seleccionar funcione correctamente
             boxTown.setConverter(new StringConverter<>() {
@@ -365,6 +374,112 @@ public class AdminMainViewController {
     //endregion
 
     //region Creación de usuarios del listado
+
+    @FXML
+    private void showModalUserAdd(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_EditUser_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Añadir Usuario");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow();//Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+            @SuppressWarnings ("unchecked")
+            ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+            Button btnConfirmEditUserModal = (Button) root.lookup("#btnConfirmEditUserModal");
+
+            List<Town> towns = townRepository.findAllTownsWithBranches();
+            var branchItems = FXCollections.observableArrayList(towns);
+            log.warn("Ciudades---------"+towns.toString());
+            boxTown.setItems(branchItems);
+            //para mostrar en el desplegable los nombres de ciudades y que al seleccionar funcione correctamente
+            boxTown.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Town town) {
+                    return town != null ? town.getName() : "";
+                }
+
+                @Override
+                public Town fromString(String string) {
+                    return branchItems.stream()
+                            .filter(town -> town.getName().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+            TextField editor = boxTown.getEditor();
+            editor.textProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    boxTown.setItems(branchItems); // Restaurar la lista completa si el texto está vacío
+                } else {
+                    String search = newValue.toLowerCase();
+                    ObservableList<Town> filteredItems = branchItems.filtered(town ->
+                            town.getName().toLowerCase().contains(search));
+                    boxTown.setItems(filteredItems); // Mostrar solo los resultados que coinciden
+                    boxTown.show(); // Mantener el menú desplegado mientras se escribe
+                }
+            });
+            btnConfirmEditUserModal.setOnAction(e -> handleListUserAdd(root));
+
+            stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
+            reloadView(); // Recargo la ventana
+            showAllUsersList(); // muestro la lista de usuarios
+            //if (btnConfirmEditUserModal != null)
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @FXML
+    private void handleListUserAdd(Parent root){
+        TextField textUser = (TextField) root.lookup("#textUser");
+        TextField textPassword = (TextField) root.lookup("#textPassword");
+        TextField text1Surname = (TextField) root.lookup("#text1Surname");
+        TextField text2Surname = (TextField) root.lookup("#text2Surname");
+        TextField textID = (TextField) root.lookup("#textID");
+        TextField textName = (TextField) root.lookup("#textName");
+        TextField textEmail = (TextField) root.lookup("#textEmail");
+        @SuppressWarnings ("unchecked")
+        ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+
+        User user = new User();
+        log.warn("User antes de cambios-----------------\n"+user.toString());
+        user.setUser(textUser.getText());
+        user.setPassword(textPassword.getText());
+        user.setLastname1(text1Surname.getText());
+        user.setLastname2(text2Surname.getText());
+        user.setDni(textID.getText());
+        user.setName(textName.getText());
+        user.setEmail(textEmail.getText());
+
+        Town selectedTown = boxTown.getValue();
+        Branch branch = branchService.verifyIfCityInBranch(selectedTown);
+        log.warn("Branch despues de cambios-----------------\n"+branch.toString());
+
+        log.warn("User despues de cambios-----------------\n"+ user.toString());
+
+        //VALIDACIONES
+        if (validation.validationUser(user) && validation.validationBranch(branch)) {
+            //Crear objeto sucursal basándose en la id
+            log.warn("CAMPOS A ENVIAR;------\n" + user.toString()+"\n"+branch.toString());
+            var userSaved = userService.addUser(user);
+            userSaved.setBranch(branch);
+            userService.changeInfoUser(user);
+            showAllUsersList();
+            //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se han realizado los cambios correctamente")
+                    .showWarning();
+        }
+    }
+
     //endregion
 
     //endregion
@@ -395,6 +510,13 @@ public class AdminMainViewController {
         optionListUsers.setVisible(false);
 
         hbox.setVisible(true);
+    }
+
+    private void changeVisibility(VBox vb) {
+        optionModifyUser.setVisible(false);
+        optionListUsers.setVisible(false);
+
+        vb.setVisible(true);
     }
 
     /**

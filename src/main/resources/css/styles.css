@@ -69,3 +69,8 @@
 .label-bold {
     -fx-font-weight: bold;
 }
+
+#scrollPaneUserList {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
