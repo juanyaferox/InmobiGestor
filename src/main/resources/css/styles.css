@@ -55,12 +55,12 @@
 }
 /* Aquí acaban los estilos del menu*/
 
-#gridPaneUserList {
+#gridPaneUserList, #gridPaneBranchList {
     -fx-alignment: CENTER;
 
 }
 
-#gridPaneUserList .label {
+#gridPaneUserList .label, #gridPaneBranchList .label {
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
     -fx-padding: 10px;
@@ -70,7 +70,7 @@
     -fx-font-weight: bold;
 }
 
-#scrollPaneUserList {
+#scrollPaneUserList, #scrollPaneBranchList {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }

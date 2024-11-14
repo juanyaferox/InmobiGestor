@@ -23,7 +23,7 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                         <Menu styleClass="menu" text="GESTION">
-                           <MenuItem styleClass="menu-item" text="Sucursales" />
+                           <MenuItem onAction="#showAllBranchsList" styleClass="menu-item" text="Sucursales" />
                            <MenuItem onAction="#showAllUsersList" styleClass="menu-item" text="Administradores" />
                         </Menu>
                      </MenuBar>
@@ -138,7 +138,32 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-               <Button fx:id="btnAddNewUser" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+               <Button fx:id="btnAddNewBranch" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+               </AnchorPane>
+               <AnchorPane fx:id="optionListBranchs" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                  <ScrollPane fx:id="scrollPaneBranchList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
+                     <content>
+                        <GridPane fx:id="gridPaneBranchList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
+                           <columnConstraints>
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints />
+                           </columnConstraints>
+                           <children>
+                              <Label styleClass="label-bold" text="Código" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Municipio" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Código del municipio" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Acciones" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                           </children>
+                           <rowConstraints>
+                              <RowConstraints />
+                              <RowConstraints />
+                           </rowConstraints>
+                        </GridPane>
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="btnAddNewUser" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nueva sucursal" /> <!--onAction="#showModalBranchAdd"-->
                </AnchorPane>
             </StackPane>
 

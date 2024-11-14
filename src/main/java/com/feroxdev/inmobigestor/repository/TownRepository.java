@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TownRepository extends JpaRepository<Town, Long> {
+public interface TownRepository extends JpaRepository<Town, Integer> {
 
     @Query ("SELECT DISTINCT t FROM Town t WHERE t.idTown IN (SELECT b.town FROM Branch b) ORDER BY t.name ASC")
     List<Town> findAllTownsWithBranches();

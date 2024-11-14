@@ -12,6 +12,7 @@ import com.feroxdev.inmobigestor.service.UserSessionService;
 import com.feroxdev.inmobigestor.validation.Validation;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -40,6 +41,7 @@ import java.util.List;
 @Controller
 public class AdminMainViewController {
 
+
     @Autowired
     LoginView loginView;
     @Autowired
@@ -62,7 +64,11 @@ public class AdminMainViewController {
     @FXML
     Button btnUserModify;
     @FXML
+    Button btnConfirmChanges;
+    @FXML
     Button btnAddNewUser;
+    @FXML
+    Button btnAddNewBranch;
     @FXML
     TextField textUser;
     @FXML
@@ -82,9 +88,11 @@ public class AdminMainViewController {
     @FXML
     AnchorPane optionListUsers;
     @FXML
-    Button btnConfirmChanges;
+    AnchorPane optionListBranchs;
     @FXML
     GridPane gridPaneUserList;
+    @FXML
+    GridPane gridPaneBranchList;
 
     //variable global del usuario actual
     User user;
@@ -92,12 +100,13 @@ public class AdminMainViewController {
     /**
      * A ejecutar al acceder a la vista asociada al controlador
      */
-    public void initialize(){
-        if (userSessionService!=null)
+    public void initialize() {
+        if (userSessionService != null)
             user = userSessionService.getLoggedInUser();
     }
 
     //region Logout
+
     /**
      * Obtiene el Stage actual y lo sustituye por la pantalla de Login
      *
@@ -110,7 +119,8 @@ public class AdminMainViewController {
     }
 //endregion
 
-    //region Modificacion de datos proprios del usuario
+    //region MODIFICACION de datos proprios del usuario
+
     /**
      * Muestra en pantalla los datos del usuario en text boxs modificables
      */
@@ -168,12 +178,264 @@ public class AdminMainViewController {
     //(practicamente es copiar usuarios cambiando 3 cosas)
 
     //region SUCURSALES
+    @FXML
+    private void showAllBranchsList() {
+        changeVisibility(optionListBranchs);
+        List<Branch> branchList = branchService.findAllBranch();
+        log.warn("LISTA DE SUCURSALES;---------------------- " + branchList.toString());
+        for (int i = 0; i < branchList.size(); i++) {
+            Branch branch = branchList.get(i);
+            // Añadir las celdas correspondientes en cada columna de la fila actual
+            gridPaneBranchList.add(new Label(String.valueOf(branch.getIdBranch())), 0, i + 1);
+            gridPaneBranchList.add(new Label(branch.getTown().getName()), 1, i + 1);
+            gridPaneBranchList.add(new Label(String.valueOf(branch.getTown().getIdTown())), 2, i + 1);
 
+            // Crear un HBox para contener los botones
+            HBox buttonBox = new HBox();
+            Button btnDelete = new Button();
+            FontIcon deleteIcon = new FontIcon();
+            deleteIcon.setIconColor(Color.RED);
+            deleteIcon.setIconLiteral("mdi2d-delete");
+            deleteIcon.setIconSize(14);
+            btnDelete.setGraphic(deleteIcon);
+            btnDelete.setOnAction(e -> handleBranchDelete(branch));
+
+            Button btnEdit = new Button();
+            FontIcon editIcon = new FontIcon();
+            editIcon.setIconColor(Color.LIGHTBLUE);
+            editIcon.setIconLiteral("mdi2h-human-edit");
+            editIcon.setIconSize(14);
+            btnEdit.setGraphic(editIcon);
+            btnEdit.setOnAction(e -> showModalBranchEdit(branch));//aquí tiene que abrirse
+
+            HBox.setMargin(btnEdit, new Insets(10));
+            HBox.setMargin(btnDelete, new Insets(10));
+
+            buttonBox.getChildren().addAll(btnEdit, btnDelete);
+
+            gridPaneBranchList.add(buttonBox, 4, i + 1);
+        }
+    }
     //endregion
+
+    @FXML
+    private void showModalBranchEdit(Branch branch) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_Branch_ModalWindow.fxml"));
+            log.warn("CAMPOS A ENVIAR;------" + branch.toString());
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Modificar Sucursal");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow();//Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+            @SuppressWarnings ("unchecked")
+            ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+            Button btnConfirmEditBranchModal = (Button) root.lookup("#btnConfirmEditBranchModal");
+
+            // Cargar los datos y configurar el ComboBox
+            List<Town> towns = townRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+            ObservableList<Town> branchItems = FXCollections.observableArrayList(towns);
+            log.warn("Ciudades---------" + towns.toString());
+            boxTown.setValue(branch.getTown());
+            boxTown.setItems(branchItems);
+
+            // Crear un FilteredList para aplicar el filtro dinámicamente
+            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+
+            // Aplicar el FilteredList al ComboBox
+            boxTown.setItems(filteredItems);
+
+            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
+            boxTown.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Town town) {
+                    return town != null ? town.getName() : "";
+                }
+
+                @Override
+                public Town fromString(String string) {
+                    return branchItems.stream()
+                            .filter(town -> town.getName().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            // Configurar el filtrado del ComboBox mediante el editor de texto
+            TextField editor = boxTown.getEditor();
+            editor.textProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+                } else {
+                    String search = newValue.toLowerCase();
+                    filteredItems.setPredicate(town ->
+                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
+                }
+                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
+            });
+
+            btnConfirmEditBranchModal.setOnAction(e -> handleListBranchEdit(branch, root));
+
+            stage.showAndWait();//Bloquea la interacción con la ventana principal hasta que cierre la emergente
+            reloadView();//recargo la ventana
+            showAllBranchsList();//muestro la lista de usuarios
+            //if (btnConfirmEditUserModal != null)
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @FXML
+    private void handleListBranchEdit(Branch branch, Parent root) {
+        @SuppressWarnings ("unchecked")
+        ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+        log.warn("Branch antes de cambios-----------------\n" + branch.toString());
+        branch.setTown(boxTown.getValue());
+        log.warn("Branch despues de cambios-----------------\n" + branch.toString());
+
+        //VALIDACIONES
+        if (validation.validationBranch(branch)) {
+            //Crear objeto sucursal basándose en la id
+            log.warn("CAMPOS A ENVIAR;------\n"
+                    + "---------------------" + branch.toString());
+            branchService.updateBranch(branch);
+            showAllBranchsList();
+            //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se han realizado los cambios correctamente")
+                    .showWarning();
+        }
+    }
+
+    @FXML
+    private void handleBranchDelete(Branch branch) {
+        var branchDeleted = branchService.deleteBranch(branch);
+        if (branchDeleted == null) {
+            Notifications.create()
+                    .title("Error")
+                    .text("No se puede borrar una sucursal con algun usuario asignado")
+                    .showError();
+        } else if (branchDeleted.equals(new Branch())) {
+            Notifications.create()
+                    .title("Error")
+                    .text("No ha encontrado la sucursal en la base de datos")
+                    .showError();
+        }
+        //si devuelve null notification de error, caso contrario de éxito
+        //**hay que recargar la ventana
+        reloadView();
+        showAllBranchsList();
+    }
+
+    @FXML
+    private void showModalBranchAdd() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_Branch_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Añadir Sucursal");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow();//Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+            @SuppressWarnings ("unchecked")
+            ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+            Button btnConfirmEditBranchModal = (Button) root.lookup("#btnConfirmEditBranchModal");
+
+            List<Town> towns = townRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+            var branchItems = FXCollections.observableArrayList(towns);
+            log.warn("Ciudades---------" + towns.toString());
+            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+
+            // Aplicar el FilteredList al ComboBox
+            boxTown.setItems(filteredItems);
+
+            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
+            boxTown.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Town town) {
+                    return town != null ? town.getName() : "";
+                }
+
+                @Override
+                public Town fromString(String string) {
+                    return branchItems.stream()
+                            .filter(town -> town.getName().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            // Configurar el filtrado del ComboBox mediante el editor de texto
+            TextField editor = boxTown.getEditor();
+            editor.textProperty().addListener((obs, oldValue, newValue) -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+                } else {
+                    String search = newValue.toLowerCase();
+                    filteredItems.setPredicate(town ->
+                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
+                }
+                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
+            });
+            btnConfirmEditBranchModal.setOnAction(e -> handleListBranchAdd(root));
+
+            stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
+            reloadView(); // Recargo la ventana
+            showAllUsersList(); // muestro la lista de usuarios
+            //if (btnConfirmEditUserModal != null)
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @FXML
+    private void handleListBranchAdd(Parent root) {
+        @SuppressWarnings ("unchecked")
+        ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+
+        Branch branch = new Branch();
+        log.warn("Branch antes de cambios-----------------\n" + branch.toString());
+        branch.setTown(boxTown.getValue());
+        log.warn("Branch despues de cambios-----------------\n" + branch.toString());
+
+        //VALIDACIONES
+        if (validation.validationBranch(branch)) {
+            //Crear objeto sucursal basándose en la id
+
+            log.warn("CAMPOS A ENVIAR;------\n"
+                    + "---------------------" + branch.toString());
+            var branchSaved = branchService.addBranch(branch);
+            if (branchSaved==null){
+                Notifications.create()
+                        .title("Error")
+                        .text("No se ha encontrado la ciudad")
+                        .showError();
+            }
+            showAllBranchsList();
+            //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se han realizado los cambios correctamente")
+                    .showWarning();
+        }
+    }
 
     //region USUARIOS (administradores)
 
     //region Listado de usuarios
+
     /**
      * Maneja la opción de listado de administradores (usuarios), mostrando todos junto a algunos datos y botones
      * para editar y borrar
@@ -182,10 +444,10 @@ public class AdminMainViewController {
     private void showAllUsersList() {
         changeVisibility(optionListUsers);
         List<User> userList = userService.allUsersList();
-        log.warn("LISTA DE USUARIOS;---------------------- "+ userList.toString());
+        log.warn("LISTA DE USUARIOS;---------------------- " + userList.toString());
         for (int i = 0; i < userList.size(); i++) {
             User user = userList.get(i);
-            String fullName = user.getName()+" "+user.getLastname1()+" "+(user.getLastname2() != null ? user.getLastname2(): "");
+            String fullName = user.getName() + " " + user.getLastname1() + " " + (user.getLastname2() != null ? user.getLastname2() : "");
             // Añadir las celdas correspondientes en cada columna de la fila actual
             gridPaneUserList.add(new Label(user.getUser()), 0, i + 1);
             gridPaneUserList.add(new Label(user.getEmail()), 1, i + 1);
@@ -215,7 +477,7 @@ public class AdminMainViewController {
             HBox.setMargin(btnEdit, new Insets(10));
             HBox.setMargin(btnDelete, new Insets(10));
 
-            buttonBox.getChildren().addAll(btnDelete, btnEdit);
+            buttonBox.getChildren().addAll(btnEdit, btnDelete);
 
             gridPaneUserList.add(buttonBox, 4, i + 1);
         }
@@ -223,13 +485,15 @@ public class AdminMainViewController {
     //endregion
 
     //region Edición de usuarios del listado
+
     /**
      * Se trata de un "mini" controlador para manejar la ventana emergente para la edición de usuario
+     *
      * @param user: usuario a editar
      */
     @FXML
-    private void showModalUserEdit(User user){
-        try{
+    private void showModalUserEdit(User user) {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_EditUser_ModalWindow.fxml"));
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
             Parent root = loader.load();
@@ -258,7 +522,7 @@ public class AdminMainViewController {
             //List<Town> towns = townRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
             List<Town> towns = townRepository.findAllTownsWithBranches();
             var branchItems = FXCollections.observableArrayList(towns);
-            log.warn("Ciudades---------"+towns.toString());
+            log.warn("Ciudades---------" + towns.toString());
 
             textUser.setEditable(false);
             textUser.setText(userToShow.getUser());
@@ -269,8 +533,12 @@ public class AdminMainViewController {
             textName.setText(userToShow.getName());
             textEmail.setText(userToShow.getEmail());
             boxTown.setValue(userToShow.getBranch() != null ? userToShow.getBranch().getTown() : new Town());
-            boxTown.setItems(branchItems);
-            //para mostrar en el desplegable los nombres de ciudades y que al seleccionar funcione correctamente
+            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+
+            // Aplicar el FilteredList al ComboBox
+            boxTown.setItems(filteredItems);
+
+            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
             boxTown.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(Town town) {
@@ -285,17 +553,18 @@ public class AdminMainViewController {
                             .orElse(null);
                 }
             });
+
+            // Configurar el filtrado del ComboBox mediante el editor de texto
             TextField editor = boxTown.getEditor();
             editor.textProperty().addListener((obs, oldValue, newValue) -> {
                 if (newValue == null || newValue.isEmpty()) {
-                    boxTown.setItems(branchItems); // Restaurar la lista completa si el texto está vacío
+                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
                 } else {
                     String search = newValue.toLowerCase();
-                    ObservableList<Town> filteredItems = branchItems.filtered(town ->
-                            town.getName().toLowerCase().contains(search));
-                    boxTown.setItems(filteredItems); // Mostrar solo los resultados que coinciden
-                    boxTown.show(); // Mantener el menú desplegado mientras se escribe
+                    filteredItems.setPredicate(town ->
+                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
                 }
+                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
             });
             btnConfirmEditUserModal.setOnAction(e -> handleListUserEdit(user, root));
 
@@ -304,7 +573,7 @@ public class AdminMainViewController {
             showAllUsersList();//muestro la lista de usuarios
             //if (btnConfirmEditUserModal != null)
 
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -313,11 +582,12 @@ public class AdminMainViewController {
 
     /**
      * Edición de usuario desde la ventana emergente
+     *
      * @param user: usuario a ser editado
      * @param root: ventana emergente
      */
     @FXML
-    private void handleListUserEdit(User user, Parent root){
+    private void handleListUserEdit(User user, Parent root) {
         TextField textUser = (TextField) root.lookup("#textUser");
         TextField textPassword = (TextField) root.lookup("#textPassword");
         TextField text1Surname = (TextField) root.lookup("#text1Surname");
@@ -328,7 +598,7 @@ public class AdminMainViewController {
         @SuppressWarnings ("unchecked")
         ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
 
-        log.warn("User antes de cambios-----------------\n"+user.toString());
+        log.warn("User antes de cambios-----------------\n" + user.toString());
         user.setUser(textUser.getText());
         user.setPassword(textPassword.getText());
         user.setLastname1(text1Surname.getText());
@@ -339,14 +609,14 @@ public class AdminMainViewController {
 
         Town selectedTown = boxTown.getValue();
         Branch branch = branchService.verifyIfCityInBranch(selectedTown);
-        log.warn("Branch despues de cambios-----------------\n"+branch.toString());
+        log.warn("Branch despues de cambios-----------------\n" + branch.toString());
         user.setBranch(branch);
-        log.warn("User despues de cambios-----------------\n"+ user.toString());
+        log.warn("User despues de cambios-----------------\n" + user.toString());
 
         //VALIDACIONES
         if (validation.validationUser(user) && validation.validationBranch(branch)) {
             //Crear objeto sucursal basándose en la id
-            log.warn("CAMPOS A ENVIAR;------\n" + user.toString()+"\n"+branch.toString());
+            log.warn("CAMPOS A ENVIAR;------\n" + user.toString() + "\n" + branch.toString());
             userService.changeInfoUser(user);
             showAllUsersList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
@@ -359,12 +629,14 @@ public class AdminMainViewController {
     //endregion
 
     //region Borrado de usuarios del listado
+
     /**
      * Borra el usuario, si branch es null o id=0 no borra y lanza mensaje de error
+     *
      * @param user: usuario a ser borrado
      */
     @FXML
-    private void handleUserDelete(User user){
+    private void handleUserDelete(User user) {
         userService.deleteUser(user);//en teoría tiene que existir por cojones
         //si devuelve null notification de error, caso contrario de éxito
         //**hay que recargar la ventana
@@ -376,8 +648,8 @@ public class AdminMainViewController {
     //region Creación de usuarios del listado
 
     @FXML
-    private void showModalUserAdd(){
-        try{
+    private void showModalUserAdd() {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_EditUser_ModalWindow.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
@@ -393,9 +665,13 @@ public class AdminMainViewController {
 
             List<Town> towns = townRepository.findAllTownsWithBranches();
             var branchItems = FXCollections.observableArrayList(towns);
-            log.warn("Ciudades---------"+towns.toString());
-            boxTown.setItems(branchItems);
-            //para mostrar en el desplegable los nombres de ciudades y que al seleccionar funcione correctamente
+            log.warn("Ciudades---------" + towns.toString());
+            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+
+            // Aplicar el FilteredList al ComboBox
+            boxTown.setItems(filteredItems);
+
+            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
             boxTown.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(Town town) {
@@ -410,17 +686,18 @@ public class AdminMainViewController {
                             .orElse(null);
                 }
             });
+
+            // Configurar el filtrado del ComboBox mediante el editor de texto
             TextField editor = boxTown.getEditor();
             editor.textProperty().addListener((obs, oldValue, newValue) -> {
                 if (newValue == null || newValue.isEmpty()) {
-                    boxTown.setItems(branchItems); // Restaurar la lista completa si el texto está vacío
+                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
                 } else {
                     String search = newValue.toLowerCase();
-                    ObservableList<Town> filteredItems = branchItems.filtered(town ->
-                            town.getName().toLowerCase().contains(search));
-                    boxTown.setItems(filteredItems); // Mostrar solo los resultados que coinciden
-                    boxTown.show(); // Mantener el menú desplegado mientras se escribe
+                    filteredItems.setPredicate(town ->
+                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
                 }
+                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
             });
             btnConfirmEditUserModal.setOnAction(e -> handleListUserAdd(root));
 
@@ -429,7 +706,7 @@ public class AdminMainViewController {
             showAllUsersList(); // muestro la lista de usuarios
             //if (btnConfirmEditUserModal != null)
 
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -437,7 +714,7 @@ public class AdminMainViewController {
     }
 
     @FXML
-    private void handleListUserAdd(Parent root){
+    private void handleListUserAdd(Parent root) {
         TextField textUser = (TextField) root.lookup("#textUser");
         TextField textPassword = (TextField) root.lookup("#textPassword");
         TextField text1Surname = (TextField) root.lookup("#text1Surname");
@@ -449,7 +726,7 @@ public class AdminMainViewController {
         ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
 
         User user = new User();
-        log.warn("User antes de cambios-----------------\n"+user.toString());
+        log.warn("User antes de cambios-----------------\n" + user.toString());
         user.setUser(textUser.getText());
         user.setPassword(textPassword.getText());
         user.setLastname1(text1Surname.getText());
@@ -460,14 +737,14 @@ public class AdminMainViewController {
 
         Town selectedTown = boxTown.getValue();
         Branch branch = branchService.verifyIfCityInBranch(selectedTown);
-        log.warn("Branch despues de cambios-----------------\n"+branch.toString());
+        log.warn("Branch despues de cambios-----------------\n" + branch.toString());
 
-        log.warn("User despues de cambios-----------------\n"+ user.toString());
+        log.warn("User despues de cambios-----------------\n" + user.toString());
 
         //VALIDACIONES
         if (validation.validationUser(user) && validation.validationBranch(branch)) {
             //Crear objeto sucursal basándose en la id
-            log.warn("CAMPOS A ENVIAR;------\n" + user.toString()+"\n"+branch.toString());
+            log.warn("CAMPOS A ENVIAR;------\n" + user.toString() + "\n" + branch.toString());
             var userSaved = userService.addUser(user);
             userSaved.setBranch(branch);
             userService.changeInfoUser(user);
@@ -486,7 +763,8 @@ public class AdminMainViewController {
 
     //endregion
 
-    //region Cambiar visibilidad
+    //region Cambiar visibilidad en la vista
+
     /**
      * Cambia la visilidad de las distintas vbox, permitiendo el cambio entre opciones
      *
@@ -496,27 +774,9 @@ public class AdminMainViewController {
 
         optionModifyUser.setVisible(false);
         optionListUsers.setVisible(false);
+        optionListBranchs.setVisible(false);
 
         anchorPane.setVisible(true);
-    }
-
-    /**
-     * Sobre carga del metodo para manejar hbox
-     * @param hbox:
-     */
-    private void changeVisibility(HBox hbox) {
-
-        optionModifyUser.setVisible(false);
-        optionListUsers.setVisible(false);
-
-        hbox.setVisible(true);
-    }
-
-    private void changeVisibility(VBox vb) {
-        optionModifyUser.setVisible(false);
-        optionListUsers.setVisible(false);
-
-        vb.setVisible(true);
     }
 
     /**
@@ -525,13 +785,16 @@ public class AdminMainViewController {
     private void changeVisibility() {
         optionModifyUser.setVisible(false);
         optionListUsers.setVisible(false);
+        optionListBranchs.setVisible(false);
     }
     //endregion
 
+    /**
+     * Pra recarga la vista actual para evitar "bugs" al cambiar o añadir datos
+     */
     @FXML
     private void reloadView() {
         try {
-            // Cargar nuevamente el archivo FXML
             adminView.showAdminView((Stage) adminLogout.getScene().getWindow());
 
         } catch (IOException e) {

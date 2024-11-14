@@ -21,7 +21,7 @@ public class Client {
     @JoinColumn(name = "idUser")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idBranch")
     private Branch branch;
 

@@ -15,7 +15,7 @@ public class Branch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idBranch;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "idTown")
     private Town town;
 }

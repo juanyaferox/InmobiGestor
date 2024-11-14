@@ -7,6 +7,7 @@ import lombok.*;
 @Table (name = "towns")
 @Getter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
