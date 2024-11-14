@@ -59,10 +59,6 @@ public class Validation {
             validationNotification("Sucursal");
             return false;
         }
-        if (branch.getIdBranch()==null){
-            validationNotification("Sucursal");
-            isValid = false;
-        }
         if (branch.getTown()==null || branch.getTown().equals(new Town())){
             validationNotification("Sucursal");
             isValid = false;

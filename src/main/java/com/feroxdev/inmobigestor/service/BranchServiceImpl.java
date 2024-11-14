@@ -8,6 +8,7 @@ import com.feroxdev.inmobigestor.repository.TownRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public List<Branch> findAllBranch() {
-        return branchRepository.findAll();
+        return branchRepository.findAll(Sort.by(Sort.Direction.ASC, "idBranch"));
     }
 
     /**

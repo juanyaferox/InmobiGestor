@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> optionalUsers = userRepository.findById(id);
         if (optionalUsers.isPresent()){
             var userGet = optionalUsers.get();
-            if (userGet.getBranch() != null || userGet.getIdUser() != 0){//nos aseguramos de que no sea el admin general
+            if (userGet.getIdUser() != 0){//nos aseguramos de que no sea el admin general
                 userRepository.delete(user);
                 return user;
             }

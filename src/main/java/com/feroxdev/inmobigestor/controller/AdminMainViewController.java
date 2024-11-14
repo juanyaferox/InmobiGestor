@@ -416,13 +416,7 @@ public class AdminMainViewController {
 
             log.warn("CAMPOS A ENVIAR;------\n"
                     + "---------------------" + branch.toString());
-            var branchSaved = branchService.addBranch(branch);
-            if (branchSaved==null){
-                Notifications.create()
-                        .title("Error")
-                        .text("No se ha encontrado la ciudad")
-                        .showError();
-            }
+            branchService.addBranch(branch);
             showAllBranchsList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
