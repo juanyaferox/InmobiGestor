@@ -240,42 +240,8 @@ public class AdminMainViewController {
             ObservableList<Town> branchItems = FXCollections.observableArrayList(towns);
             log.warn("Ciudades---------" + towns.toString());
             boxTown.setValue(branch.getTown());
-            boxTown.setItems(branchItems);
 
-            // Crear un FilteredList para aplicar el filtro dinámicamente
-            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
-
-            // Aplicar el FilteredList al ComboBox
-            boxTown.setItems(filteredItems);
-
-            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
-            boxTown.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Town town) {
-                    return town != null ? town.getName() : "";
-                }
-
-                @Override
-                public Town fromString(String string) {
-                    return branchItems.stream()
-                            .filter(town -> town.getName().equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
-
-            // Configurar el filtrado del ComboBox mediante el editor de texto
-            TextField editor = boxTown.getEditor();
-            editor.textProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
-                } else {
-                    String search = newValue.toLowerCase();
-                    filteredItems.setPredicate(town ->
-                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
-                }
-                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
-            });
+            configureTownComboBox(boxTown, branchItems);
 
             btnConfirmEditBranchModal.setOnAction(e -> handleListBranchEdit(branch, root));
 
@@ -359,33 +325,7 @@ public class AdminMainViewController {
             boxTown.setItems(filteredItems);
 
             // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
-            boxTown.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Town town) {
-                    return town != null ? town.getName() : "";
-                }
-
-                @Override
-                public Town fromString(String string) {
-                    return branchItems.stream()
-                            .filter(town -> town.getName().equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
-
-            // Configurar el filtrado del ComboBox mediante el editor de texto
-            TextField editor = boxTown.getEditor();
-            editor.textProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
-                } else {
-                    String search = newValue.toLowerCase();
-                    filteredItems.setPredicate(town ->
-                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
-                }
-                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
-            });
+            configureTownComboBox(boxTown, branchItems);
             btnConfirmEditBranchModal.setOnAction(e -> handleListBranchAdd(root));
 
             stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
@@ -499,7 +439,6 @@ public class AdminMainViewController {
             Stage primaryStage = (Stage) adminLogout.getScene().getWindow();//Hace que la ventana principal sea dueña de la emergente
             stage.initOwner(primaryStage);
 
-
             TextField textUser = (TextField) root.lookup("#textUser");
             TextField textPassword = (TextField) root.lookup("#textPassword");
             TextField text1Surname = (TextField) root.lookup("#text1Surname");
@@ -530,36 +469,7 @@ public class AdminMainViewController {
             FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
 
             // Aplicar el FilteredList al ComboBox
-            boxTown.setItems(filteredItems);
-
-            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
-            boxTown.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Town town) {
-                    return town != null ? town.getName() : "";
-                }
-
-                @Override
-                public Town fromString(String string) {
-                    return branchItems.stream()
-                            .filter(town -> town.getName().equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
-
-            // Configurar el filtrado del ComboBox mediante el editor de texto
-            TextField editor = boxTown.getEditor();
-            editor.textProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
-                } else {
-                    String search = newValue.toLowerCase();
-                    filteredItems.setPredicate(town ->
-                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
-                }
-                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
-            });
+            configureTownComboBox(boxTown, branchItems);
             btnConfirmEditUserModal.setOnAction(e -> handleListUserEdit(user, root));
 
             stage.showAndWait();//Bloquea la interacción con la ventana principal hasta que cierre la emergente
@@ -662,37 +572,8 @@ public class AdminMainViewController {
             log.warn("Ciudades---------" + towns.toString());
             FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
 
-            // Aplicar el FilteredList al ComboBox
-            boxTown.setItems(filteredItems);
+            configureTownComboBox(boxTown, branchItems);
 
-            // Configurar el convertidor del ComboBox para mostrar los nombres de las ciudades
-            boxTown.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Town town) {
-                    return town != null ? town.getName() : "";
-                }
-
-                @Override
-                public Town fromString(String string) {
-                    return branchItems.stream()
-                            .filter(town -> town.getName().equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
-
-            // Configurar el filtrado del ComboBox mediante el editor de texto
-            TextField editor = boxTown.getEditor();
-            editor.textProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    filteredItems.setPredicate(town -> true); // Muestra todos los elementos
-                } else {
-                    String search = newValue.toLowerCase();
-                    filteredItems.setPredicate(town ->
-                            town.getName().toLowerCase().contains(search)); // Filtro aplicado
-                }
-                boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
-            });
             btnConfirmEditUserModal.setOnAction(e -> handleListUserAdd(root));
 
             stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
@@ -795,6 +676,40 @@ public class AdminMainViewController {
             e.printStackTrace();
         }
     }
+
+    private void configureTownComboBox(ComboBox<Town> boxTown, ObservableList<Town> branchItems) {
+        boxTown.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Town town) {
+                return town != null ? town.getName() : "";
+            }
+
+            @Override
+            public Town fromString(String string) {
+                return branchItems.stream()
+                        .filter(town -> town.getName().equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Configurar el filtrado del ComboBox mediante el editor de texto
+        TextField editor = boxTown.getEditor();
+        FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+        boxTown.setItems(filteredItems);
+
+        editor.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+            } else {
+                String search = newValue.toLowerCase();
+                filteredItems.setPredicate(town ->
+                        town.getName().toLowerCase().contains(search)); // Filtro aplicado
+            }
+            boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
+        });
+    }
+
 
 
 }

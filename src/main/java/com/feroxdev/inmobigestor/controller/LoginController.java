@@ -3,6 +3,7 @@ package com.feroxdev.inmobigestor.controller;
 import com.feroxdev.inmobigestor.model.User;
 import com.feroxdev.inmobigestor.navigation.AdminView;
 
+import com.feroxdev.inmobigestor.navigation.UserView;
 import com.feroxdev.inmobigestor.service.UserServiceImpl;
 import com.feroxdev.inmobigestor.service.UserSessionService;
 import javafx.fxml.FXML;
@@ -23,6 +24,9 @@ public class LoginController  {
 
     @Autowired
     AdminView adminView;
+
+    @Autowired
+    UserView userView;
 
     @Autowired
     UserServiceImpl userService;
@@ -54,14 +58,19 @@ public class LoginController  {
     private void handleLogin() throws IOException {
         String username = usernameField.getText();
         String password = passwordField.getText();
-
-        if (isValidCredentials(username, password)) {
+        User user = isValidCredentials(username, password);
+        if (user != null) {
             Notifications.create()
                     .title("Login Successful")
                     .text("Welcome, " + username)
                     .showInformation();
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            adminView.showAdminView(stage);
+            if (user.getIdUser()==0){
+                adminView.showAdminView(stage);
+            } else {
+                userView.showUserView(stage);
+            }
+
         } else {
             Notifications.create()
                     .title("Login Failed")
@@ -85,22 +94,13 @@ public class LoginController  {
         lblForgotPassword.setStyle("-fx-text-fill: #477624;");
     }
 
-    private boolean isValidCredentials(String username, String password) {
-        User user = userService.GetUserByUsername(username);
-        if (user != null) {
-            userSessionService.setLoggedInUser(user);
-        }
-        return username != null && !username.isEmpty() && password != null && !password.isEmpty();
+    private User isValidCredentials(String username, String password) {
+    User user = userService.GetUserByUsername(username);
+    if (user != null && user.getPassword().equals(password)) {
+        userSessionService.setLoggedInUser(user);
+        return user;
     }
-
-    /*public void onLoginSuccess(User user) {
-        if (user.getRole().equals("ADMIN")) {
-            sceneManager.switchToAdminView();
-        } else if (user.getRole().equals("USER")) {
-            sceneManager.switchToUserView();
-        } else if (user.getRole().equals("MANAGER")) {
-            sceneManager.switchToManagerView();
-        }
-    }*/
+    return null;
+}
 
 }

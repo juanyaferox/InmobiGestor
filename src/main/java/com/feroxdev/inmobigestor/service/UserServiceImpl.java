@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User GetUserByUsername(String user) {
-        return userRepository.findByUser(user);
+        var optUser = userRepository.findByUser(user);
+        return optUser.orElse(null);
     }
 
     /**
@@ -82,4 +83,6 @@ public class UserServiceImpl implements UserService {
     public User addUser(User user) {
         return userRepository.save(user);
     }
+
+    
 }

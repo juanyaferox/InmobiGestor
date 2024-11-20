@@ -3,6 +3,10 @@ package com.feroxdev.inmobigestor.utilities;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
+/**
+ * Queda pendiente de reutilizar en el futuro. Necesario cambiar lógica de modificación de perfil para no mostrar
+ * contraseña en texto plano puesto, que se encripta en la base de datos y es irrecuperable.
+ */
 public class EncryptionUtils {
 
     /**
