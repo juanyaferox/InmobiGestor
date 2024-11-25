@@ -1,11 +1,13 @@
 package com.feroxdev.inmobigestor.model;
 
+import com.feroxdev.inmobigestor.enums.EnumEstate;
 import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "estates")
 @Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -19,11 +21,11 @@ public class Estate {
     @JoinColumn(name = "idClient")
     private Client client;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idBranch")
     private Branch branch;
 
-    private Integer reference;
+    private String reference;
 
     @Column(length = 500)
     private String fullAddress;
@@ -31,5 +33,6 @@ public class Estate {
     @Column(length = 500)
     private String imagePath;
 
-    private Integer state;
+    @Enumerated(EnumType.ORDINAL)
+    private EnumEstate state;
 }

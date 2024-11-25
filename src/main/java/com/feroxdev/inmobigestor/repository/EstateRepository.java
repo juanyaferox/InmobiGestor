@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EstateRepository extends JpaRepository<Estate, Integer> {
+    Iterable<Estate> findAllByState(int state);
 }

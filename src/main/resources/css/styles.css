@@ -55,12 +55,19 @@
 }
 /* Aquí acaban los estilos del menu*/
 
-#gridPaneUserList, #gridPaneBranchList {
+#gridPaneUserList,
+#gridPaneBranchList,
+#gridPaneEstateList,
+#gridPaneClientList
+{
     -fx-alignment: CENTER;
 
 }
 
-#gridPaneUserList .label, #gridPaneBranchList .label {
+#gridPaneUserList .label,
+#gridPaneBranchList .label,
+#gridPaneEstateList .label,
+#gridPaneClientList .label {
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
     -fx-padding: 10px;
@@ -70,7 +77,10 @@
     -fx-font-weight: bold;
 }
 
-#scrollPaneUserList, #scrollPaneBranchList {
+#scrollPaneUserList,
+#scrollPaneBranchList,
+#scrollPaneEstateList,
+#scrollPaneClientList {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }

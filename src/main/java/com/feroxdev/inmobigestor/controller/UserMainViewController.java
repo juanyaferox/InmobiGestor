@@ -1,33 +1,53 @@
 package com.feroxdev.inmobigestor.controller;
 
-import com.feroxdev.inmobigestor.model.Town;
-import com.feroxdev.inmobigestor.model.User;
+import com.feroxdev.inmobigestor.enums.EnumClient;
+import com.feroxdev.inmobigestor.model.*;
 import com.feroxdev.inmobigestor.navigation.LoginView;
 import com.feroxdev.inmobigestor.navigation.UserView;
+import com.feroxdev.inmobigestor.service.ClientService;
+import com.feroxdev.inmobigestor.service.EstateService;
 import com.feroxdev.inmobigestor.service.UserService;
 import com.feroxdev.inmobigestor.service.UserSessionService;
 import com.feroxdev.inmobigestor.validation.Validation;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.Notifications;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.util.List;
 
+@Controller
 @Slf4j
 public class UserMainViewController {
     @Autowired
     UserSessionService userSessionService;
     @Autowired
     UserService userService;
+    @Autowired
+    EstateService estateService;
+    @Autowired
+    ClientService clientService;
 
     @Autowired
     LoginView loginView;
@@ -55,15 +75,27 @@ public class UserMainViewController {
     TextField textEmail;
 
     @FXML
+    GridPane gridPaneEstateList;
+    @FXML
+    GridPane gridPaneClientList;
+
+    @FXML
     AnchorPane optionModifyUser;
     @FXML
-    AnchorPane optionListUsers;
+    AnchorPane optionListClients;
     @FXML
-    AnchorPane optionListBranchs;
+    AnchorPane optionListEstates;
+
+//    @FXML
+//    AnchorPane optionListDashboard;
 
     //variable global del usuario actual
     User user;
 
+    public void initialize() {
+        if (userSessionService != null)
+            user = userSessionService.getLoggedInUser();
+    }
     //region Logout
 
     /**
@@ -126,21 +158,219 @@ public class UserMainViewController {
     }
 //endregion
 
+    //region Listado de inmuebles
+    @FXML
+    private void showEstateAll() {
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getAllEstates();
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+    @FXML
+    private void showClientAll() {
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClients();
+        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        showClientGrid(clientList);
+    }
+
     @FXML
     private void reloadView() {
         try {
             userView.showUserView((Stage) adminLogout.getScene().getWindow());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error al recargar la vista de usuario", e);
+        }
+    }
+
+    private void showEstateGrid(List<Estate> estateList) {
+        for (int i = 0; i < estateList.size(); i++) {
+            var estate = estateList.get(i);
+
+            ImageView imageView = null;
+            try {
+                Image image = new Image(estate.getImagePath());
+                imageView = new ImageView(image);
+
+                double fixedWidth = 200;
+                double fixedHeight = 150;
+
+                imageView.setFitWidth(fixedWidth);
+                imageView.setFitHeight(fixedHeight);
+
+                imageView.setPreserveRatio(false);
+                imageView.setSmooth(true);
+
+            } catch (Exception e) {
+                log.error("Error al cargar la imagen del inmueble: " + estate.getReference());
+            }
+            var stringState = estate.getState() != null ? estate.getState().getDescription() : "Sin estado";
+
+            // Añadir las celdas correspondientes en cada columna de la fila actual
+            gridPaneEstateList.add(imageView, 0, i + 1);
+            GridPane.setHalignment(imageView, HPos.CENTER);
+            GridPane.setMargin(imageView, new Insets(20, 0, 20, 0));
+            gridPaneEstateList.add(new Label(estate.getReference()), 1, i + 1);
+            gridPaneEstateList.add(new Label(stringState), 2, i + 1);
+            gridPaneEstateList.add(new Label(String.valueOf(estate.getBranch().getTown().getName())), 3, i + 1);
+
+            // Crear un HBox para contener los botones
+            HBox buttonBox = new HBox();
+
+            // Crear un VBox para organizar los botones en dos filas
+            VBox buttonColumn1 = new VBox();
+            VBox buttonColumn2 = new VBox();
+
+            // Espaciado entre los botones
+            buttonColumn1.setSpacing(10);
+            buttonColumn2.setSpacing(10);
+
+            // Crear los botones
+
+            Button btnDelete = new Button();
+            FontIcon deleteIcon = new FontIcon();
+            deleteIcon.setIconColor(Color.RED);
+            deleteIcon.setIconLiteral("mdi2d-delete");
+            deleteIcon.setIconSize(14);
+            btnDelete.setGraphic(deleteIcon);
+            buttonColumn1.getChildren().add(btnDelete);
+            //tnDelete.setOnAction(e -> handleEstateDelete(estate));
+
+            Button btnEdit = new Button();
+            FontIcon editIcon = new FontIcon();
+            editIcon.setIconColor(Color.LIGHTBLUE);
+            editIcon.setIconLiteral("mdi2h-home-edit");
+            editIcon.setIconSize(14);
+            btnEdit.setGraphic(editIcon);
+            buttonColumn2.getChildren().add(btnEdit);
+            //btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
+
+            Button btnHouseHistory = new Button();
+            FontIcon houseHistoryIcon = new FontIcon();
+            houseHistoryIcon.setIconColor(Color.GREY);
+            houseHistoryIcon.setIconLiteral("mdi2h-history");
+            houseHistoryIcon.setIconSize(14);
+            btnHouseHistory.setGraphic(houseHistoryIcon);
+            buttonColumn1.getChildren().add(btnHouseHistory);
+            //houseHistoryIcon.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+
+            // Ajustar márgenes
+            HBox.setMargin(buttonColumn1, new Insets(10));
+            HBox.setMargin(buttonColumn2, new Insets(10));
+
+            buttonBox.getChildren().addAll(buttonColumn1, buttonColumn2);
+
+            gridPaneEstateList.add(buttonBox, 4, i + 1);
+        }
+    }
+
+    private void showClientGrid(List<Client> clientList) {
+        for (int i = 0; i < clientList.size(); i++) {
+            var client = clientList.get(i);
+
+            String fullName = client.getName() + " " + client.getLastname1() + " " + (client.getLastname2() != null ? client.getLastname2() : "");
+            // Añadir las celdas correspondientes en cada columna de la fila actual
+            gridPaneClientList.add(new Label(fullName), 0, i + 1);
+            gridPaneClientList.add(new Label(client.getPhone()), 1, i + 1);
+            int numEstates = client.getEstates().size();
+            gridPaneClientList.add(new Label(String.valueOf(numEstates)), 2, i + 1);
+            boolean isRented = client.getEstateRented() != null;
+            gridPaneClientList.add(new Label(isRented ? "Si" : "No"), 3, i + 1);
+
+            // Crear un HBox para contener los botones
+            HBox buttonBox = new HBox();
+
+            // Crear un VBox para organizar los botones en dos filas
+            VBox buttonColumn1 = new VBox();
+            VBox buttonColumn2 = new VBox();
+
+            // Espaciado entre los botones
+            buttonColumn1.setSpacing(10);
+            buttonColumn2.setSpacing(10);
+
+            // Crear los botones
+
+            Button btnDelete = new Button();
+            FontIcon deleteIcon = new FontIcon();
+            deleteIcon.setIconColor(Color.RED);
+            deleteIcon.setIconLiteral("mdi2d-delete");
+            deleteIcon.setIconSize(14);
+            btnDelete.setGraphic(deleteIcon);
+            buttonColumn1.getChildren().add(btnDelete);
+            //tnDelete.setOnAction(e -> handleEstateDelete(estate));
+
+            Button btnEdit = new Button();
+            FontIcon editIcon = new FontIcon();
+            editIcon.setIconColor(Color.LIGHTBLUE);
+            editIcon.setIconLiteral("mdi2h-human-edit");
+            editIcon.setIconSize(14);
+            btnEdit.setGraphic(editIcon);
+            buttonColumn2.getChildren().add(btnEdit);
+            //btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
+
+            Button btnHouseHistory = new Button();
+            FontIcon houseHistoryIcon = new FontIcon();
+            houseHistoryIcon.setIconColor(Color.GREY);
+            houseHistoryIcon.setIconLiteral("mdi2h-history");
+            houseHistoryIcon.setIconSize(14);
+            btnHouseHistory.setGraphic(houseHistoryIcon);
+            buttonColumn1.getChildren().add(btnHouseHistory);
+            //houseHistoryIcon.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+
+            if (isRented) {
+                Button btnViewRented = new Button();
+                FontIcon viewRentedIcon = new FontIcon();
+                viewRentedIcon.setIconColor(Color.GREEN);
+                viewRentedIcon.setIconLiteral("mdi2h-home-heart");
+                viewRentedIcon.setIconSize(14);
+                btnViewRented.setGraphic(viewRentedIcon);
+                buttonColumn2.getChildren().add(btnViewRented);
+                //btnViewRented.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+            }
+
+            // Hacer que caso ya esté boton de isRented crear un nuevo button column
+            if (numEstates > 0) {
+                Button btnViewEstates = new Button();
+                FontIcon viewEstatesIcon = new FontIcon();
+                viewEstatesIcon.setIconColor(Color.BLUE);
+                viewEstatesIcon.setIconLiteral("mdi2h-home-city");
+                viewEstatesIcon.setIconSize(14);
+                btnViewEstates.setGraphic(viewEstatesIcon);
+                if (isRented)
+                    buttonColumn1.getChildren().add(btnViewEstates);
+                else
+                    buttonColumn2.getChildren().add(btnViewEstates);
+                //btnViewEstates.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+            }
+
+            if (client.getType() == EnumClient.ANOTHER) {
+                Button btnRelatedHouses = new Button();
+                FontIcon relatedHousesIcon = new FontIcon();
+                relatedHousesIcon.setIconColor(Color.DARKRED);
+                relatedHousesIcon.setIconLiteral("mdi2h-home-search");
+                relatedHousesIcon.setIconSize(14);
+                btnRelatedHouses.setGraphic(relatedHousesIcon);
+                buttonColumn2.getChildren().add(btnRelatedHouses);
+                //btnViewRented.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+            }
+
+            // Ajustar márgenes
+            HBox.setMargin(buttonColumn1, new Insets(10));
+            HBox.setMargin(buttonColumn2, new Insets(10));
+
+            buttonBox.getChildren().addAll(buttonColumn1, buttonColumn2);
+
+            gridPaneClientList.add(buttonBox, 4, i + 1);
         }
     }
 
     private void changeVisibility(AnchorPane anchorPane) {
 
         optionModifyUser.setVisible(false);
-        optionListUsers.setVisible(false);
-        optionListBranchs.setVisible(false);
+        optionListClients.setVisible(false);
+        optionListEstates.setVisible(false);
+        //optionListDashboard.setVisible(false);
 
         anchorPane.setVisible(true);
     }

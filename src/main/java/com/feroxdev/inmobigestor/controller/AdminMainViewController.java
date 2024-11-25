@@ -41,12 +41,13 @@ import java.util.List;
 @Controller
 public class AdminMainViewController {
 
-
+    // region Vistas
     @Autowired
     LoginView loginView;
     @Autowired
     AdminView adminView;
 
+    // region Servicios y repositorios
     @Autowired
     UserSessionService userSessionService;
     @Autowired
@@ -56,9 +57,11 @@ public class AdminMainViewController {
     @Autowired
     TownRepository townRepository;
 
+    // region Validation
     @Autowired
     Validation validation;
 
+    // region FXML
     @FXML
     Button adminLogout;
     @FXML

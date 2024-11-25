@@ -1,13 +1,18 @@
 package com.feroxdev.inmobigestor.model;
 
+import com.feroxdev.inmobigestor.enums.EnumClient;
+import com.feroxdev.inmobigestor.enums.EnumEstate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "clients")
 @Data
+@ToString(exclude = "estates")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,7 +30,9 @@ public class Client {
     @JoinColumn(name = "idBranch")
     private Branch branch;
 
-    private Integer idEstateRented;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idEstateRented")
+    private Estate estateRented;
 
     @Column(length = 50)
     private String name;
@@ -46,5 +53,9 @@ public class Client {
 
     private String address;
 
-    private Integer type;
+    @Enumerated(EnumType.ORDINAL)
+    private EnumClient type;
+
+    @OneToMany (mappedBy = "client", fetch = FetchType.EAGER)
+    private List<Estate> estates;
 }
