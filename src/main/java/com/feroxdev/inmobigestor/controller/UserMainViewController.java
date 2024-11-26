@@ -1,6 +1,7 @@
 package com.feroxdev.inmobigestor.controller;
 
 import com.feroxdev.inmobigestor.enums.EnumClient;
+import com.feroxdev.inmobigestor.enums.EnumEstate;
 import com.feroxdev.inmobigestor.model.*;
 import com.feroxdev.inmobigestor.navigation.LoginView;
 import com.feroxdev.inmobigestor.navigation.UserView;
@@ -15,10 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -159,17 +157,103 @@ public class UserMainViewController {
 //endregion
 
     //region Listado de inmuebles
+    // Realizar modificación: solo se deben mostrar los inmuebles que pertenezcan a la sucursal del usuario logueado
     @FXML
     private void showEstateAll() {
+        reloadView();
         changeVisibility(optionListEstates);
-        List<Estate> estateList = (List<Estate>) estateService.getAllEstates();
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByBranch(user.getBranch());
         log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
         showEstateGrid(estateList);
     }
+
+    @FXML
+    private void showEstateSale(){
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ON_SALE, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+
+    @FXML
+    private void showEstateRent(){
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+
+    @FXML
+    private void showEstateSold(){
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.SOLD, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+
+    @FXML
+    private void showEstateRented(){
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.RENTED, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+
+    @FXML
+    private void showEstateAnother(){
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ANOTHER, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+
+    @FXML
+    private void showEstateInactive(){
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.INACTIVE, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        showEstateGrid(estateList);
+    }
+    //endregion
+//region Listado de clientes
     @FXML
     private void showClientAll() {
+        reloadView();
         changeVisibility(optionListClients);
-        List<Client> clientList = (List<Client>) clientService.getAllClients();
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranch(user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        showClientGrid(clientList);
+    }
+
+    @FXML
+    private void showClientListHouseowner(){
+        reloadView();
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.HOUSE_OWNER);
+        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        showClientGrid(clientList);
+    }
+
+    @FXML
+    private void showClientListRenter(){
+        reloadView();
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.RENTER);
+        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        showClientGrid(clientList);
+    }
+
+    @FXML
+    private void showClientListAnother(){
+        reloadView();
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.ANOTHER);
         log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
         showClientGrid(clientList);
     }
@@ -270,6 +354,7 @@ public class UserMainViewController {
             var client = clientList.get(i);
 
             String fullName = client.getName() + " " + client.getLastname1() + " " + (client.getLastname2() != null ? client.getLastname2() : "");
+
             // Añadir las celdas correspondientes en cada columna de la fila actual
             gridPaneClientList.add(new Label(fullName), 0, i + 1);
             gridPaneClientList.add(new Label(client.getPhone()), 1, i + 1);
@@ -297,7 +382,9 @@ public class UserMainViewController {
             deleteIcon.setIconLiteral("mdi2d-delete");
             deleteIcon.setIconSize(14);
             btnDelete.setGraphic(deleteIcon);
-            buttonColumn1.getChildren().add(btnDelete);
+            Tooltip tooltipDelete = new Tooltip("Eliminar cliente");
+            btnDelete.setTooltip(tooltipDelete);
+            buttonColumn2.getChildren().add(btnDelete);
             //tnDelete.setOnAction(e -> handleEstateDelete(estate));
 
             Button btnEdit = new Button();
@@ -306,7 +393,9 @@ public class UserMainViewController {
             editIcon.setIconLiteral("mdi2h-human-edit");
             editIcon.setIconSize(14);
             btnEdit.setGraphic(editIcon);
-            buttonColumn2.getChildren().add(btnEdit);
+            Tooltip tooltipEdit = new Tooltip("Editar cliente");
+            btnEdit.setTooltip(tooltipEdit);
+            buttonColumn1.getChildren().add(btnEdit);
             //btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
 
             Button btnHouseHistory = new Button();
@@ -315,6 +404,8 @@ public class UserMainViewController {
             houseHistoryIcon.setIconLiteral("mdi2h-history");
             houseHistoryIcon.setIconSize(14);
             btnHouseHistory.setGraphic(houseHistoryIcon);
+            Tooltip tooltipHistory = new Tooltip("Ver historial de inmuebles");
+            btnHouseHistory.setTooltip(tooltipHistory);
             buttonColumn1.getChildren().add(btnHouseHistory);
             //houseHistoryIcon.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
 
@@ -325,6 +416,8 @@ public class UserMainViewController {
                 viewRentedIcon.setIconLiteral("mdi2h-home-heart");
                 viewRentedIcon.setIconSize(14);
                 btnViewRented.setGraphic(viewRentedIcon);
+                Tooltip tooltipRented = new Tooltip("Ver inmueble alquilado");
+                btnViewRented.setTooltip(tooltipRented);
                 buttonColumn2.getChildren().add(btnViewRented);
                 //btnViewRented.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
             }
@@ -336,6 +429,8 @@ public class UserMainViewController {
                 viewEstatesIcon.setIconColor(Color.BLUE);
                 viewEstatesIcon.setIconLiteral("mdi2h-home-city");
                 viewEstatesIcon.setIconSize(14);
+                Tooltip tooltipEstates = new Tooltip("Ver inmuebles");
+                btnViewEstates.setTooltip(tooltipEstates);
                 btnViewEstates.setGraphic(viewEstatesIcon);
                 if (isRented)
                     buttonColumn1.getChildren().add(btnViewEstates);
@@ -350,6 +445,8 @@ public class UserMainViewController {
                 relatedHousesIcon.setIconColor(Color.DARKRED);
                 relatedHousesIcon.setIconLiteral("mdi2h-home-search");
                 relatedHousesIcon.setIconSize(14);
+                Tooltip tooltipRelatedHouses = new Tooltip("Ver inmuebles relacionados");
+                btnRelatedHouses.setTooltip(tooltipRelatedHouses);
                 btnRelatedHouses.setGraphic(relatedHousesIcon);
                 buttonColumn2.getChildren().add(btnRelatedHouses);
                 //btnViewRented.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
@@ -364,7 +461,7 @@ public class UserMainViewController {
             gridPaneClientList.add(buttonBox, 4, i + 1);
         }
     }
-
+//endregion
     private void changeVisibility(AnchorPane anchorPane) {
 
         optionModifyUser.setVisible(false);

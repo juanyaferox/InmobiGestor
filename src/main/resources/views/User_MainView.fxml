@@ -24,11 +24,11 @@
                         </cursor>
                         <Menu styleClass="menu" text="INMUEBLES">
                            <MenuItem styleClass="menu-item" text="Todos" onAction="#showEstateAll"/>
-                           <MenuItem styleClass="menu-item" text="En venta" /><!--onAction="#showEstateSale"-->
-                           <MenuItem styleClass="menu-item" text="En alquiler" /><!--onAction="#showEstateRent"-->
-                           <MenuItem styleClass="menu-item" text="Vendidos" /><!--onAction="#showEstateSold"-->
-                           <MenuItem styleClass="menu-item" text="Alquilados" /><!--onAction="#showEstateRented"-->
-                           <MenuItem styleClass="menu-item" text="Inactivos" /><!--onAction="#showEstateInactive"-->
+                           <MenuItem styleClass="menu-item" text="En venta" onAction="#showEstateSale"/><!---->
+                           <MenuItem styleClass="menu-item" text="En alquiler" onAction="#showEstateRent"/><!---->
+                           <MenuItem styleClass="menu-item" text="Vendidos" onAction="#showEstateSold"/><!--o-->
+                           <MenuItem styleClass="menu-item" text="Alquilados" onAction="#showEstateRented"/><!---->
+                           <MenuItem styleClass="menu-item" text="Inactivos" onAction="#showEstateInactive"/><!---->
                         </Menu>
                      </MenuBar>
                   </VBox>
@@ -41,10 +41,10 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                         <Menu styleClass="menu" text="CLIENTES">
-                           <MenuItem styleClass="menu-item" text="Todos" onAction="#showClientAll"/><!-- onAction="#showClientListAll" -->
-                           <MenuItem styleClass="menu-item" text="Dueños" /><!-- onAction="#showClientListHouseowner" -->
-                           <MenuItem styleClass="menu-item" text="Arrendatarios" /><!-- onAction="#showClientListRenter" -->
-                           <MenuItem styleClass="menu-item" text="Otros" /><!-- onAction="#showClientListAnother" -->
+                           <MenuItem styleClass="menu-item" text="Todos" onAction="#showClientAll"/>
+                           <MenuItem styleClass="menu-item" text="Dueños" onAction="#showClientListHouseowner"/><!--  -->
+                           <MenuItem styleClass="menu-item" text="Arrendatarios" onAction="#showClientListRenter" /><!-- -->
+                           <MenuItem styleClass="menu-item" text="Otros" onAction="#showClientListAnother" /><!-- -->
                         </Menu>
                      </MenuBar>
                   </VBox>

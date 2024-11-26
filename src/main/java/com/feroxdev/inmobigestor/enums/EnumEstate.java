@@ -12,7 +12,8 @@ public enum EnumEstate {
     ON_SALE("En venta"), //1
     SOLD("Vendido"), //2
     FOR_RENT("En alquiler"), //3
-    RENTED("Alquilado"); //4
+    RENTED("Alquilado"), //4
+    INACTIVE("Inactivo"); //5
 
     private final String description;
 }
