@@ -32,4 +32,10 @@ public class EstateServiceImpl implements EstateService {
     public Iterable<Estate> getEstatesByStateAndBranch(EnumEstate state, Branch branch) {
         return estateRepository.findAllByStateAndBranch(state, branch);
     }
+
+    @Override
+    public Estate deleteEstate(Estate estate) {
+        estateRepository.delete(estate);
+        return estate;
+    }
 }

@@ -5,17 +5,17 @@ import com.feroxdev.inmobigestor.enums.EnumEstate;
 import com.feroxdev.inmobigestor.model.*;
 import com.feroxdev.inmobigestor.navigation.LoginView;
 import com.feroxdev.inmobigestor.navigation.UserView;
-import com.feroxdev.inmobigestor.service.ClientService;
-import com.feroxdev.inmobigestor.service.EstateService;
-import com.feroxdev.inmobigestor.service.UserService;
-import com.feroxdev.inmobigestor.service.UserSessionService;
+import com.feroxdev.inmobigestor.service.*;
 import com.feroxdev.inmobigestor.validation.Validation;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +24,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +34,15 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @Slf4j
@@ -46,6 +55,8 @@ public class UserMainViewController {
     EstateService estateService;
     @Autowired
     ClientService clientService;
+    @Autowired
+    BranchService branchService;
 
     @Autowired
     LoginView loginView;
@@ -168,7 +179,7 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showEstateSale(){
+    private void showEstateSale() {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ON_SALE, user.getBranch());
@@ -177,7 +188,7 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showEstateRent(){
+    private void showEstateRent() {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT, user.getBranch());
@@ -186,7 +197,7 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showEstateSold(){
+    private void showEstateSold() {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.SOLD, user.getBranch());
@@ -195,7 +206,7 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showEstateRented(){
+    private void showEstateRented() {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.RENTED, user.getBranch());
@@ -204,7 +215,7 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showEstateAnother(){
+    private void showEstateAnother() {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ANOTHER, user.getBranch());
@@ -213,13 +224,14 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showEstateInactive(){
+    private void showEstateInactive() {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.INACTIVE, user.getBranch());
         log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
         showEstateGrid(estateList);
     }
+
     //endregion
 //region Listado de clientes
     @FXML
@@ -227,34 +239,34 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranch(user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
         showClientGrid(clientList);
     }
 
     @FXML
-    private void showClientListHouseowner(){
+    private void showClientListHouseowner() {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.HOUSE_OWNER);
-        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
         showClientGrid(clientList);
     }
 
     @FXML
-    private void showClientListRenter(){
+    private void showClientListRenter() {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.RENTER);
-        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
         showClientGrid(clientList);
     }
 
     @FXML
-    private void showClientListAnother(){
+    private void showClientListAnother() {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.ANOTHER);
-        log.warn("LISTA DE INMUEBLES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
         showClientGrid(clientList);
     }
 
@@ -319,7 +331,7 @@ public class UserMainViewController {
             deleteIcon.setIconSize(14);
             btnDelete.setGraphic(deleteIcon);
             buttonColumn1.getChildren().add(btnDelete);
-            //tnDelete.setOnAction(e -> handleEstateDelete(estate));
+            btnDelete.setOnAction(e -> handleEstateDelete(estate));
 
             Button btnEdit = new Button();
             FontIcon editIcon = new FontIcon();
@@ -328,7 +340,7 @@ public class UserMainViewController {
             editIcon.setIconSize(14);
             btnEdit.setGraphic(editIcon);
             buttonColumn2.getChildren().add(btnEdit);
-            //btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
+            btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
 
             Button btnHouseHistory = new Button();
             FontIcon houseHistoryIcon = new FontIcon();
@@ -347,6 +359,158 @@ public class UserMainViewController {
 
             gridPaneEstateList.add(buttonBox, 4, i + 1);
         }
+    }
+
+    private void handleEstateDelete(Estate estate) {
+        log.warn("Eliminar inmueble: " + estate.getReference());
+        estateService.deleteEstate(estate);
+        reloadView();
+    }
+
+    @FXML
+    private void showModalEstateEdit(Estate estate) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Estate_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Editar Inmueble");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            TextField textBranch = (TextField) root.lookup("#textBranch"); // Inmodificable
+            TextField textClient = (TextField) root.lookup("#textClient"); // Inmodificable
+            TextField textReference = (TextField) root.lookup("#textReference");
+            TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+            Button btnSelectNewImage = (Button) root.lookup("#btnSelectNewImage");
+            @SuppressWarnings ("unchecked")
+            ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
+            Button btnConfirmEditEstateModal = (Button) root.lookup("#btnConfirmEditEstateModal");
+
+            textBranch.setEditable(false);
+            textBranch.setText(estate.getBranch().getTown().getName());
+
+            textClient.setEditable(false);
+            textClient.setText(estate.getClient().getName() + " " + estate.getClient().getLastname1() + " " + (estate.getClient().getLastname2() != null ? estate.getClient().getLastname2() : ""));
+
+            textReference.setText(estate.getReference());
+
+            textFullAddress.setText(estate.getFullAddress());
+
+            btnSelectNewImage.setText("Seleccionar nueva imagen");
+
+            AtomicReference<File> imageFile = new AtomicReference<>(null);
+
+            btnSelectNewImage.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Seleccionar imagen");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg"));
+                File file = fileChooser.showOpenDialog(stage);
+
+                if (file != null) {
+                    try {
+                        // Validar si es una imagen
+                        String mimeType = Files.probeContentType(file.toPath());
+                        if (!mimeType.startsWith("image/")) {
+                            log.error("El archivo seleccionado no es una imagen válida.");
+                            return; // Meter notificación
+                        }
+
+                        String imagesDir = System.getProperty("user.dir") + "/images/houses";
+                        Files.createDirectories(Paths.get(imagesDir)); // Crear directorio si no existe
+                        String extension = file.getName().substring(file.getName().lastIndexOf("."));
+                        String uniqueName = UUID.randomUUID() + extension;
+                        Path destinationPath = Paths.get(imagesDir, uniqueName);
+
+                        // Copiar la imagen al archivo destino
+                        Files.copy(file.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+                        // Asignar el archivo destino a selectedImageFile (variable de instancia)
+                        imageFile.set(destinationPath.toFile());
+
+                        btnSelectNewImage.setText("Imagen seleccionada: " + imageFile.get().getName());
+                        log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath.getFileName());
+                    } catch (IOException ex) {
+                        log.error("Error al copiar la imagen", ex);
+                    }
+                }
+            });
+
+            boxState.setValue(estate.getState());
+            boxState.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(EnumEstate state) {
+                    return state != null ? state.getDescription() : "";
+                }
+
+                @Override
+                public EnumEstate fromString(String string) {
+                    for (EnumEstate state : EnumEstate.values()) {
+                        if (state.getDescription().equals(string)) {
+                            return state;
+                        }
+                    }
+                    throw new IllegalArgumentException("Estado no encontrado: " + string);
+                }
+            });
+            boxState.setItems(FXCollections.observableArrayList(EnumEstate.values()));
+
+            btnConfirmEditEstateModal.setOnAction(e -> handleListEstateAdd(estate, root, imageFile.get() != null ? imageFile.get() : null));
+
+            stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
+            log.warn("Se ha cerrado la ventana emergente de edición de inmueble");
+            reloadView(); // Recargo la ventana
+            log.warn("Se ha recargado la ventana principal de inmuebles");
+            showEstateAll(); // muestro la lista de inmuebles
+            log.warn("Se ha mostrado la lista de inmuebles");
+
+// Supuesto caso de que se quiera editar la sucursal del inmueble (no se permite porque no se puede cambiar de sucursal)
+//            @SuppressWarnings ("unchecked")
+//            ComboBox<Branch> boxBranch = (ComboBox<Branch>) root.lookup("#boxBranch");
+//            boxBranch.setValue(estate.getBranch());
+//            // Hasta aquí bien porque muestra todas las sucursales, aunque muestra el objeto entero
+//            List<Branch> branchs = branchService.findAllBranch().stream()
+//                    .sorted(Comparator.comparing(branch -> branch.getTown().getName()))
+//                    .toList();
+//
+//            var branchItems = FXCollections.observableArrayList(branchs);
+//            log.warn("Ciudades---------" + branchs.toString());
+//            FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
+//
+//            // Aplicar el FilteredList al ComboBox
+//            boxBranch.setItems(filteredItems);
+//            configureBranchComboBox(boxBranch, branchItems);
+
+
+
+//            if (btnConfirmEditUserModal != null)
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+    private void handleListEstateAdd(Estate estate, Parent root, File imageFile) {
+
+        TextField textReference = (TextField) root.lookup("#textReference");
+        TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+        Button btnSelectNewImage = (Button) root.lookup("#btnSelectNewImage");
+        @SuppressWarnings ("unchecked")
+        ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
+
+        log.info("Inmueble: {}", estate);
+
+        estate.setReference(textReference.getText());
+        estate.setFullAddress(textFullAddress.getText());
+        estate.setState(boxState.getValue());
+        estate.setImagePath(null); // Se borra la imagen del inmueble
+
     }
 
     private void showClientGrid(List<Client> clientList) {
@@ -461,7 +625,8 @@ public class UserMainViewController {
             gridPaneClientList.add(buttonBox, 4, i + 1);
         }
     }
-//endregion
+
+    //endregion
     private void changeVisibility(AnchorPane anchorPane) {
 
         optionModifyUser.setVisible(false);
@@ -472,36 +637,36 @@ public class UserMainViewController {
         anchorPane.setVisible(true);
     }
 
-    private void configureTownComboBox(ComboBox<Town> boxTown, ObservableList<Town> branchItems) {
-        boxTown.setConverter(new StringConverter<>() {
+    private void configureBranchComboBox(ComboBox<Branch> boxBranch, ObservableList<Branch> branchItems) {
+        boxBranch.setConverter(new StringConverter<>() {
             @Override
-            public String toString(Town town) {
-                return town != null ? town.getName() : "";
+            public String toString(Branch branch) {
+                return branch != null ? branch.getReference() : "";
             }
 
             @Override
-            public Town fromString(String string) {
+            public Branch fromString(String string) {
                 return branchItems.stream()
-                        .filter(town -> town.getName().equals(string))
+                        .filter(branch -> branch.getReference().equals(string))
                         .findFirst()
                         .orElse(null);
             }
         });
 
         // Configurar el filtrado del ComboBox mediante el editor de texto
-        TextField editor = boxTown.getEditor();
-        FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
-        boxTown.setItems(filteredItems);
+        TextField editor = boxBranch.getEditor();
+        FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
+        boxBranch.setItems(filteredItems);
 
         editor.textProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue == null || newValue.isEmpty()) {
-                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+                filteredItems.setPredicate(branch -> true); // Muestra todos los elementos
             } else {
                 String search = newValue.toLowerCase();
-                filteredItems.setPredicate(town ->
-                        town.getName().toLowerCase().contains(search)); // Filtro aplicado
+                filteredItems.setPredicate(branch ->
+                        branch.getReference().toLowerCase().contains(search)); // Filtro aplicado
             }
-            boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
+            boxBranch.show(); // Mantiene el ComboBox desplegado mientras se escribe
         });
     }
 }

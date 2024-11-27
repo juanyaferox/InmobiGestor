@@ -18,4 +18,6 @@ public class Branch {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idTown")
     private Town town;
+
+    String reference;
 }
