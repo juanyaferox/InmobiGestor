@@ -29,6 +29,7 @@
                            <MenuItem styleClass="menu-item" text="Vendidos" onAction="#showEstateSold"/><!--o-->
                            <MenuItem styleClass="menu-item" text="Alquilados" onAction="#showEstateRented"/><!---->
                            <MenuItem styleClass="menu-item" text="Inactivos" onAction="#showEstateInactive"/><!---->
+                           <MenuItem styleClass="menu-item" text="Otros" onAction="#showEstateAnother"/><!---->
                         </Menu>
                      </MenuBar>
                   </VBox>
@@ -158,7 +159,7 @@
                      </content>
                   </ScrollPane>
                   <!--onAction="#showModalUserAdd"-->
-               <Button fx:id="btnAddNewEstate" layoutX="814.0" layoutY="507.0" mnemonicParsing="false"  prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo inmueble" />
+               <Button fx:id="btnAddNewEstate" onAction="#showModalEstateAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false"  prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo inmueble" />
                </AnchorPane>
                <AnchorPane fx:id="optionListClients" prefHeight="607.0" prefWidth="1080.0" visible="false">
                   <ScrollPane fx:id="scrollPaneClientList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">

@@ -1,8 +1,6 @@
 package com.feroxdev.inmobigestor.validation;
 
-import com.feroxdev.inmobigestor.model.Branch;
-import com.feroxdev.inmobigestor.model.Town;
-import com.feroxdev.inmobigestor.model.User;
+import com.feroxdev.inmobigestor.model.*;
 import com.feroxdev.inmobigestor.utilities.CsvUtils;
 import org.controlsfx.control.Notifications;
 import org.springframework.stereotype.Component;
@@ -61,6 +59,40 @@ public class Validation {
         }
         if (branch.getTown()==null || branch.getTown().equals(new Town())){
             validationNotification("Sucursal");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    public boolean validationEstate(Estate estate){
+        boolean isValid = true;
+
+        if (estate==null){   // evitamos posible nullPointerException
+            validationNotification("Inmueble");
+            return false;
+        }
+        if (estate.getBranch()==null || estate.getBranch().equals(new Branch())){
+            validationNotification("Inmueble");
+            isValid = false;
+        }
+        if (estate.getReference().isEmpty() || estate.getReference().length() > 255){
+            validationNotification("Referencia");
+            isValid = false;
+        }
+        if (estate.getClient() == null || estate.getClient().equals(new Client())){
+            validationNotification("Propietario");
+            isValid = false;
+        }
+        if (estate.getState() == null){
+            validationNotification("Estado");
+            isValid = false;
+        }
+        if (estate.getFullAddress() == null || estate.getFullAddress().isEmpty() || estate.getFullAddress().length() > 500){
+            validationNotification("Dirección");
+            isValid = false;
+        }
+        if (estate.getImagePath().length() > 500){
+            validationNotification("Imagen");
             isValid = false;
         }
         return isValid;

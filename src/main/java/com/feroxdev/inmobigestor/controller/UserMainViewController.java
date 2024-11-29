@@ -7,6 +7,7 @@ import com.feroxdev.inmobigestor.navigation.LoginView;
 import com.feroxdev.inmobigestor.navigation.UserView;
 import com.feroxdev.inmobigestor.service.*;
 import com.feroxdev.inmobigestor.validation.Validation;
+import jakarta.annotation.Nullable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -36,6 +37,8 @@ import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -232,6 +235,7 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+
     //endregion
 //region Listado de clientes
     @FXML
@@ -286,7 +290,12 @@ public class UserMainViewController {
 
             ImageView imageView = null;
             try {
-                Image image = new Image(estate.getImagePath());
+                String imagePath = System.getProperty("user.dir") + estate.getImagePath();
+                File file = new File(imagePath);
+                if (!file.exists()) {
+                    throw new Exception("No se ha encontrado la imagen");
+                }
+                Image image = new Image(file.toURI().toString());
                 imageView = new ImageView(image);
 
                 double fixedWidth = 200;
@@ -299,7 +308,24 @@ public class UserMainViewController {
                 imageView.setSmooth(true);
 
             } catch (Exception e) {
-                log.error("Error al cargar la imagen del inmueble: " + estate.getReference());
+
+                log.error("CATCH1 : Error al cargar la imagen del inmueble: " + System.getProperty("user.dir") + estate.getImagePath() + " - " + e.getMessage());
+                try {
+                    Image image = new Image("/images/no_found_house.jpg");
+                    imageView = new ImageView(image);
+
+                    double fixedWidth = 200;
+                    double fixedHeight = 150;
+
+                    imageView.setFitWidth(fixedWidth);
+                    imageView.setFitHeight(fixedHeight);
+
+                    imageView.setPreserveRatio(false);
+                    imageView.setSmooth(true);
+                } catch (Exception ex) {
+                    log.error("CATCH2: Error al cargar la imagen del inmueble: " + estate.getImagePath());
+                }
+
             }
             var stringState = estate.getState() != null ? estate.getState().getDescription() : "Sin estado";
 
@@ -331,7 +357,11 @@ public class UserMainViewController {
             deleteIcon.setIconSize(14);
             btnDelete.setGraphic(deleteIcon);
             buttonColumn1.getChildren().add(btnDelete);
-            btnDelete.setOnAction(e -> handleEstateDelete(estate));
+            btnDelete.setOnAction(e -> {
+                handleEstateDelete(estate);
+                reloadView();
+                showEstateAll();
+            });
 
             Button btnEdit = new Button();
             FontIcon editIcon = new FontIcon();
@@ -361,14 +391,9 @@ public class UserMainViewController {
         }
     }
 
-    private void handleEstateDelete(Estate estate) {
-        log.warn("Eliminar inmueble: " + estate.getReference());
-        estateService.deleteEstate(estate);
-        reloadView();
-    }
-
+    //region Añadir inmueble
     @FXML
-    private void showModalEstateEdit(Estate estate) {
+    private void showModalEstateAdd(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Estate_ModalWindow.fxml"));
             Parent root = loader.load();
@@ -381,25 +406,52 @@ public class UserMainViewController {
             stage.initOwner(primaryStage);
 
             TextField textBranch = (TextField) root.lookup("#textBranch"); // Inmodificable
-            TextField textClient = (TextField) root.lookup("#textClient"); // Inmodificable
-            TextField textReference = (TextField) root.lookup("#textReference");
-            TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+            textBranch.setEditable(false);
+            textBranch.setText(user.getBranch().getReference());
+
+            var listClient = (List<Client>) clientService.getAllClients();
+            var fxListClient = FXCollections.observableArrayList(listClient);
+            ComboBox<Client> boxClient = (ComboBox<Client>) root.lookup("#boxClient");
+            boxClient.setItems(fxListClient);
+            boxClient.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Client client) {
+                    return client != null ? client.getFullName() : "";
+                }
+
+                @Override
+                public Client fromString(String string) {
+                    return fxListClient.stream()
+                            .filter(client -> client.getFullName().equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+
+
             Button btnSelectNewImage = (Button) root.lookup("#btnSelectNewImage");
             @SuppressWarnings ("unchecked")
             ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
+            boxState.setItems(FXCollections.observableArrayList(EnumEstate.values()));
+            boxState.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(EnumEstate state) {
+                    return state != null ? state.getDescription() : "";
+                }
+
+                @Override
+                public EnumEstate fromString(String string) {
+                    for (EnumEstate state : EnumEstate.values()) {
+                        if (state.getDescription().equals(string)) {
+                            return state;
+                        }
+                    }
+                    throw new IllegalArgumentException("Estado no encontrado: " + string);
+                }
+            });
+
             Button btnConfirmEditEstateModal = (Button) root.lookup("#btnConfirmEditEstateModal");
-
-            textBranch.setEditable(false);
-            textBranch.setText(estate.getBranch().getTown().getName());
-
-            textClient.setEditable(false);
-            textClient.setText(estate.getClient().getName() + " " + estate.getClient().getLastname1() + " " + (estate.getClient().getLastname2() != null ? estate.getClient().getLastname2() : ""));
-
-            textReference.setText(estate.getReference());
-
-            textFullAddress.setText(estate.getFullAddress());
-
-            btnSelectNewImage.setText("Seleccionar nueva imagen");
 
             AtomicReference<File> imageFile = new AtomicReference<>(null);
 
@@ -418,7 +470,7 @@ public class UserMainViewController {
                             return; // Meter notificación
                         }
 
-                        String imagesDir = System.getProperty("user.dir") + "/images/houses";
+                        String imagesDir = "/images/houses";
                         Files.createDirectories(Paths.get(imagesDir)); // Crear directorio si no existe
                         String extension = file.getName().substring(file.getName().lastIndexOf("."));
                         String uniqueName = UUID.randomUUID() + extension;
@@ -430,15 +482,159 @@ public class UserMainViewController {
                         // Asignar el archivo destino a selectedImageFile (variable de instancia)
                         imageFile.set(destinationPath.toFile());
 
-                        btnSelectNewImage.setText("Imagen seleccionada: " + imageFile.get().getName());
-                        log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath.getFileName());
+                        btnSelectNewImage.setText("Imagen seleccionada: " + imageFile.get().getName().replace("\\", "/"));
+
+                        log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath);
                     } catch (IOException ex) {
-                        log.error("Error al copiar la imagen", ex);
+                        log.error("Error al copiar la imagen - " + ex.getMessage());
                     }
                 }
             });
 
-            boxState.setValue(estate.getState());
+
+
+            btnConfirmEditEstateModal.setOnAction(e -> {
+                handleListEstateAdd(root, imageFile.get() != null ? imageFile.get() : null);
+                stage.close();
+            });
+            stage.showAndWait();
+            reloadView();
+            showEstateAll();
+
+        } catch (IOException e) {
+            log.error("Error", e);
+        }
+    }
+
+    private void handleListEstateAdd(Parent root, @Nullable File imageFile) {
+        TextField textReference = (TextField) root.lookup("#textReference");
+        TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+        ComboBox<Client> boxClient = (ComboBox<Client>) root.lookup("#boxClient");
+        @SuppressWarnings ("unchecked")
+        ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
+        String imagePath = imageFile != null ? imageFile.getPath().replace("\\", "/") : null;
+        log.warn(imagePath);
+
+        Estate estate = Estate.builder()
+                .branch(user.getBranch())
+                .client(boxClient.getValue())
+                .reference(textReference.getText())
+                .fullAddress(textFullAddress.getText())
+                .state(boxState.getValue())
+                .imagePath(imagePath)
+                .build();
+        try {
+            if (imageFile != null) {
+                String imagesDir = System.getProperty("user.dir") + "/images/houses";
+                Files.createDirectories(Paths.get(imagesDir)); // Crear directorio si no existe
+
+                Path destinationPath = Paths.get(imagesDir, imageFile.getName());
+
+                // Copiar la imagen al archivo destino
+                Files.move(imageFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+                log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath.getFileName());
+            }
+        } catch (IOException ex) {
+            log.error("Error al copiar la imagen" + ex.getMessage());
+        }
+
+        if (validation.validationEstate(estate)) {
+            estateService.saveEstate(estate);
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se ha añadido el inmueble correctamente")
+                    .showWarning();
+        }
+
+
+    }
+
+    //endregion
+
+    //region Borrar inmueble
+    private void handleEstateDelete(Estate estate) {
+        log.warn("Eliminar inmueble: " + estate.getReference());
+        estateService.deleteEstate(estate);
+        reloadView();
+    }
+    //endregion
+
+    //region Editar inmueble
+    @FXML
+    private void showModalEstateEdit(Estate estate) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Estate_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Editar Inmueble");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            TextField textBranch = (TextField) root.lookup("#textBranch"); // Inmodificable
+            textBranch.setEditable(false);
+            textBranch.setText(estate.getBranch().getReference());
+
+
+            ComboBox<String> boxClient = (ComboBox<String>) root.lookup("#boxClient");
+            boxClient.setValue(estate.getClient().getFullName());
+            boxClient.setDisable(true);
+            boxClient.setEditable(false);
+
+            TextField textReference = (TextField) root.lookup("#textReference");
+            textReference.setText(estate.getReference());
+
+            TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+            textFullAddress.setText(estate.getFullAddress());
+
+            Button btnSelectNewImage = (Button) root.lookup("#btnSelectNewImage");
+            btnSelectNewImage.setText("Seleccionar nueva imagen");
+
+            Button btnConfirmEditEstateModal = (Button) root.lookup("#btnConfirmEditEstateModal");
+
+            AtomicReference<File> imageFile = new AtomicReference<>(null);
+
+            btnSelectNewImage.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Seleccionar imagen");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imágenes", "*.jpg", "*.png", "*.jpeg"));
+                File file = fileChooser.showOpenDialog(stage);
+
+                if (file != null) {
+                    try {
+                        // Validar si es una imagen
+                        String mimeType = Files.probeContentType(file.toPath());
+                        if (!mimeType.startsWith("image/")) {
+                            log.error("El archivo seleccionado no es una imagen válida.");
+                            return; // Meter notificación
+                        }
+
+                        String imagesDir = "/images/houses";
+                        Files.createDirectories(Paths.get(imagesDir)); // Crear directorio si no existe
+                        String extension = file.getName().substring(file.getName().lastIndexOf("."));
+                        String uniqueName = UUID.randomUUID() + extension;
+                        Path destinationPath = Paths.get(imagesDir, uniqueName);
+
+                        // Copiar la imagen al archivo destino
+                        Files.copy(file.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+                        // Asignar el archivo destino a selectedImageFile (variable de instancia)
+                        imageFile.set(destinationPath.toFile());
+
+                        btnSelectNewImage.setText("Imagen seleccionada: " + imageFile.get().getName().replace("\\", "/"));
+
+                        log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath);
+                    } catch (IOException ex) {
+                        log.error("Error al copiar la imagen - " + ex.getMessage());
+                    }
+                }
+            });
+
+            ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
+            boxState.setItems(FXCollections.observableArrayList(EnumEstate.values()));
             boxState.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(EnumEstate state) {
@@ -455,9 +651,8 @@ public class UserMainViewController {
                     throw new IllegalArgumentException("Estado no encontrado: " + string);
                 }
             });
-            boxState.setItems(FXCollections.observableArrayList(EnumEstate.values()));
 
-            btnConfirmEditEstateModal.setOnAction(e -> handleListEstateAdd(estate, root, imageFile.get() != null ? imageFile.get() : null));
+            btnConfirmEditEstateModal.setOnAction(e -> handleListEstateEdit(estate, root, imageFile.get() != null ? imageFile.get() : null));
 
             stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
             log.warn("Se ha cerrado la ventana emergente de edición de inmueble");
@@ -496,20 +691,48 @@ public class UserMainViewController {
 
 
 
-    private void handleListEstateAdd(Estate estate, Parent root, File imageFile) {
+    private void handleListEstateEdit(Estate estate, Parent root, File imageFile) {
 
         TextField textReference = (TextField) root.lookup("#textReference");
         TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
-        Button btnSelectNewImage = (Button) root.lookup("#btnSelectNewImage");
+        ComboBox<Client> boxClient = (ComboBox<Client>) root.lookup("#boxClient");
         @SuppressWarnings ("unchecked")
         ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
-
-        log.info("Inmueble: {}", estate);
+        String imagePath = imageFile != null ? imageFile.getPath().replace("\\", "/") : null;
+        log.warn(imagePath);
 
         estate.setReference(textReference.getText());
         estate.setFullAddress(textFullAddress.getText());
         estate.setState(boxState.getValue());
-        estate.setImagePath(null); // Se borra la imagen del inmueble
+
+        if (imageFile != null) {
+            estate.setImagePath(imagePath);
+        }
+        try {
+            if (imageFile != null) {
+                String imagesDir = System.getProperty("user.dir") + "/images/houses";
+                Files.createDirectories(Paths.get(imagesDir)); // Crear directorio si no existe
+
+                Path destinationPath = Paths.get(imagesDir, imageFile.getName());
+
+                // Copiar la imagen al archivo destino
+                Files.move(imageFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+                log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath.getFileName());
+            }
+        } catch (IOException ex) {
+            log.error("Error al copiar la imagen" + ex.getMessage());
+        }
+
+        if (validation.validationEstate(estate)) {
+            estateService.saveEstate(estate);
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se ha editado el inmueble correctamente")
+                    .showWarning();
+        }
+
+
 
     }
 

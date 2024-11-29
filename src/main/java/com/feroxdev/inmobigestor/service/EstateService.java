@@ -13,4 +13,9 @@ public interface EstateService {
     Iterable<Estate> getEstatesByStateAndBranch(EnumEstate state, Branch branch);
 
     Estate deleteEstate(Estate estate);
+
+    Estate saveEstate(Estate estate);
+
+    Estate updateEstate(Estate estate);
+
 }

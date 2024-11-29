@@ -58,4 +58,8 @@ public class Client {
 
     @OneToMany (mappedBy = "client", fetch = FetchType.EAGER)
     private List<Estate> estates;
+
+    public String getFullName() {
+        return name + " " + lastname1 + " " + (lastname2 != null ? lastname2 : "");
+    }
 }

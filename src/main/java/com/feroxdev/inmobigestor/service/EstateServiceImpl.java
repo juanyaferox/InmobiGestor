@@ -38,4 +38,14 @@ public class EstateServiceImpl implements EstateService {
         estateRepository.delete(estate);
         return estate;
     }
+
+    @Override
+    public Estate saveEstate(Estate estate) {
+        return estateRepository.save(estate);
+    }
+
+    @Override
+    public Estate updateEstate(Estate estate) {
+        return estateRepository.save(estate);
+    }
 }
