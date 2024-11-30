@@ -39,7 +39,7 @@
                     <Font size="14.0" />
                 </font>
             </Label>
-            <ComboBox fx:id="boxClient" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="boxClient" editable="true" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
             <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Referencia:  " GridPane.rowIndex="2">
                 <font>
@@ -67,7 +67,7 @@
                     <Font size="14.0" />
                 </font>
             </Label>
-         <ComboBox fx:id="boxState" editable="true" prefHeight="25.0" prefWidth="701.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         <ComboBox fx:id="boxState" prefHeight="25.0" prefWidth="701.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="Imagen:  " GridPane.rowIndex="5">
             <font>
                <Font size="14.0" />
