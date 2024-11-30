@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feroxdev.inmobigestor.controller.UserMainViewController">
+    <GridPane layoutX="120.0" layoutY="195.0" prefHeight="215.0" prefWidth="842.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="728.0" minWidth="10.0" prefWidth="260.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="820.0" minWidth="10.0" prefWidth="820.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         <RowConstraints />
+        </rowConstraints>
+        <children>
+            <Label alignment="CENTER_RIGHT" prefHeight="23.0" prefWidth="145.0" text="Nombre:  ">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+            <TextField fx:id="textClientName" prefHeight="25.0" prefWidth="977.0" GridPane.columnIndex="1" />
+
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Primer apellido:   " GridPane.rowIndex="1">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+            <TextField fx:id="textClientSurname1" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Segundo apellido:  " GridPane.rowIndex="2">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+            <TextField fx:id="textClientSurname2" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="147.0" text="Email:  " GridPane.rowIndex="3">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+            <TextField fx:id="textClientEmail" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="DNI:  " GridPane.rowIndex="4">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+            <TextField fx:id="textClientDNI" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="175.0" text="Teléfono:  " textAlignment="RIGHT" GridPane.rowIndex="5">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+         <TextField fx:id="textClientPhone" prefHeight="25.0" prefWidth="701.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+         <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="Direccion:  " GridPane.rowIndex="6">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+            <TextField fx:id="textClientAddress" prefHeight="25.0" prefWidth="701.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+        </children>
+    </GridPane>
+    <Button fx:id="btnConfirmClientModal" text="Confirmar"/>
+</VBox>

@@ -30,7 +30,7 @@ public class Client {
     @JoinColumn(name = "idBranch")
     private Branch branch;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "idEstateRented")
     private Estate estateRented;
 

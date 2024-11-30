@@ -28,4 +28,19 @@ public class ClientServiceImpl implements ClientService {
     public Iterable<Client> getAllClientsByBranchAndType(Branch branch, EnumClient type) {
         return clientRepository.findAllByBranchAndType(branch, type);
     }
+
+    @Override
+    public Client saveClient(Client client) {
+        return clientRepository.save(client);
+    }
+
+    @Override
+    public Client deleteClient(Client client) {
+        if (clientRepository.findById(client.getIdClient()).isEmpty())
+            return null;
+        if (client.getEstates()!=null && !client.getEstates().isEmpty() && client.getEstateRented()!=null)
+            return null;
+        clientRepository.delete(client);
+        return client;
+    }
 }

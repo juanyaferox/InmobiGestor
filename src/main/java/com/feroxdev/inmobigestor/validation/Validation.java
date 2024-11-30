@@ -75,7 +75,7 @@ public class Validation {
             validationNotification("Inmueble");
             isValid = false;
         }
-        if (estate.getReference().isEmpty() || estate.getReference().length() > 255){
+        if (estate.getReference() == null || estate.getReference().isEmpty() || estate.getReference().length() > 255){
             validationNotification("Referencia");
             isValid = false;
         }
@@ -93,6 +93,52 @@ public class Validation {
         }
         if (estate.getImagePath().length() > 500){
             validationNotification("Imagen");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    public boolean validationClient(Client client){
+        boolean isValid = true;
+
+        if (client==null){   // evitamos posible nullPointerException
+            validationNotification("Cliente");
+            return false;
+        }
+        if (client.getBranch()==null || client.getBranch().equals(new Branch())){
+            validationNotification("Cliente");
+            isValid = false;
+        }
+        if (client.getUser()==null || client.getUser().equals(new User())){
+            validationNotification("Cliente");
+            isValid = false;
+        }
+        if (client.getName() == null || client.getName().isEmpty() || client.getName().length() > 50){
+            validationNotification("Nombre");
+            isValid = false;
+        }
+        if (client.getLastname1() == null || client.getLastname1().isEmpty() || client.getLastname1().length() > 50){
+            validationNotification("Primer apellido");
+            isValid = false;
+        }
+        if (client.getLastname2().length() > 50){
+            validationNotification("Segundo apellido");
+            isValid = false;
+        }
+        if (client.getEmail().length() > 255){
+            validationNotification("Correo");
+            isValid = false;
+        }
+        if (client.getDni() == null || client.getDni().length() > 9 || client.getDni().isEmpty()){
+            validationNotification("DNI");
+            isValid = false;
+        }
+        if (client.getPhone().length() > 20){
+            validationNotification("Teléfono");
+            isValid = false;
+        }
+        if (client.getAddress().length() > 255){
+            validationNotification("Dirección");
             isValid = false;
         }
         return isValid;

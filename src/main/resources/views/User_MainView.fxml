@@ -185,7 +185,7 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <Button fx:id="btnAddNewClient" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+                  <Button fx:id="btnAddNewClient" onAction="#showModalUserAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
                </AnchorPane>
             </StackPane>
 

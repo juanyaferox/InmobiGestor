@@ -44,6 +44,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -241,7 +242,7 @@ public class UserMainViewController {
             Tooltip tooltipDelete = new Tooltip("Eliminar cliente");
             btnDelete.setTooltip(tooltipDelete);
             buttonColumn2.getChildren().add(btnDelete);
-            //tnDelete.setOnAction(e -> handleEstateDelete(estate));
+            btnDelete.setOnAction(e -> handleClienteDelete(client));
 
             Button btnEdit = new Button();
             FontIcon editIcon = new FontIcon();
@@ -252,7 +253,7 @@ public class UserMainViewController {
             Tooltip tooltipEdit = new Tooltip("Editar cliente");
             btnEdit.setTooltip(tooltipEdit);
             buttonColumn1.getChildren().add(btnEdit);
-            //btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
+            btnEdit.setOnAction(e -> showModalUserEdit(client)); // Aquí tiene que abrirse
 
             Button btnHouseHistory = new Button();
             FontIcon houseHistoryIcon = new FontIcon();
@@ -318,8 +319,98 @@ public class UserMainViewController {
         }
     }
 
-//    @FXML
-//    public void
+    @FXML
+    public void showModalUserAdd() {
+        showModalUser(new Client());
+    }
+
+    @FXML
+    public void showModalUserEdit(Client client) {
+        showModalUser(client);
+    }
+
+    private void showModalUser(Client client) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Client_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Nuevo Cliente");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            if (!Objects.equals(client, new Client())){
+                stage.setTitle("Editar Cliente");
+                TextField textClientName = (TextField) root.lookup("#textClientName");
+                textClientName.setText(client.getName());
+                TextField textClientSurname1 = (TextField) root.lookup("#textClientSurname1");
+                textClientSurname1.setText(client.getLastname1());
+                TextField textClientSurname2 = (TextField) root.lookup("#textClientSurname2");
+                textClientSurname2.setText(client.getLastname2());
+                TextField textClientEmail = (TextField) root.lookup("#textClientEmail");
+                textClientEmail.setText(client.getEmail());
+                TextField textClientDNI = (TextField) root.lookup("#textClientDNI");
+                textClientDNI.setText(client.getDni());
+                TextField textClientPhone = (TextField) root.lookup("#textClientPhone");
+                textClientPhone.setText(client.getPhone());
+                TextField textClientAddress = (TextField) root.lookup("#textClientAddress");
+                textClientAddress.setText(client.getAddress());
+            }
+
+            Button btnConfirmClientModal = (Button) root.lookup("#btnConfirmClientModal");
+            btnConfirmClientModal.setOnAction(e -> {
+                handleClientSave(root, client, stage);
+            });
+
+            stage.showAndWait();
+            reloadView();
+            showClientAll();
+
+        } catch (IOException e) {
+            log.error("Error", e);
+        }
+
+    }
+
+    private void handleClientSave(Parent root, Client client, Stage stage){
+
+        //Obtener los datos del cliente
+        TextField textClientName = (TextField) root.lookup("#textClientName");
+        client.setName(textClientName.getText());
+        TextField textClientSurname1 = (TextField) root.lookup("#textClientSurname1");
+        client.setLastname1(textClientSurname1.getText());
+        TextField textClientSurname2 = (TextField) root.lookup("#textClientSurname2");
+        client.setLastname2(textClientSurname2.getText());
+        TextField textClientEmail = (TextField) root.lookup("#textClientEmail");
+        client.setEmail(textClientEmail.getText());
+        TextField textClientDNI = (TextField) root.lookup("#textClientDNI");
+        client.setDni(textClientDNI.getText());
+        TextField textClientPhone = (TextField) root.lookup("#textClientPhone");
+        client.setPhone(textClientPhone.getText());
+        TextField textClientAddress = (TextField) root.lookup("#textClientAddress");
+        client.setAddress(textClientAddress.getText());
+
+        if(validation.validationClient(client)){
+            clientService.saveClient(client);
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se ha guardado el cliente correctamente")
+                    .showWarning();
+            stage.close();
+        }
+    }
+
+    private void handleClienteDelete(Client client) {
+        log.warn("Eliminar cliente: {}", client.getDni());
+        if (clientService.deleteClient(client)==null) {
+            Notifications.create()
+                    .title("No se puede borrar el cliente: " + client.getName())
+                    .text("Verifique que no tenga un inmueble alquilado o en propiedad")
+                    .showError();
+        }
+    }
     //endregion
 
 
@@ -838,6 +929,14 @@ public class UserMainViewController {
     //region Borrar inmueble
     private void handleEstateDelete(Estate estate) {
         log.warn("Eliminar inmueble: " + estate.getReference());
+        if (estate.getClientRenter()!=null){
+            Notifications.create()
+                    .title("No se puede borrar el inmueble: "+estate.getReference())
+                    .text("El inmueble está alquilado")
+                    .showError();
+            return;
+        }
+
         estateService.deleteEstate(estate);
         reloadView();
     }

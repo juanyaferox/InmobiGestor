@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "estates")
 @Data
-@ToString
+@ToString(exclude = "clientRenter")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -35,4 +35,7 @@ public class Estate {
 
     @Enumerated(EnumType.ORDINAL)
     private EnumEstate state;
+
+    @OneToOne(mappedBy = "estateRented", fetch = FetchType.EAGER)
+    private Client clientRenter;
 }
