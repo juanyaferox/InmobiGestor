@@ -8,5 +8,7 @@ Diseñada con un enfoque modular y escalable, facilitando la incorporación de n
 Tecnologías Utilizadas:
 
 JavaFX: Para la creación de interfaces de usuario interactivas y visualmente atractivas.
+
 Spring Framework: Para la configuración de la capa de persistencia y la gestión de dependencias.
+
 MySQL: Como sistema de gestión de base de datos relacional para almacenar y recuperar datos de manera eficiente y segura.
