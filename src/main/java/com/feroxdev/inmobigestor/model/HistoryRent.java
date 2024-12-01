@@ -3,6 +3,7 @@ package com.feroxdev.inmobigestor.model;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "historyrent")
@@ -33,4 +34,6 @@ public class HistoryRent {
     private LocalDate endDate;
 
     private LocalDate exitDate;
+
+    private String rentPrice;
 }

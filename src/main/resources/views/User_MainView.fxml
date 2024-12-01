@@ -45,7 +45,21 @@
                            <MenuItem styleClass="menu-item" text="Todos" onAction="#showClientAll"/>
                            <MenuItem styleClass="menu-item" text="Dueños" onAction="#showClientListHouseowner"/><!--  -->
                            <MenuItem styleClass="menu-item" text="Arrendatarios" onAction="#showClientListRenter" /><!-- -->
+                           <MenuItem styleClass="menu-item" text="Dueño y arrendatario" onAction="#showClientListRenterAndHouseowner" /><!-- -->
                            <MenuItem styleClass="menu-item" text="Otros" onAction="#showClientListAnother" /><!-- -->
+                        </Menu>
+                     </MenuBar>
+                  </VBox>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <VBox alignment="CENTER">
+                     <MenuBar styleClass="menu-bar">
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                        <Menu styleClass="menu" text="OPERACIONES">
+                           <MenuItem styleClass="menu-item" text="Gestionar venta" />
+                           <MenuItem styleClass="menu-item" text="Gestionar alquiler"  onAction="#showRental"/>
                         </Menu>
                      </MenuBar>
                   </VBox>
@@ -186,6 +200,47 @@
                      </content>
                   </ScrollPane>
                   <Button fx:id="btnAddNewClient" onAction="#showModalUserAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+               </AnchorPane>
+               <AnchorPane fx:id="optionListRentals" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                  <ScrollPane fx:id="scrollPaneRentalList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0" pannable="true">
+                     <content>
+                        <VBox>
+                           <GridPane fx:id="gridPaneRentalListHeader" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="40.0" prefWidth="1078.0">
+                              <columnConstraints>
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              </columnConstraints>
+                              <children>
+                                 <Label styleClass="label-bold" text="Inmueble" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Arrendador" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Arrendatario" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Inicio" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Fin" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Salida" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                              </children>
+                           </GridPane>
+                           <GridPane fx:id="gridPaneRentalList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
+                              <columnConstraints>
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints />
+                                 <RowConstraints />
+                              </rowConstraints>
+                           </GridPane>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="btnAddNewRental" onAction="#showModalRentalAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo alquiler" />
                </AnchorPane>
             </StackPane>
 

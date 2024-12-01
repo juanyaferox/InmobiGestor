@@ -43,6 +43,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -60,7 +61,7 @@ public class UserMainViewController {
     @Autowired
     ClientService clientService;
     @Autowired
-    BranchService branchService;
+    HRentService hRentService;
 
     @Autowired
     LoginView loginView;
@@ -91,6 +92,8 @@ public class UserMainViewController {
     GridPane gridPaneEstateList;
     @FXML
     GridPane gridPaneClientList;
+    @FXML
+    GridPane gridPaneRentalList;
 
     @FXML
     AnchorPane optionModifyUser;
@@ -971,6 +974,187 @@ public class UserMainViewController {
         reloadView();
     }
     //endregion
+
+    //endregion
+
+    //region ALQUILERES
+
+    @FXML
+    private void showRental() {
+        reloadView();
+        changeVisibility(optionListRentals);
+        List<HistoryRent> historyRentList = (List<HistoryRent>) hRentService.getHistoryRentByBranch(user.getBranch());
+        log.warn("LISTA DE ALQUILERES;---------------------- {}", historyRentList.toString());
+
+        // En caso de que tenga exit-date no se permitira la edicion
+        for (int i = 0; i < historyRentList.size(); i++) {
+            var historyRent = historyRentList.get(i);
+            gridPaneRentalList.add(new Label(historyRent.getEstate().getReference()), 0, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getClient().getFullName()), 1, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getClientRented().getFullName()), 2, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getStartDate().toString()), 2, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getEndDate().toString()), 3, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getRentPrice()), 4, i + 1);
+        }
+    }
+
+    @FXML
+    private void showModalRentalAdd(){
+        showModalRental(new HistoryRent());
+    }
+
+    @FXML
+    private void showModalRentalEdit(HistoryRent historyRent){
+        showModalRental(historyRent);
+    }
+
+    private void showModalRental(HistoryRent historyRent){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Rental_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Nuevo Alquiler");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            var listEstate = (List<Estate>) estateService.getEstatesByBranch(user.getBranch());
+            var fxListEstate = FXCollections.observableArrayList(listEstate);
+
+            @SuppressWarnings ("unchecked")
+            ComboBox<Estate> boxEstate = (ComboBox<Estate>) root.lookup("#boxEstate");
+            boxEstate.setPromptText("Elija un inmueble");
+            boxEstate.setItems(fxListEstate);
+            boxEstate.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Estate estate) {
+                    return estate != null ? (estate.getReference() + " | " + estate.getFullAddress()): "";
+                }
+
+                @Override
+                public Estate fromString(String string) {
+                    return fxListEstate.stream()
+                            .filter(estate -> (estate.getReference() + " | " + estate.getFullAddress()).equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            var listClient = (List<Client>) clientService.getAllClientsByBranch(user.getBranch());
+            var fxListClient = FXCollections.observableArrayList(listClient);
+
+            @SuppressWarnings ("unchecked")
+            ComboBox<Client> boxRenter = (ComboBox<Client>) root.lookup("#boxRenter");
+            boxRenter.setPromptText("Elija un arrendatario");
+            boxRenter.setItems(fxListClient);
+            boxRenter.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Client client) {
+                    return client != null ? (client.getFullName() + ", " + client.getDni()) : "";
+                }
+
+                @Override
+                public Client fromString(String string) {
+                    return fxListClient.stream()
+                            .filter(client -> (client.getFullName() + ", " + client.getDni()).equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            DatePicker exitDate = (DatePicker) root.lookup("#exitDate");
+            exitDate.setVisible(false);
+            Label lblExit = (Label) root.lookup("#lblExit");
+            lblExit.setVisible(false);
+
+            // Caso de edición
+            if (!Objects.equals(historyRent, new HistoryRent())){
+                boxEstate.setValue(historyRent.getEstate());
+                boxEstate.setDisable(true);
+
+                boxRenter.setValue(historyRent.getClientRented());
+                boxEstate.setDisable(true);
+
+                TextField textPrice = (TextField) root.lookup("#textPrice");
+                textPrice.setText(historyRent.getRentPrice());
+                textPrice.setEditable(true);
+
+                DatePicker dateStart = (DatePicker) root.lookup("#dateStart");
+                dateStart.setValue(historyRent.getStartDate());
+                dateStart.setDisable(true);
+
+                DatePicker dateEnd = (DatePicker) root.lookup("#dateEnd");
+                dateEnd.setValue(historyRent.getEndDate());
+                dateEnd.setDisable(true);
+
+                exitDate.setVisible(true);
+                lblExit.setVisible(true);
+            }
+
+            Button btnConfirmRentalModal = (Button) root.lookup("#btnConfirmRentalModal");
+            btnConfirmRentalModal.setOnAction(e -> {
+                handleRentalSave(root, stage, historyRent);
+            });
+
+            stage.showAndWait();
+            reloadView();
+            showRental();
+
+        } catch (IOException e) {
+            log.error("Error", e);
+        }
+    }
+
+    private void handleRentalSave(Parent root, Stage stage, HistoryRent historyRent) {
+        @SuppressWarnings("unchecked")
+        ComboBox<Estate> boxEstate = (ComboBox<Estate>) root.lookup("#boxEstate");
+        @SuppressWarnings("unchecked")
+        ComboBox<Client> boxRenter = (ComboBox<Client>) root.lookup("#boxRenter");
+        DatePicker dateStart = (DatePicker) root.lookup("#dateStart");
+        DatePicker dateEnd = (DatePicker) root.lookup("#dateEnd");
+        TextField textPrice = (TextField) root.lookup("#textPrice");
+        DatePicker exitDate = (DatePicker) root.lookup("#exitDate");
+
+        if (historyRent.equals(new HistoryRent())) {
+            historyRent = HistoryRent.builder()
+                    .estate(boxEstate.getValue())
+                    .client(boxEstate.getValue().getClient())
+                    .clientRented(boxRenter.getValue())
+                    .startDate(dateStart.getValue())
+                    .endDate(dateEnd.getValue())
+                    .rentPrice(textPrice.getText())
+                    .build();
+        } else {
+            historyRent.setExitDate(exitDate.getValue());
+        }
+
+        if (validation.validationHistoryRent(historyRent)) {
+            if (historyRent.getClientRented().getType() == EnumClient.RENTER
+                || historyRent.getClientRented().getType() == EnumClient.RENTER_AND_HOUSE_OWNER) {
+                Notifications.create()
+                        .title("Error")
+                        .text("El cliente ya es arrendatario")
+                        .showError();
+                return;
+            }
+            hRentService.saveHistoryRent(historyRent);
+            var client = historyRent.getClientRented();
+            clientService.saveClientAsRenter(client);
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se ha guardado el alquiler correctamente")
+                    .showWarning();
+            stage.close();
+        }
+    }
+
+    //endregion
+
+    //region VENTAS
+
+
 
     //endregion
 

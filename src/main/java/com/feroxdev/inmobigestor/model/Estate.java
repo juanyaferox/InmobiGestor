@@ -4,6 +4,8 @@ import com.feroxdev.inmobigestor.enums.EnumEstate;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "estates")
 @Data
@@ -38,4 +40,7 @@ public class Estate {
 
     @OneToOne(mappedBy = "estateRented", fetch = FetchType.EAGER)
     private Client clientRenter;
+
+    @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER)
+    private List<HistoryRent> historyRents;
 }

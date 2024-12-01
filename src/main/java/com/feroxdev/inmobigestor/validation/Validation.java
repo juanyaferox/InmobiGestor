@@ -15,7 +15,7 @@ public class Validation {
     public boolean validationUser(User user) {
         boolean isValid = true;
 
-        if (user==null){    // evitamos posible nullPointerException
+        if (user == null) {    // evitamos posible nullPointerException
             validationNotification("Usuario");
             return false;
         }
@@ -50,95 +50,133 @@ public class Validation {
         return isValid;
     }
 
-    public boolean validationBranch(Branch branch){
+    public boolean validationBranch(Branch branch) {
         boolean isValid = true;
 
-        if (branch==null){   // evitamos posible nullPointerException
+        if (branch == null) {   // evitamos posible nullPointerException
             validationNotification("Sucursal");
             return false;
         }
-        if (branch.getTown()==null || branch.getTown().equals(new Town())){
+        if (branch.getTown() == null || branch.getTown().equals(new Town())) {
             validationNotification("Sucursal");
             isValid = false;
         }
         return isValid;
     }
 
-    public boolean validationEstate(Estate estate){
+    public boolean validationEstate(Estate estate) {
         boolean isValid = true;
 
-        if (estate==null){   // evitamos posible nullPointerException
+        if (estate == null) {   // evitamos posible nullPointerException
             validationNotification("Inmueble");
             return false;
         }
-        if (estate.getBranch()==null || estate.getBranch().equals(new Branch())){
+        if (estate.getBranch() == null || estate.getBranch().equals(new Branch())) {
             validationNotification("Inmueble");
             isValid = false;
         }
-        if (estate.getReference() == null || estate.getReference().isEmpty() || estate.getReference().length() > 255){
+        if (estate.getReference() == null || estate.getReference().isEmpty() || estate.getReference().length() > 255) {
             validationNotification("Referencia");
             isValid = false;
         }
-        if (estate.getClient() == null || estate.getClient().equals(new Client())){
+        if (estate.getClient() == null || estate.getClient().equals(new Client())) {
             validationNotification("Propietario");
             isValid = false;
         }
-        if (estate.getState() == null){
+        if (estate.getState() == null) {
             validationNotification("Estado");
             isValid = false;
         }
-        if (estate.getFullAddress() == null || estate.getFullAddress().isEmpty() || estate.getFullAddress().length() > 500){
+        if (estate.getFullAddress() == null || estate.getFullAddress().isEmpty() || estate.getFullAddress().length() > 500) {
             validationNotification("Dirección");
             isValid = false;
         }
-        if (estate.getImagePath().length() > 500){
+        if (estate.getImagePath().length() > 500) {
             validationNotification("Imagen");
             isValid = false;
         }
         return isValid;
     }
 
-    public boolean validationClient(Client client){
+    public boolean validationClient(Client client) {
         boolean isValid = true;
 
-        if (client==null){   // evitamos posible nullPointerException
+        if (client == null) {   // evitamos posible nullPointerException
             validationNotification("Cliente");
             return false;
         }
-        if (client.getBranch()==null || client.getBranch().equals(new Branch())){
+        if (client.getBranch() == null || client.getBranch().equals(new Branch())) {
             validationNotification("Cliente");
             isValid = false;
         }
-        if (client.getUser()==null || client.getUser().equals(new User())){
+        if (client.getUser() == null || client.getUser().equals(new User())) {
             validationNotification("Cliente");
             isValid = false;
         }
-        if (client.getName() == null || client.getName().isEmpty() || client.getName().length() > 50){
+        if (client.getName() == null || client.getName().isEmpty() || client.getName().length() > 50) {
             validationNotification("Nombre");
             isValid = false;
         }
-        if (client.getLastname1() == null || client.getLastname1().isEmpty() || client.getLastname1().length() > 50){
+        if (client.getLastname1() == null || client.getLastname1().isEmpty() || client.getLastname1().length() > 50) {
             validationNotification("Primer apellido");
             isValid = false;
         }
-        if (client.getLastname2().length() > 50){
+        if (client.getLastname2().length() > 50) {
             validationNotification("Segundo apellido");
             isValid = false;
         }
-        if (client.getEmail().length() > 255){
+        if (client.getEmail().length() > 255) {
             validationNotification("Correo");
             isValid = false;
         }
-        if (client.getDni() == null || client.getDni().length() > 9 || client.getDni().isEmpty()){
+        if (client.getDni() == null || client.getDni().length() > 9 || client.getDni().isEmpty()) {
             validationNotification("DNI");
             isValid = false;
         }
-        if (client.getPhone().length() > 20){
+        if (client.getPhone().length() > 20) {
             validationNotification("Teléfono");
             isValid = false;
         }
-        if (client.getAddress().length() > 255){
+        if (client.getAddress().length() > 255) {
             validationNotification("Dirección");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    public boolean validationHistoryRent(HistoryRent historyRent) {
+        boolean isValid = true;
+
+        if (historyRent == null) {   // evitamos posible nullPointerException
+            validationNotification("Historial de alquiler");
+            return false;
+        }
+        if (historyRent.getEstate() == null || historyRent.getEstate().equals(new Estate())) {
+            validationNotification("Inmueble");
+            isValid = false;
+        }
+        if (historyRent.getClient() == null || historyRent.getClient().equals(new Client())) {
+            validationNotification("Arrendador");
+            isValid = false;
+        }
+        if (historyRent.getClientRented() == null || historyRent.getClientRented().equals(new Client())) {
+            validationNotification("Arrendatario");
+            isValid = false;
+        }
+        if (historyRent.getStartDate() == null) {
+            validationNotification("Fecha de inicio");
+            isValid = false;
+        }
+        if (historyRent.getEndDate() == null) {
+            validationNotification("Fecha de fin");
+            isValid = false;
+        }
+        if (historyRent.getExitDate() == null) {
+            validationNotification("Fecha de salida");
+            isValid = false;
+        }
+        if (historyRent.getRentPrice() == null || historyRent.getRentPrice().isEmpty() || historyRent.getRentPrice().length() > 255) {
+            validationNotification("Precio de alquiler");
             isValid = false;
         }
         return isValid;
@@ -152,3 +190,4 @@ public class Validation {
                 .showError();
     }
 }
+

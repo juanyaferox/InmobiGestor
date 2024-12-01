@@ -30,6 +30,22 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client getClientById(Integer idClient) {
+        return clientRepository.findById(idClient).orElse(null);
+    }
+
+    @Override
+    public Client saveClientAsRenter(Client client) {
+        var clientToSave = getClientById(client.getIdClient());
+        if (!client.getEstates().isEmpty()){
+            clientToSave.setType(EnumClient.RENTER_AND_HOUSE_OWNER);
+            return saveClient(clientToSave);
+        }
+        clientToSave.setType(EnumClient.RENTER);
+        return saveClient(clientToSave);
+    }
+
+    @Override
     public Client saveClient(Client client) {
         return clientRepository.save(client);
     }

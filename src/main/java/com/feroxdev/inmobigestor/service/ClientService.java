@@ -12,6 +12,10 @@ public interface ClientService {
 
     Iterable<Client> getAllClientsByBranchAndType(Branch branch, EnumClient type);
 
+    Client getClientById(Integer idClient);
+
+    Client saveClientAsRenter(Client client);
+
     Client saveClient(Client client);
 
     Client deleteClient(Client client);
