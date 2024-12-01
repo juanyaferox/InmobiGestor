@@ -5,6 +5,8 @@ import com.feroxdev.inmobigestor.utilities.CsvUtils;
 import org.controlsfx.control.Notifications;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class Validation {
 
@@ -171,12 +173,46 @@ public class Validation {
             validationNotification("Fecha de fin");
             isValid = false;
         }
-        if (historyRent.getExitDate() == null) {
-            validationNotification("Fecha de salida");
+        if (historyRent.getEndDate() != null && historyRent.getStartDate() != null && historyRent.getStartDate().isAfter(historyRent.getEndDate())) {
+            validationNotification("Fecha de inicio y fecha de fin");
             isValid = false;
         }
-        if (historyRent.getRentPrice() == null || historyRent.getRentPrice().isEmpty() || historyRent.getRentPrice().length() > 255) {
+        if (historyRent.getRentPrice() == null || historyRent.getRentPrice().compareTo(new BigDecimal(0)) < 0) {
             validationNotification("Precio de alquiler");
+            isValid = false;
+        }
+        if (historyRent.getClient() == historyRent.getClientRented()) {
+            validationNotification("Arrendador");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    public boolean validationHistorySale(HistorySale historySale) {
+        boolean isValid = true;
+
+        if (historySale == null) {   // evitamos posible nullPointerException
+            validationNotification("Historial de venta");
+            return false;
+        }
+        if (historySale.getEstate() == null || historySale.getEstate().equals(new Estate())) {
+            validationNotification("Inmueble");
+            isValid = false;
+        }
+        if (historySale.getClientActual() == null || historySale.getClientActual().equals(new Client())) {
+            validationNotification("Vendedor");
+            isValid = false;
+        }
+        if (historySale.getClientPrevious() == null || historySale.getClientPrevious().equals(new Client())) {
+            validationNotification("Comprador");
+            isValid = false;
+        }
+        if (historySale.getSaleDate() == null) {
+            validationNotification("Fecha de venta");
+            isValid = false;
+        }
+        if (historySale.getSalePrice() == null || historySale.getSalePrice().compareTo(new BigDecimal(0)) < 0) {
+            validationNotification("Precio de venta");
             isValid = false;
         }
         return isValid;

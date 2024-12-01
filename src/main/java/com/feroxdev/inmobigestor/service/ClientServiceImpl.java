@@ -36,13 +36,49 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client saveClientAsRenter(Client client) {
-        var clientToSave = getClientById(client.getIdClient());
         if (!client.getEstates().isEmpty()){
-            clientToSave.setType(EnumClient.RENTER_AND_HOUSE_OWNER);
-            return saveClient(clientToSave);
+            client.setType(EnumClient.RENTER_AND_HOUSE_OWNER);
+            return saveClient(client);
         }
-        clientToSave.setType(EnumClient.RENTER);
-        return saveClient(clientToSave);
+        client.setType(EnumClient.RENTER);
+        return saveClient(client);
+    }
+
+    @Override
+    public Client saveClientAsNoRenter(Client client) {
+        if (!client.getEstates().isEmpty()){
+            client.setType(EnumClient.HOUSE_OWNER);
+            return saveClient(client);
+        }
+        client.setType(EnumClient.INACTIVE);
+        return saveClient(client);
+    }
+
+    @Override
+    public Client saveClientAsOwner(Client client) {
+        if (client.getType() == EnumClient.RENTER){
+            client.setType(EnumClient.RENTER_AND_HOUSE_OWNER);
+            return saveClient(client);
+        }
+        else if (client.getType() == EnumClient.ANOTHER || client.getType() == EnumClient.INACTIVE) {
+            client.setType(EnumClient.HOUSE_OWNER);
+            return saveClient(client);
+        }
+        return client;
+    }
+
+    @Override
+    public Client saveClientAsNoOwner(Client client) {
+
+        if (client.getType() == EnumClient.RENTER_AND_HOUSE_OWNER){
+            client.setType(EnumClient.RENTER);
+            return saveClient(client);
+        }
+        else if (client.getType() == EnumClient.HOUSE_OWNER){
+            client.setType(EnumClient.INACTIVE);
+            return saveClient(client);
+        }
+        return client;
     }
 
     @Override

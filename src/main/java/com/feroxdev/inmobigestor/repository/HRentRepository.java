@@ -13,4 +13,7 @@ public interface HRentRepository extends JpaRepository<HistoryRent, Integer> {
 
     @Query ("SELECT hr FROM HistoryRent hr WHERE hr.estate.branch.idBranch = :idBranch")
     List<HistoryRent> findByBranchId(@Param ("idBranch") Integer idBranch);
+
+    @Query ("SELECT hr FROM HistoryRent hr WHERE hr.estate.branch.idBranch = :idBranch AND hr.estate.reference LIKE CONCAT('%', :reference, '%')")
+    List<HistoryRent> findByBranchIdAndReference(@Param ("idBranch") Integer idBranch, @Param ("reference") String reference);
 }

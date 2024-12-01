@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="660" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feroxdev.inmobigestor.controller.UserMainViewController">
+<AnchorPane prefHeight="660" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feroxdev.inmobigestor.controller.UserMainViewController">
       <BorderPane prefHeight="660.0" prefWidth="1080.0">
          <!--MENU DE OCPIONES SUPERIOR-->
          <top>
@@ -23,13 +37,13 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                         <Menu styleClass="menu" text="INMUEBLES">
-                           <MenuItem styleClass="menu-item" text="Todos" onAction="#showEstateAll"/>
-                           <MenuItem styleClass="menu-item" text="En venta" onAction="#showEstateSale"/><!---->
-                           <MenuItem styleClass="menu-item" text="En alquiler" onAction="#showEstateRent"/><!---->
-                           <MenuItem styleClass="menu-item" text="Vendidos" onAction="#showEstateSold"/><!--o-->
-                           <MenuItem styleClass="menu-item" text="Alquilados" onAction="#showEstateRented"/><!---->
-                           <MenuItem styleClass="menu-item" text="Inactivos" onAction="#showEstateInactive"/><!---->
-                           <MenuItem styleClass="menu-item" text="Otros" onAction="#showEstateAnother"/><!---->
+                           <MenuItem onAction="#showEstateAll" styleClass="menu-item" text="Todos" />
+                           <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="En venta" /><!---->
+                           <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="En alquiler" /><!---->
+                           <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="Vendidos" /><!--o-->
+                           <MenuItem onAction="#showEstateRented" styleClass="menu-item" text="Alquilados" /><!---->
+                           <MenuItem onAction="#showEstateInactive" styleClass="menu-item" text="Inactivos" /><!---->
+                           <MenuItem onAction="#showEstateAnother" styleClass="menu-item" text="Otros" /><!---->
                         </Menu>
                      </MenuBar>
                   </VBox>
@@ -42,11 +56,12 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                         <Menu styleClass="menu" text="CLIENTES">
-                           <MenuItem styleClass="menu-item" text="Todos" onAction="#showClientAll"/>
-                           <MenuItem styleClass="menu-item" text="Dueños" onAction="#showClientListHouseowner"/><!--  -->
-                           <MenuItem styleClass="menu-item" text="Arrendatarios" onAction="#showClientListRenter" /><!-- -->
-                           <MenuItem styleClass="menu-item" text="Dueño y arrendatario" onAction="#showClientListRenterAndHouseowner" /><!-- -->
-                           <MenuItem styleClass="menu-item" text="Otros" onAction="#showClientListAnother" /><!-- -->
+                           <MenuItem onAction="#showClientAll" styleClass="menu-item" text="Todos" />
+                           <MenuItem onAction="#showClientListHouseowner" styleClass="menu-item" text="Dueños" /><!--  -->
+                           <MenuItem onAction="#showClientListRenter" styleClass="menu-item" text="Arrendatarios" /><!-- -->
+                           <MenuItem onAction="#showClientListRenterAndHouseowner" styleClass="menu-item" text="Dueño y arrendatario" /><!-- -->
+                           <MenuItem onAction="#showClientListInactive" styleClass="menu-item" text="Inactivos" /><!-- -->
+                           <MenuItem onAction="#showClientListAnother" styleClass="menu-item" text="Otros" /><!-- -->
                         </Menu>
                      </MenuBar>
                   </VBox>
@@ -58,8 +73,8 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                         <Menu styleClass="menu" text="OPERACIONES">
-                           <MenuItem styleClass="menu-item" text="Gestionar venta" />
-                           <MenuItem styleClass="menu-item" text="Gestionar alquiler"  onAction="#showRental"/>
+                           <MenuItem onAction="#showSale" styleClass="menu-item" text="Gestionar venta" />
+                           <MenuItem onAction="#showRental" styleClass="menu-item" text="Gestionar alquiler" />
                         </Menu>
                      </MenuBar>
                   </VBox>
@@ -173,7 +188,7 @@
                      </content>
                   </ScrollPane>
                   <!--onAction="#showModalUserAdd"-->
-               <Button fx:id="btnAddNewEstate" onAction="#showModalEstateAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false"  prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo inmueble" />
+               <Button fx:id="btnAddNewEstate" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalEstateAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo inmueble" />
                </AnchorPane>
                <AnchorPane fx:id="optionListClients" prefHeight="607.0" prefWidth="1080.0" visible="false">
                   <ScrollPane fx:id="scrollPaneClientList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
@@ -199,10 +214,10 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <Button fx:id="btnAddNewClient" onAction="#showModalUserAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+                  <Button fx:id="btnAddNewClient" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
                </AnchorPane>
                <AnchorPane fx:id="optionListRentals" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <ScrollPane fx:id="scrollPaneRentalList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0" pannable="true">
+                  <ScrollPane fx:id="scrollPaneRentalList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0">
                      <content>
                         <VBox>
                            <GridPane fx:id="gridPaneRentalListHeader" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="40.0" prefWidth="1078.0">
@@ -213,15 +228,21 @@
                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              <ColumnConstraints />
                               </columnConstraints>
                               <children>
                                  <Label styleClass="label-bold" text="Inmueble" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                  <Label styleClass="label-bold" text="Arrendador" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                  <Label styleClass="label-bold" text="Arrendatario" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Inicio" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Fin" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Salida" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Arrendo" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Inicio" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Fin" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Salida" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+
                               </children>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
                            </GridPane>
                            <GridPane fx:id="gridPaneRentalList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
                               <columnConstraints>
@@ -240,7 +261,53 @@
                         </VBox>
                      </content>
                   </ScrollPane>
-                  <Button fx:id="btnAddNewRental" onAction="#showModalRentalAdd" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo alquiler" />
+                  <Button fx:id="btnAddNewRental" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalRentalAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo alquiler" />
+               <TextField fx:id="textSearchRental" layoutX="791.0" layoutY="27.0" />
+               <Button fx:id="btnSearchRental" layoutX="948.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" onAction="#handleSearchRental"/>
+               </AnchorPane>
+               <AnchorPane fx:id="optionListSales" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                  <ScrollPane fx:id="scrollPaneSaleList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0">
+                     <content>
+                        <VBox>
+                           <GridPane fx:id="gridPaneSaleListHeader" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="40.0" prefWidth="1078.0">
+                              <columnConstraints>
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                </columnConstraints>
+                              <children>
+                                 <Label styleClass="label-bold" text="Inmueble" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Vendedor" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Comprador" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Precio de venta" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                                 <Label styleClass="label-bold" text="Fecha de venta" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+
+                              </children>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                           </GridPane>
+                           <GridPane fx:id="gridPaneSaleList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
+                              <columnConstraints>
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                              </columnConstraints>
+                              <rowConstraints>
+                                 <RowConstraints />
+                                 <RowConstraints />
+                              </rowConstraints>
+                           </GridPane>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="btnAddNewSale" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalSaleAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nueva venta" />
+                  <TextField fx:id="textSearchSale" layoutX="791.0" layoutY="27.0" />
+                  <Button fx:id="btnSearchSale" layoutX="948.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" onAction="#handleSearchSale"/>
                </AnchorPane>
             </StackPane>
 

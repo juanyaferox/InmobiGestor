@@ -16,6 +16,12 @@ public interface ClientService {
 
     Client saveClientAsRenter(Client client);
 
+    Client saveClientAsNoRenter(Client client);
+
+    Client saveClientAsOwner(Client client);
+
+    Client saveClientAsNoOwner(Client client);
+
     Client saveClient(Client client);
 
     Client deleteClient(Client client);

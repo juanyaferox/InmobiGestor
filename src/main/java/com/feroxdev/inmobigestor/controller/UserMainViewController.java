@@ -39,14 +39,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.text.DecimalFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
@@ -62,6 +61,8 @@ public class UserMainViewController {
     ClientService clientService;
     @Autowired
     HRentService hRentService;
+    @Autowired
+    HSaleService hSaleService;
 
     @Autowired
     LoginView loginView;
@@ -73,6 +74,18 @@ public class UserMainViewController {
 
     @FXML
     Button adminLogout;
+
+    //busqueda
+    @FXML
+    Button btnSearchRental;
+    @FXML
+    TextField textSearchRental;
+    @FXML
+    Button btnSearchSale;
+    @FXML
+    TextField textSearchSale;
+
+
     @FXML
     TextField textUser;
     @FXML
@@ -94,6 +107,8 @@ public class UserMainViewController {
     GridPane gridPaneClientList;
     @FXML
     GridPane gridPaneRentalList;
+    @FXML
+    GridPane gridPaneSaleList;
 
     @FXML
     AnchorPane optionModifyUser;
@@ -103,12 +118,16 @@ public class UserMainViewController {
     AnchorPane optionListEstates;
     @FXML
     AnchorPane optionListRentals;
+    @FXML
+    AnchorPane optionListSales;
 
 //    @FXML
 //    AnchorPane optionListDashboard;
 
     //variable global del usuario actual
     User user;
+
+    DecimalFormat formatter = new DecimalFormat("#,##0.00");
 
     public void initialize() {
         if (userSessionService != null)
@@ -214,11 +233,28 @@ public class UserMainViewController {
     }
 
     @FXML
+    private void showClientListInactive() {
+        reloadView();
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.INACTIVE);
+        log.warn("LISTA DE CLIENTES: {}", clientList.toString());
+        showClientGrid(clientList);
+    }
+
+    @FXML
     private void showClientListRenterAndHouseowner() {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.RENTER_AND_HOUSE_OWNER);
         log.warn("LISTA DE CLIENTES;---------------------- {}", clientList.toString());
+        showClientGrid(clientList);
+    }
+
+    private void showClientListByType(EnumClient type) {
+        reloadView();
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), type);
+        log.warn("LISTA DE CLIENTES: {}", clientList.toString());
         showClientGrid(clientList);
     }
 
@@ -258,7 +294,11 @@ public class UserMainViewController {
             Tooltip tooltipDelete = new Tooltip("Eliminar cliente");
             btnDelete.setTooltip(tooltipDelete);
             buttonColumn2.getChildren().add(btnDelete);
-            btnDelete.setOnAction(e -> handleClienteDelete(client));
+            btnDelete.setOnAction(e -> {
+                handleClienteDelete(client);
+                reloadView();
+                showClientListByType(client.getType());
+            });
 
             Button btnEdit = new Button();
             FontIcon editIcon = new FontIcon();
@@ -292,7 +332,7 @@ public class UserMainViewController {
                 Tooltip tooltipRented = new Tooltip("Ver inmueble alquilado");
                 btnViewRented.setTooltip(tooltipRented);
                 buttonColumn2.getChildren().add(btnViewRented);
-                //btnViewRented.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+                btnViewRented.setOnAction(e -> showModalEstateEdit(client.getEstateRented(), true)); // Aquí tiene que abrirse
             }
 
             // Hacer que caso ya esté boton de isRented crear un nuevo button column
@@ -392,7 +432,7 @@ public class UserMainViewController {
 
             stage.showAndWait();
             reloadView();
-            showClientAll();
+            showClientListByType(client.getType());
 
         } catch (IOException e) {
             log.error("Error", e);
@@ -417,6 +457,8 @@ public class UserMainViewController {
         client.setPhone(textClientPhone.getText());
         TextField textClientAddress = (TextField) root.lookup("#textClientAddress");
         client.setAddress(textClientAddress.getText());
+        client.setUser(user);
+        client.setBranch(user.getBranch());
 
         if(validation.validationClient(client)){
             clientService.saveClient(client);
@@ -534,7 +576,7 @@ public class UserMainViewController {
 
             } catch (Exception e) {
 
-                log.error("CATCH1 : Error al cargar la imagen del inmueble: {}{} - {}", System.getProperty("user.dir"), estate.getImagePath(), e.getMessage());
+                log.error("CATCH1: Error al cargar la imagen del inmueble: {}{} - {}", System.getProperty("user.dir"), estate.getImagePath(), e.getMessage());
                 try {
                     Image image = new Image("/images/no_found_house.jpg");
                     imageView = new ImageView(image);
@@ -588,14 +630,29 @@ public class UserMainViewController {
                 showEstateAll();
             });
 
-            Button btnEdit = new Button();
-            FontIcon editIcon = new FontIcon();
-            editIcon.setIconColor(Color.LIGHTBLUE);
-            editIcon.setIconLiteral("mdi2h-home-edit");
-            editIcon.setIconSize(14);
-            btnEdit.setGraphic(editIcon);
-            buttonColumn2.getChildren().add(btnEdit);
-            btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
+            if (estate.getState() != EnumEstate.RENTED) {
+                Button btnEdit = new Button();
+                FontIcon editIcon = new FontIcon();
+                editIcon.setIconColor(Color.LIGHTBLUE);
+                editIcon.setIconLiteral("mdi2h-home-edit");
+                editIcon.setIconSize(14);
+                btnEdit.setGraphic(editIcon);
+                buttonColumn2.getChildren().add(btnEdit);
+                btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
+            } else {
+                Button btnViewRental = new Button();
+                FontIcon viewRentalIcon = new FontIcon();
+                viewRentalIcon.setIconColor(Color.GREEN);
+                viewRentalIcon.setIconLiteral("mdi2n-newspaper-variant-outline");
+                viewRentalIcon.setIconSize(14);
+                btnViewRental.setGraphic(viewRentalIcon);
+                buttonColumn2.getChildren().add(btnViewRental);
+                btnViewRental.setOnAction(e -> showModalRentalEdit(
+                        estate.getHistoryRents().stream()
+                        .max(Comparator.comparing(HistoryRent::getStartDate))
+                        .orElse(null))); // Aquí tiene que abrirse
+            }
+
 
             Button btnHouseHistory = new Button();
             FontIcon houseHistoryIcon = new FontIcon();
@@ -673,7 +730,9 @@ public class UserMainViewController {
                 boxClient.show(); // Mantiene el ComboBox desplegado mientras se escribe
             });
 
-            var listState = EnumEstate.values();
+            var listState = Arrays.stream(EnumEstate.values())
+                      .filter(state -> state != EnumEstate.SOLD && state != EnumEstate.RENTED)
+                      .toArray(EnumEstate[]::new);
             var fxListState = FXCollections.observableArrayList(listState);
 
             @SuppressWarnings ("unchecked")
@@ -801,8 +860,12 @@ public class UserMainViewController {
     //endregion
 
     //region Editar inmueble
-    @FXML
+
     private void showModalEstateEdit(Estate estate) {
+        showModalEstateEdit(estate, false);
+    }
+
+    private void showModalEstateEdit(Estate estate, boolean isRentedCase) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Estate_ModalWindow.fxml"));
             Parent root = loader.load();
@@ -875,7 +938,20 @@ public class UserMainViewController {
 
             @SuppressWarnings("unchecked")
             ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
-            boxState.setItems(FXCollections.observableArrayList(EnumEstate.values()));
+
+            if (estate.getState() == EnumEstate.RENTED)
+                boxState.setDisable(true);
+
+            if (estate.getState() == null) {
+                boxState.setPromptText("Elija un estado");
+            } else {
+                boxState.setValue(estate.getState());
+            }
+
+            boxState.setItems(FXCollections.observableArrayList(
+                    Arrays.stream(EnumEstate.values())
+                    .filter(state -> state != EnumEstate.SOLD && state != EnumEstate.RENTED)
+                    .toArray(EnumEstate[]::new)));
             boxState.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(EnumEstate state) {
@@ -894,6 +970,14 @@ public class UserMainViewController {
             });
 
             btnConfirmEditEstateModal.setOnAction(e -> handleListEstateEdit(estate, root, imageFile.get() != null ? imageFile.get() : null));
+
+            if (isRentedCase) {
+                textReference.setEditable(false);
+                textFullAddress.setEditable(false);
+                boxState.setDisable(true);
+                btnSelectNewImage.setDisable(true);
+                btnConfirmEditEstateModal.setVisible(false);
+            }
 
             stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
             log.warn("Se ha cerrado la ventana emergente de edición de inmueble");
@@ -978,23 +1062,50 @@ public class UserMainViewController {
     //endregion
 
     //region ALQUILERES
+    @FXML
+    private void handleSearchRental() {
+        String search = textSearchRental.getText();
+        if (search.isEmpty()) {
+            showRental();
+        } else {
+            List<HistoryRent> historyRentList = hRentService.getHistoryRentByBranchAndReference(user.getBranch(), search);
+            log.warn("LISTA DE ALQUILERES;---------------------- {}", historyRentList.toString());
+            gridPaneRentalList.getChildren().clear();
+            showRental(historyRentList);
+        }
+    }
 
     @FXML
-    private void showRental() {
+    private void showRental(){
+        List<HistoryRent> historyRentList = hRentService.getHistoryRentByBranch(user.getBranch());
+        log.warn("LISTA DE ALQUILERES;---------------------- {}", historyRentList.toString());
+        showRental(historyRentList);
+    }
+
+
+
+    private void showRental(List<HistoryRent> historyRentList) {
         reloadView();
         changeVisibility(optionListRentals);
-        List<HistoryRent> historyRentList = (List<HistoryRent>) hRentService.getHistoryRentByBranch(user.getBranch());
-        log.warn("LISTA DE ALQUILERES;---------------------- {}", historyRentList.toString());
 
+        FontIcon searchIcon = new FontIcon();
+        searchIcon.setIconColor(Color.GREY);
+        searchIcon.setIconLiteral("mdi2t-text-box-search");
+        searchIcon.setIconSize(14);
+        btnSearchRental.setGraphic(searchIcon);
+
+        log.warn("LISTA DE ALQUILERES;---------------------- {}", historyRentList.toString());
         // En caso de que tenga exit-date no se permitira la edicion
         for (int i = 0; i < historyRentList.size(); i++) {
             var historyRent = historyRentList.get(i);
             gridPaneRentalList.add(new Label(historyRent.getEstate().getReference()), 0, i + 1);
             gridPaneRentalList.add(new Label(historyRent.getClient().getFullName()), 1, i + 1);
             gridPaneRentalList.add(new Label(historyRent.getClientRented().getFullName()), 2, i + 1);
-            gridPaneRentalList.add(new Label(historyRent.getStartDate().toString()), 2, i + 1);
-            gridPaneRentalList.add(new Label(historyRent.getEndDate().toString()), 3, i + 1);
-            gridPaneRentalList.add(new Label(historyRent.getRentPrice()), 4, i + 1);
+            gridPaneRentalList.add(new Label(formatter.format(historyRent.getRentPrice()) + " €"), 3, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getStartDate().toString()), 4, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getEndDate().toString()), 5, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getExitDate() != null ? historyRent.getExitDate().toString() : "Sin salida"), 6, i + 1);
+
         }
     }
 
@@ -1010,6 +1121,7 @@ public class UserMainViewController {
 
     private void showModalRental(HistoryRent historyRent){
         try {
+            log.warn("HISTORY RENT: {}", historyRent);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Rental_ModalWindow.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
@@ -1020,7 +1132,7 @@ public class UserMainViewController {
             Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
             stage.initOwner(primaryStage);
 
-            var listEstate = (List<Estate>) estateService.getEstatesByBranch(user.getBranch());
+            var listEstate = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT, user.getBranch());
             var fxListEstate = FXCollections.observableArrayList(listEstate);
 
             @SuppressWarnings ("unchecked")
@@ -1039,6 +1151,17 @@ public class UserMainViewController {
                             .filter(estate -> (estate.getReference() + " | " + estate.getFullAddress()).equals(string))
                             .findFirst()
                             .orElse(null);
+                }
+            });
+
+            TextField textClientOwner = (TextField) root.lookup("#textClientOwner");
+            textClientOwner.setEditable(false);
+
+            boxEstate.valueProperty().addListener((obs, oldEstate, newEstate) -> {
+                if (newEstate != null) {
+                    textClientOwner.setText(newEstate.getClient().getFullName() + ", " + newEstate.getClient().getDni());
+                } else {
+                    textClientOwner.setText("");
                 }
             });
 
@@ -1069,16 +1192,24 @@ public class UserMainViewController {
             Label lblExit = (Label) root.lookup("#lblExit");
             lblExit.setVisible(false);
 
+            TextField textPrice = (TextField) root.lookup("#textPrice");
+            textPrice.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*(\\.\\d{0,2})?")) {
+                    textPrice.setText(oldValue);
+                }
+            });
+
             // Caso de edición
             if (!Objects.equals(historyRent, new HistoryRent())){
+
+
                 boxEstate.setValue(historyRent.getEstate());
                 boxEstate.setDisable(true);
 
                 boxRenter.setValue(historyRent.getClientRented());
-                boxEstate.setDisable(true);
+                boxRenter.setDisable(true);
 
-                TextField textPrice = (TextField) root.lookup("#textPrice");
-                textPrice.setText(historyRent.getRentPrice());
+                textPrice.setText(historyRent.getRentPrice().toPlainString());
                 textPrice.setEditable(true);
 
                 DatePicker dateStart = (DatePicker) root.lookup("#dateStart");
@@ -1118,20 +1249,40 @@ public class UserMainViewController {
         DatePicker exitDate = (DatePicker) root.lookup("#exitDate");
 
         if (historyRent.equals(new HistoryRent())) {
+
+            BigDecimal price = new BigDecimal(-1);
+            try {
+                price = new BigDecimal(textPrice.getText()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            } catch (Exception e) {
+                log.error("Error al convertir el precio a BigDecimal: {}", e.getMessage());
+            }
+
             historyRent = HistoryRent.builder()
                     .estate(boxEstate.getValue())
-                    .client(boxEstate.getValue().getClient())
+                    .client(boxEstate.getValue() != null ? boxEstate.getValue().getClient() : null)
                     .clientRented(boxRenter.getValue())
                     .startDate(dateStart.getValue())
                     .endDate(dateEnd.getValue())
-                    .rentPrice(textPrice.getText())
+                    .rentPrice(price)
                     .build();
         } else {
             historyRent.setExitDate(exitDate.getValue());
         }
 
         if (validation.validationHistoryRent(historyRent)) {
-            if (historyRent.getClientRented().getType() == EnumClient.RENTER
+            // En caso de que el contrato ya haya finalizado
+            if (historyRent.getExitDate() != null){
+                hRentService.saveHistoryRent(historyRent);
+                var client = historyRent.getClientRented();
+                client.setEstateRented(null);
+                clientService.saveClientAsNoRenter(client);
+                var estate = historyRent.getEstate();
+                estate.setState(EnumEstate.INACTIVE);
+                estate.setClientRenter(null);
+                estateService.saveEstate(estate);
+                return;
+            }
+            else if (historyRent.getClientRented().getType() == EnumClient.RENTER
                 || historyRent.getClientRented().getType() == EnumClient.RENTER_AND_HOUSE_OWNER) {
                 Notifications.create()
                         .title("Error")
@@ -1139,9 +1290,14 @@ public class UserMainViewController {
                         .showError();
                 return;
             }
+            //Caso de que el contrato no haya finalizado (nuevo contrato)
             hRentService.saveHistoryRent(historyRent);
             var client = historyRent.getClientRented();
-            clientService.saveClientAsRenter(client);
+            client.setEstateRented(historyRent.getEstate());
+            client = clientService.saveClientAsRenter(client);
+            var estate = historyRent.getEstate();
+            estate.setState(EnumEstate.RENTED);
+            estateService.saveEstate(estate);
             Notifications.create()
                     .title("Éxito")
                     .text("Se ha guardado el alquiler correctamente")
@@ -1154,7 +1310,190 @@ public class UserMainViewController {
 
     //region VENTAS
 
+    @FXML
+    private void handleSearchSale() {
+        String search = textSearchSale.getText();
+        if (search.isEmpty()) {
+            showSale();
+        } else {
+            List<HistorySale> historySaleList = hSaleService.getHistorySaleByBranchAndReference(user.getBranch(), search);
+            log.warn("LISTA DE ALQUILERES;---------------------- {}", historySaleList.toString());
+            gridPaneRentalList.getChildren().clear();
+            showSale(historySaleList);
+        }
+    }
 
+    @FXML
+    private void showSale(){
+        List<HistorySale> historySaleList = hSaleService.getHistorySaleByBranch(user.getBranch());
+        log.warn("LISTA DE VENTAS;---------------------- {}", historySaleList.toString());
+        showSale(historySaleList);
+    }
+
+    @FXML
+    private void showSale(List<HistorySale> historySaleList) {
+        reloadView();
+        changeVisibility(optionListSales);
+
+        FontIcon searchIcon = new FontIcon();
+        searchIcon.setIconColor(Color.GREY);
+        searchIcon.setIconLiteral("mdi2t-text-box-search");
+        searchIcon.setIconSize(14);
+        btnSearchSale.setGraphic(searchIcon);
+
+        // En caso de que tenga exit-date no se permitira la edicion
+        for (int i = 0; i < historySaleList.size(); i++) {
+            var historySale = historySaleList.get(i);
+            gridPaneSaleList.add(new Label(historySale.getEstate().getReference()), 0, i + 1);
+            gridPaneSaleList.add(new Label(historySale.getClientPrevious().getFullName()), 1, i + 1);
+            gridPaneSaleList.add(new Label(historySale.getClientActual().getFullName()), 2, i + 1);
+            gridPaneSaleList.add(new Label(formatter.format(historySale.getSalePrice())+" €"), 3, i + 1);
+            gridPaneSaleList.add(new Label(historySale.getSaleDate().toString()), 4, i + 1);
+        }
+    }
+
+    @FXML
+    private void showModalSaleAdd(){
+        showModalSale(new HistorySale());
+    }
+
+    private void showModalSale(HistorySale historySale){
+        try {
+            log.warn("HISTORY RENT: {}", historySale);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Sale_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+
+            if (historySale.equals(new HistorySale())){
+                stage.setTitle("Nueva Venta");
+            } else {
+                stage.setTitle("Editar Venta");
+            }
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            var listEstate = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ON_SALE, user.getBranch());
+            var fxListEstate = FXCollections.observableArrayList(listEstate);
+
+            @SuppressWarnings ("unchecked")
+            ComboBox<Estate> boxEstate = (ComboBox<Estate>) root.lookup("#boxEstate");
+            boxEstate.setPromptText("Elija un inmueble");
+            boxEstate.setItems(fxListEstate);
+            boxEstate.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Estate estate) {
+                    return estate != null ? (estate.getReference() + " | " + estate.getFullAddress()): "";
+                }
+
+                @Override
+                public Estate fromString(String string) {
+                    return fxListEstate.stream()
+                            .filter(estate -> (estate.getReference() + " | " + estate.getFullAddress()).equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            var listClient = (List<Client>) clientService.getAllClientsByBranch(user.getBranch());
+            var fxListClient = FXCollections.observableArrayList(listClient);
+
+            TextField txtSeller = (TextField) root.lookup("#txtSeller");
+            txtSeller.setEditable(false);
+
+            boxEstate.valueProperty().addListener((obs, oldEstate, newEstate) -> {
+                if (newEstate != null) {
+                    txtSeller.setText(newEstate.getClient().getFullName() + ", " + newEstate.getClient().getDni());
+                } else {
+                    txtSeller.setText("");
+                }
+            });
+
+            @SuppressWarnings ("unchecked")
+            ComboBox<Client> boxBuyer = (ComboBox<Client>) root.lookup("#boxBuyer");
+            boxBuyer.setPromptText("Elija un comprador");
+            boxBuyer.setItems(fxListClient);
+            boxBuyer.setConverter(new StringConverter<>() {
+                @Override
+                public String toString(Client client) {
+                    return client != null ? (client.getFullName() + ", " + client.getDni()) : "";
+                }
+
+                @Override
+                public Client fromString(String string) {
+                    return fxListClient.stream()
+                            .filter(client -> (client.getFullName() + ", " + client.getDni()).equals(string))
+                            .findFirst()
+                            .orElse(null);
+                }
+            });
+
+            TextField txtSellPrice = (TextField) root.lookup("#txtSellPrice");
+            txtSellPrice.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*(\\.\\d{0,2})?")) {
+                    txtSellPrice.setText(oldValue);
+                }
+            });
+
+            Button btnConfirmSaleModal = (Button) root.lookup("#btnConfirmSaleModal");
+            btnConfirmSaleModal.setOnAction(e -> {
+                handleSaleSave(root, stage, historySale);
+            });
+
+            stage.showAndWait();
+            reloadView();
+            showRental();
+
+        } catch (IOException e) {
+            log.error("Error", e);
+        }
+    }
+
+    private void handleSaleSave(Parent root, Stage stage, HistorySale historySale) {
+        @SuppressWarnings("unchecked")
+        ComboBox<Estate> boxEstate = (ComboBox<Estate>) root.lookup("#boxEstate");
+        @SuppressWarnings("unchecked")
+        ComboBox<Client> boxBuyer = (ComboBox<Client>) root.lookup("#boxBuyer");
+        TextField txtSellPrice = (TextField) root.lookup("#txtSellPrice");
+        DatePicker dateSale = (DatePicker) root.lookup("#dateSale");
+
+        if (historySale.equals(new HistorySale())) {
+            BigDecimal price = new BigDecimal(-1);
+            try {
+                price = new BigDecimal(txtSellPrice.getText()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            } catch (Exception e) {
+                log.error("Error al convertir el precio a BigDecimal: {}", e.getMessage());
+            }
+
+            historySale = HistorySale.builder()
+                .estate(boxEstate.getValue())
+                .clientPrevious(boxEstate.getValue().getClient())
+                .clientActual(boxBuyer.getValue())
+                .salePrice(price)
+                .saleDate(dateSale.getValue())
+                .build();
+        }
+
+        if (validation.validationHistorySale(historySale)) {
+            hSaleService.saveHistorySale(historySale);
+            var clientSeller = historySale.getClientPrevious();
+            var clientBuyer = historySale.getClientActual();
+            var estate = historySale.getEstate();
+            estate.setClient(clientBuyer);
+            estate.setState(EnumEstate.SOLD);
+            estateService.saveEstate(estate);
+            clientService.saveClientAsOwner(clientBuyer);
+            clientService.saveClientAsNoOwner(clientSeller);
+            Notifications.create()
+                    .title("Éxito")
+                    .text("Se ha guardado la venta correctamente")
+                    .showWarning();
+            stage.close();
+            return;
+        }
+    }
 
     //endregion
 
@@ -1164,6 +1503,7 @@ public class UserMainViewController {
         optionListClients.setVisible(false);
         optionListEstates.setVisible(false);
         optionListRentals.setVisible(false);
+        optionListSales.setVisible(false);
 
         anchorPane.setVisible(true);
     }

@@ -19,11 +19,23 @@ public class HRentServiceImpl implements HRentService{
 
     @Override
     public List<HistoryRent> getHistoryRentByBranch(Branch branch) {
-        return hRentRepository.findByBranchId(branch.getIdBranch());
+
+        return hRentRepository.findByBranchId(branch.getIdBranch())
+                .stream().sorted(
+                        (h1, h2) -> h2.getIdHistoryRent().compareTo(h1.getIdHistoryRent())
+                ).toList();
     }
 
     @Override
     public HistoryRent saveHistoryRent(HistoryRent historyRent) {
         return hRentRepository.save(historyRent);
+    }
+
+    @Override
+    public List<HistoryRent> getHistoryRentByBranchAndReference(Branch idBranch, String reference) {
+        return hRentRepository.findByBranchIdAndReference(idBranch.getIdBranch(), reference)
+                .stream().sorted(
+                (h1, h2) -> h2.getIdHistoryRent().compareTo(h1.getIdHistoryRent())
+        ).toList();
     }
 }

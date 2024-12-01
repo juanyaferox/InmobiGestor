@@ -35,48 +35,35 @@
             </Label>
             <ComboBox fx:id="boxEstate" prefHeight="25.0" prefWidth="977.0" GridPane.columnIndex="1" />
 
-            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Arrendatario:   " GridPane.rowIndex="2">
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Vendedor:   " GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <ComboBox fx:id="boxRenter" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="txtSeller" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Fecha de inicio:  " GridPane.rowIndex="3">
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="145.0" text="Comprador:  " GridPane.rowIndex="3">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <DatePicker fx:id="dateStart" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <ComboBox fx:id="boxBuyer" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="147.0" text="Fecha de fin:  " GridPane.rowIndex="4">
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="147.0" text="Precio de venta:  " GridPane.rowIndex="4">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <DatePicker fx:id="dateEnd" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="txtSellPrice" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="Precio:  " GridPane.rowIndex="5">
+            <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="Fecha de venta:  " GridPane.rowIndex="5">
                 <font>
                     <Font size="14.0" />
                 </font>
             </Label>
-            <TextField fx:id="textPrice" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-
-            <Label fx:id="lblExit" alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="Fecha de salida:  " GridPane.rowIndex="6">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </Label>
-            <DatePicker fx:id="exitDate" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-         <TextField fx:id="textClientOwner" prefHeight="25.0" prefWidth="515.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-         <Label alignment="CENTER_RIGHT" prefHeight="23.0" prefWidth="145.0" text="Arrendador:  " GridPane.rowIndex="1">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
+            <DatePicker fx:id="dateSale" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
         </children>
     </GridPane>
-    <Button fx:id="btnConfirmRentalModal" text="Confirmar" />
+    <Button fx:id="btnConfirmSaleModal" text="Confirmar" />
 </VBox>

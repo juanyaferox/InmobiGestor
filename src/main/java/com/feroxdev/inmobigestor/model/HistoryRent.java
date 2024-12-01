@@ -2,6 +2,8 @@ package com.feroxdev.inmobigestor.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,5 +37,6 @@ public class HistoryRent {
 
     private LocalDate exitDate;
 
-    private String rentPrice;
+    @Column(precision = 10, scale = 2)
+    private BigDecimal rentPrice;
 }

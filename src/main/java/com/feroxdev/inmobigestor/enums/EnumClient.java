@@ -9,7 +9,8 @@ public enum EnumClient {
     HOUSE_OWNER("Poseedor"), //1
     RENTER("Inquilino"),//2
     RENTER_AND_HOUSE_OWNER("Poseedor e inquilino"),//3
-    ANOTHER("Otro");//0
+    ANOTHER("Otro"),//0
+    INACTIVE("Inactivo");//4
 
     private final String type;
 }
