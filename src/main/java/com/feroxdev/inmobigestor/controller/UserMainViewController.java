@@ -98,6 +98,8 @@ public class UserMainViewController {
     AnchorPane optionListClients;
     @FXML
     AnchorPane optionListEstates;
+    @FXML
+    AnchorPane optionListRentals;
 
 //    @FXML
 //    AnchorPane optionListDashboard;
@@ -156,7 +158,7 @@ public class UserMainViewController {
         user.setEmail(textEmail.getText());
         //VALIDACIONES
         if (validation.validationUser(user)) {
-            log.warn("CAMPOS A ENVIAR;------" + user.toString());
+            log.warn("CAMPOS A ENVIAR: {}", user.toString());
             userService.changeInfoUser(user);
             showUserModify();
             Notifications.create()
@@ -167,7 +169,9 @@ public class UserMainViewController {
             showUserModify();
         }
     }
-//endregion
+    //endregion
+
+    //region CLIENTES
 
     //region Listado de clientes
     @FXML
@@ -175,7 +179,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranch(user.getBranch());
-        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- {}", clientList.toString());
         showClientGrid(clientList);
     }
 
@@ -184,7 +188,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.HOUSE_OWNER);
-        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- {}", clientList.toString());
         showClientGrid(clientList);
     }
 
@@ -193,7 +197,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.RENTER);
-        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES;---------------------- {}", clientList.toString());
         showClientGrid(clientList);
     }
 
@@ -202,7 +206,16 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListClients);
         List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.ANOTHER);
-        log.warn("LISTA DE CLIENTES;---------------------- " + clientList.toString());
+        log.warn("LISTA DE CLIENTES: {}", clientList.toString());
+        showClientGrid(clientList);
+    }
+
+    @FXML
+    private void showClientListRenterAndHouseowner() {
+        reloadView();
+        changeVisibility(optionListClients);
+        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.RENTER_AND_HOUSE_OWNER);
+        log.warn("LISTA DE CLIENTES;---------------------- {}", clientList.toString());
         showClientGrid(clientList);
     }
 
@@ -318,7 +331,9 @@ public class UserMainViewController {
             gridPaneClientList.add(buttonBox, 4, i + 1);
         }
     }
+    //endregion
 
+    //region Añadir y edición cliente
     @FXML
     public void showModalUserAdd() {
         showModalUser(new Client());
@@ -341,20 +356,28 @@ public class UserMainViewController {
             Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
             stage.initOwner(primaryStage);
 
+            //Caso de edición
             if (!Objects.equals(client, new Client())){
                 stage.setTitle("Editar Cliente");
+
                 TextField textClientName = (TextField) root.lookup("#textClientName");
                 textClientName.setText(client.getName());
+
                 TextField textClientSurname1 = (TextField) root.lookup("#textClientSurname1");
                 textClientSurname1.setText(client.getLastname1());
+
                 TextField textClientSurname2 = (TextField) root.lookup("#textClientSurname2");
                 textClientSurname2.setText(client.getLastname2());
+
                 TextField textClientEmail = (TextField) root.lookup("#textClientEmail");
                 textClientEmail.setText(client.getEmail());
+
                 TextField textClientDNI = (TextField) root.lookup("#textClientDNI");
                 textClientDNI.setText(client.getDni());
+
                 TextField textClientPhone = (TextField) root.lookup("#textClientPhone");
                 textClientPhone.setText(client.getPhone());
+
                 TextField textClientAddress = (TextField) root.lookup("#textClientAddress");
                 textClientAddress.setText(client.getAddress());
             }
@@ -401,7 +424,9 @@ public class UserMainViewController {
             stage.close();
         }
     }
+    //endregion
 
+    //region Eliminar cliente
     private void handleClienteDelete(Client client) {
         log.warn("Eliminar cliente: {}", client.getDni());
         if (clientService.deleteClient(client)==null) {
@@ -413,7 +438,9 @@ public class UserMainViewController {
     }
     //endregion
 
+    //endregion
 
+    //region INMUEBLES
 
     //region Listado de inmuebles
     @FXML
@@ -421,7 +448,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByBranch(user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -430,7 +457,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ON_SALE, user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -439,7 +466,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT, user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -448,7 +475,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.SOLD, user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -457,7 +484,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.RENTED, user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -466,7 +493,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ANOTHER, user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -475,7 +502,7 @@ public class UserMainViewController {
         reloadView();
         changeVisibility(optionListEstates);
         List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.INACTIVE, user.getBranch());
-        log.warn("LISTA DE INMUEBLES;---------------------- " + estateList.toString());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
         showEstateGrid(estateList);
     }
 
@@ -504,7 +531,7 @@ public class UserMainViewController {
 
             } catch (Exception e) {
 
-                log.error("CATCH1 : Error al cargar la imagen del inmueble: " + System.getProperty("user.dir") + estate.getImagePath() + " - " + e.getMessage());
+                log.error("CATCH1 : Error al cargar la imagen del inmueble: {}{} - {}", System.getProperty("user.dir"), estate.getImagePath(), e.getMessage());
                 try {
                     Image image = new Image("/images/no_found_house.jpg");
                     imageView = new ImageView(image);
@@ -518,7 +545,7 @@ public class UserMainViewController {
                     imageView.setPreserveRatio(false);
                     imageView.setSmooth(true);
                 } catch (Exception ex) {
-                    log.error("CATCH2: Error al cargar la imagen del inmueble: " + estate.getImagePath());
+                    log.error("CATCH2: Error al cargar la imagen del inmueble: {}", estate.getImagePath());
                 }
 
             }
@@ -701,9 +728,9 @@ public class UserMainViewController {
 
                         btnSelectNewImage.setText("Imagen seleccionada: " + imageFile.get().getName().replace("\\", "/"));
 
-                        log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath);
+                        log.info(" Imagen seleccionada y copiada temporalmente: {}", destinationPath);
                     } catch (IOException ex) {
-                        log.error("Error al copiar la imagen - " + ex.getMessage());
+                        log.error(" Error al copiar la imagen - {}", ex.getMessage());
                     }
                 }
             });
@@ -726,6 +753,7 @@ public class UserMainViewController {
     private void handleListEstateAdd(Parent root, @Nullable File imageFile) {
         TextField textReference = (TextField) root.lookup("#textReference");
         TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+        @SuppressWarnings ("unchecked")
         ComboBox<Client> boxClient = (ComboBox<Client>) root.lookup("#boxClient");
         @SuppressWarnings ("unchecked")
         ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
@@ -750,10 +778,10 @@ public class UserMainViewController {
                 // Copiar la imagen al archivo destino
                 Files.move(imageFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
-                log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath.getFileName());
+                log.info("Imagen seleccionada y copiada temporalmente: {}", destinationPath.getFileName());
             }
         } catch (IOException ex) {
-            log.error("Error al copiar la imagen" + ex.getMessage());
+            log.error("Error al copiar la imagen{}", ex.getMessage());
         }
 
         if (validation.validationEstate(estate)) {
@@ -787,7 +815,7 @@ public class UserMainViewController {
             textBranch.setEditable(false);
             textBranch.setText(estate.getBranch().getReference());
 
-
+            @SuppressWarnings ("unchecked")
             ComboBox<String> boxClient = (ComboBox<String>) root.lookup("#boxClient");
             boxClient.setValue(estate.getClient().getFullName());
             boxClient.setDisable(true);
@@ -817,7 +845,7 @@ public class UserMainViewController {
                         // Validar si es una imagen
                         String mimeType = Files.probeContentType(file.toPath());
                         if (!mimeType.startsWith("image/")) {
-                            log.error("El archivo seleccionado no es una imagen válida.");
+                            log.error("El archivo seleccionado no es una imagen valida.");
                             return; // Meter notificación
                         }
 
@@ -835,13 +863,14 @@ public class UserMainViewController {
 
                         btnSelectNewImage.setText("Imagen seleccionada: " + imageFile.get().getName().replace("\\", "/"));
 
-                        log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath);
+                        log.info("Imagen seleccionada y copiada temporalmente : {}", destinationPath);
                     } catch (IOException ex) {
-                        log.error("Error al copiar la imagen - " + ex.getMessage());
+                        log.error("Error al copiar la  imagen - {}", ex.getMessage());
                     }
                 }
             });
 
+            @SuppressWarnings("unchecked")
             ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
             boxState.setItems(FXCollections.observableArrayList(EnumEstate.values()));
             boxState.setConverter(new StringConverter<>() {
@@ -871,7 +900,7 @@ public class UserMainViewController {
             log.warn("Se ha mostrado la lista de inmuebles");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error al abrir la ventana emergente de edición de inmueble{}", e.getMessage());
         }
 
 
@@ -883,6 +912,7 @@ public class UserMainViewController {
 
         TextField textReference = (TextField) root.lookup("#textReference");
         TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
+        @SuppressWarnings("unchecked")
         ComboBox<Client> boxClient = (ComboBox<Client>) root.lookup("#boxClient");
         @SuppressWarnings ("unchecked")
         ComboBox<EnumEstate> boxState = (ComboBox<EnumEstate>) root.lookup("#boxState");
@@ -906,10 +936,10 @@ public class UserMainViewController {
                 // Copiar la imagen al archivo destino
                 Files.move(imageFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
-                log.info("Imagen seleccionada y copiada temporalmente: " + destinationPath.getFileName());
+                log.info("Imagen  seleccionada y copiada temporalmente: {}", destinationPath.getFileName());
             }
         } catch (IOException ex) {
-            log.error("Error al copiar la imagen" + ex.getMessage());
+            log.error(" Error al copiar la  imagen{}", ex.getMessage());
         }
 
         if (validation.validationEstate(estate)) {
@@ -928,7 +958,7 @@ public class UserMainViewController {
 
     //region Borrar inmueble
     private void handleEstateDelete(Estate estate) {
-        log.warn("Eliminar inmueble: " + estate.getReference());
+        log.warn("Eliminar inmueble: {}", estate.getReference());
         if (estate.getClientRenter()!=null){
             Notifications.create()
                     .title("No se puede borrar el inmueble: "+estate.getReference())
@@ -942,14 +972,14 @@ public class UserMainViewController {
     }
     //endregion
 
-
+    //endregion
 
     private void changeVisibility(AnchorPane anchorPane) {
 
         optionModifyUser.setVisible(false);
         optionListClients.setVisible(false);
         optionListEstates.setVisible(false);
-        //optionListDashboard.setVisible(false);
+        optionListRentals.setVisible(false);
 
         anchorPane.setVisible(true);
     }
@@ -962,38 +992,5 @@ public class UserMainViewController {
         } catch (IOException e) {
             log.error("Error al recargar la vista de usuario", e);
         }
-    }
-
-    private void configureBranchComboBox(ComboBox<Branch> boxBranch, ObservableList<Branch> branchItems) {
-        boxBranch.setConverter(new StringConverter<>() {
-            @Override
-            public String toString(Branch branch) {
-                return branch != null ? branch.getReference() : "";
-            }
-
-            @Override
-            public Branch fromString(String string) {
-                return branchItems.stream()
-                        .filter(branch -> branch.getReference().equals(string))
-                        .findFirst()
-                        .orElse(null);
-            }
-        });
-
-        // Configurar el filtrado del ComboBox mediante el editor de texto
-        TextField editor = boxBranch.getEditor();
-        FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
-        boxBranch.setItems(filteredItems);
-
-        editor.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || newValue.isEmpty()) {
-                filteredItems.setPredicate(branch -> true); // Muestra todos los elementos
-            } else {
-                String search = newValue.toLowerCase();
-                filteredItems.setPredicate(branch ->
-                        branch.getReference().toLowerCase().contains(search)); // Filtro aplicado
-            }
-            boxBranch.show(); // Mantiene el ComboBox desplegado mientras se escribe
-        });
     }
 }
