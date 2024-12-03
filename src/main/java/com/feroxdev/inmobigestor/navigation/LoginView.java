@@ -12,6 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class LoginView {
@@ -26,7 +27,8 @@ public class LoginView {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        Image icon = new Image(getClass().getResourceAsStream("/images/icon.png"));
+        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+        Image icon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/icon.png")));
         stage.getIcons().add(icon);
         stage.setScene(scene);
         stage.setTitle("Login");

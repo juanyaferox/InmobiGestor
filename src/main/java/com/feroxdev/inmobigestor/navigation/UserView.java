@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.kordamp.bootstrapfx.BootstrapFX;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class UserView {
         Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         stage.setTitle("User View");
         stage.setScene(scene);
         stage.show();
