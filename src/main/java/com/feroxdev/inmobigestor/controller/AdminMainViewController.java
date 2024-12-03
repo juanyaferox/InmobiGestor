@@ -36,6 +36,7 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -264,7 +265,9 @@ public class AdminMainViewController {
     private void handleListBranchEdit(Branch branch, Parent root) {
         @SuppressWarnings ("unchecked")
         ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+        TextField txtReference = (TextField) root.lookup("#txtReference");
         log.warn("Branch antes de cambios-----------------\n" + branch.toString());
+        branch.setReference(txtReference.getText());
         branch.setTown(boxTown.getValue());
         log.warn("Branch despues de cambios-----------------\n" + branch.toString());
 
@@ -347,9 +350,11 @@ public class AdminMainViewController {
     private void handleListBranchAdd(Parent root) {
         @SuppressWarnings ("unchecked")
         ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+        TextField txtReference = (TextField) root.lookup("#txtReference");
 
         Branch branch = new Branch();
         log.warn("Branch antes de cambios-----------------\n" + branch.toString());
+        branch.setReference(txtReference.getText());
         branch.setTown(boxTown.getValue());
         log.warn("Branch despues de cambios-----------------\n" + branch.toString());
 
@@ -390,9 +395,12 @@ public class AdminMainViewController {
             gridPaneUserList.add(new Label(user.getEmail()), 1, i + 1);
             gridPaneUserList.add(new Label(fullName), 2, i + 1);
             var userBranch = user.getBranch();
-            Integer idBranch = (userBranch != null) ? userBranch.getIdBranch() : null;
-            gridPaneUserList.add(new Label(String.valueOf(idBranch)), 3, i + 1);
-
+            String referenceBranch = (userBranch != null) ? userBranch.getReference() : "";
+            gridPaneUserList.add(new Label(referenceBranch), 3, i + 1);
+            if ((userBranch == null) || Objects.equals(userBranch, new Branch())) {
+                //Evitamos la opcion de editar y borrar si es admin (sucursal null)
+                continue;
+            }
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();
             Button btnDelete = new Button();
@@ -450,15 +458,16 @@ public class AdminMainViewController {
             TextField textName = (TextField) root.lookup("#textName");
             TextField textEmail = (TextField) root.lookup("#textEmail");
             @SuppressWarnings ("unchecked")
-            ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+            ComboBox<Branch> boxBranch = (ComboBox<Branch>) root.lookup("#boxBranch");
             Button btnConfirmEditUserModal = (Button) root.lookup("#btnConfirmEditUserModal");
 
             int idUser = user.getIdUser();
             var userToShow = userService.GetUserById(idUser);
             //List<Town> towns = townRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-            List<Town> towns = townRepository.findAllTownsWithBranches();
-            var branchItems = FXCollections.observableArrayList(towns);
-            log.warn("Ciudades---------" + towns.toString());
+            List<Branch> branches = branchService.findAllBranch();
+//            List<Town> towns = townRepository.findAllTownsWithBranches();
+            var branchItems = FXCollections.observableArrayList(branches);
+            log.warn("Sucursales---------" + branches.toString());
 
             textUser.setEditable(false);
             textUser.setText(userToShow.getUser());
@@ -468,11 +477,11 @@ public class AdminMainViewController {
             textID.setText(userToShow.getDni());
             textName.setText(userToShow.getName());
             textEmail.setText(userToShow.getEmail());
-            boxTown.setValue(userToShow.getBranch() != null ? userToShow.getBranch().getTown() : new Town());
-            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+            boxBranch.setValue(userToShow.getBranch() != null ? userToShow.getBranch() : new Branch());
+//            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
 
             // Aplicar el FilteredList al ComboBox
-            configureTownComboBox(boxTown, branchItems);
+            configureBranchComboBox(boxBranch, branchItems);
             btnConfirmEditUserModal.setOnAction(e -> handleListUserEdit(user, root));
 
             stage.showAndWait();//Bloquea la interacción con la ventana principal hasta que cierre la emergente
@@ -503,7 +512,7 @@ public class AdminMainViewController {
         TextField textName = (TextField) root.lookup("#textName");
         TextField textEmail = (TextField) root.lookup("#textEmail");
         @SuppressWarnings ("unchecked")
-        ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+        ComboBox<Branch> boxBranch = (ComboBox<Branch>) root.lookup("#boxBranch");
 
         log.warn("User antes de cambios-----------------\n" + user.toString());
         user.setUser(textUser.getText());
@@ -514,8 +523,7 @@ public class AdminMainViewController {
         user.setName(textName.getText());
         user.setEmail(textEmail.getText());
 
-        Town selectedTown = boxTown.getValue();
-        Branch branch = branchService.verifyIfCityInBranch(selectedTown);
+        Branch branch = boxBranch.getValue();
         log.warn("Branch despues de cambios-----------------\n" + branch.toString());
         user.setBranch(branch);
         log.warn("User despues de cambios-----------------\n" + user.toString());
@@ -567,15 +575,15 @@ public class AdminMainViewController {
             Stage primaryStage = (Stage) adminLogout.getScene().getWindow();//Hace que la ventana principal sea dueña de la emergente
             stage.initOwner(primaryStage);
             @SuppressWarnings ("unchecked")
-            ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+            ComboBox<Branch> boxBranch = (ComboBox<Branch>) root.lookup("#boxBranch");
             Button btnConfirmEditUserModal = (Button) root.lookup("#btnConfirmEditUserModal");
 
-            List<Town> towns = townRepository.findAllTownsWithBranches();
-            var branchItems = FXCollections.observableArrayList(towns);
-            log.warn("Ciudades---------" + towns.toString());
-            FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+            List<Branch> branches = branchService.findAllBranch();
+            var branchItems = FXCollections.observableArrayList(branches);
+            log.warn("Ciudades---------" + branches.toString());
+            //FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
 
-            configureTownComboBox(boxTown, branchItems);
+            configureBranchComboBox(boxBranch, branchItems);
 
             btnConfirmEditUserModal.setOnAction(e -> handleListUserAdd(root));
 
@@ -601,7 +609,7 @@ public class AdminMainViewController {
         TextField textName = (TextField) root.lookup("#textName");
         TextField textEmail = (TextField) root.lookup("#textEmail");
         @SuppressWarnings ("unchecked")
-        ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+        ComboBox<Branch> boxBranch = (ComboBox<Branch>) root.lookup("#boxBranch");
 
         User user = new User();
         log.warn("User antes de cambios-----------------\n" + user.toString());
@@ -612,12 +620,7 @@ public class AdminMainViewController {
         user.setDni(textID.getText());
         user.setName(textName.getText());
         user.setEmail(textEmail.getText());
-
-        Town selectedTown = boxTown.getValue();
-        Branch branch = branchService.verifyIfCityInBranch(selectedTown);
-        log.warn("Branch despues de cambios-----------------\n" + branch.toString());
-
-        log.warn("User despues de cambios-----------------\n" + user.toString());
+        Branch branch = boxBranch.getValue();
 
         //VALIDACIONES
         if (validation.validationUser(user) && validation.validationBranch(branch)) {
@@ -678,6 +681,40 @@ public class AdminMainViewController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void configureBranchComboBox(ComboBox<Branch> boxBranch, ObservableList<Branch> branchItems) {
+        boxBranch.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Branch branch) {
+                log.warn("Branch: " + branch);
+                return (branch != null && branch.getTown() != null) ? (branch.getReference() + ", " + branch.getTown().getName()) : "";
+            }
+
+            @Override
+            public Branch fromString(String string) {
+                return branchItems.stream()
+                        .filter(branch -> ((branch != null && branch.getTown() != null) ? branch.getReference() + ", " + branch.getTown().getName() : null).equals(string))
+                        .findFirst()
+                        .orElse(null);
+            }
+        });
+
+        // Configurar el filtrado del ComboBox mediante el editor de texto
+        TextField editor = boxBranch.getEditor();
+        FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
+        boxBranch.setItems(filteredItems);
+
+        editor.textProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+            } else {
+                String search = newValue.toLowerCase();
+                filteredItems.setPredicate(branch ->
+                        (branch.getReference() + ", " + branch.getTown().getName()).toLowerCase().contains(search)); // Filtro aplicado
+            }
+            boxBranch.show(); // Mantiene el ComboBox desplegado mientras se escribe
+        });
     }
 
     private void configureTownComboBox(ComboBox<Town> boxTown, ObservableList<Town> branchItems) {

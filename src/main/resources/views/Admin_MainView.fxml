@@ -128,7 +128,7 @@
                               <Label styleClass="label-bold" text="Nombre" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                               <Label styleClass="label-bold" text="Correo" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                               <Label styleClass="label-bold" text="Nombre Completo" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Cod Sucursal" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Sucursal" GridPane.columnIndex="3" GridPane.rowIndex="0" />
                               <Label styleClass="label-bold" text="Acciones" GridPane.columnIndex="4" GridPane.rowIndex="0" />
                            </children>
                            <rowConstraints>
