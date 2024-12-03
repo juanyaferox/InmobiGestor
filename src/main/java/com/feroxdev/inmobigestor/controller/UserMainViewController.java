@@ -259,18 +259,19 @@ public class UserMainViewController {
     }
 
     private void showClientGrid(List<Client> clientList) {
+
         for (int i = 0; i < clientList.size(); i++) {
             var client = clientList.get(i);
 
             String fullName = client.getName() + " " + client.getLastname1() + " " + (client.getLastname2() != null ? client.getLastname2() : "");
 
             // Añadir las celdas correspondientes en cada columna de la fila actual
-            gridPaneClientList.add(new Label(fullName), 0, i + 1);
-            gridPaneClientList.add(new Label(client.getPhone()), 1, i + 1);
+            gridPaneClientList.add(new Label(" "+fullName), 0, i + 1);
+            gridPaneClientList.add(new Label(" "+client.getPhone()), 1, i + 1);
             int numEstates = client.getEstates().size();
-            gridPaneClientList.add(new Label(String.valueOf(numEstates)), 2, i + 1);
+            gridPaneClientList.add(new Label(" "+String.valueOf(numEstates)), 2, i + 1);
             boolean isRented = client.getEstateRented() != null;
-            gridPaneClientList.add(new Label(isRented ? "Si" : "No"), 3, i + 1);
+            gridPaneClientList.add(new Label(isRented ? " Si" : " No"), 3, i + 1);
 
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();
@@ -367,6 +368,7 @@ public class UserMainViewController {
             buttonBox.getChildren().addAll(buttonColumn1, buttonColumn2);
 
             gridPaneClientList.add(buttonBox, 4, i + 1);
+            System.out.println("Añadiendo fila para cliente: " + fullName + " en fila " + (i + 1));
         }
     }
 
@@ -395,9 +397,9 @@ public class UserMainViewController {
                 gridPaneEstatesList.add(imageView, 0, i + 1);
                 GridPane.setHalignment(imageView, HPos.CENTER);
                 GridPane.setMargin(imageView, new Insets(20, 0, 20, 0));
-                gridPaneEstatesList.add(new Label(estate.getReference()), 1, i + 1);
-                gridPaneEstatesList.add(new Label(stringState), 2, i + 1);
-                gridPaneEstatesList.add(new Label(String.valueOf(estate.getBranch().getTown().getName())), 3, i + 1);
+                gridPaneEstatesList.add(new Label(" "+estate.getReference()), 1, i + 1);
+                gridPaneEstatesList.add(new Label(" "+stringState), 2, i + 1);
+                gridPaneEstatesList.add(new Label(" "+String.valueOf(estate.getBranch().getTown().getName())), 3, i + 1);
             }
             stage.showAndWait();
             } catch (IOException e) {
@@ -737,7 +739,7 @@ public class UserMainViewController {
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getOperation()), 0, i + 1);
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getClient()), 1, i + 1);
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getPrecio()), 2, i + 1);
-                gridPaneHistoryEstateList.add(new Label(historyDTO.getDate().toString()), 3, i + 1);
+                gridPaneHistoryEstateList.add(new Label(" "+historyDTO.getDate().toString()), 3, i + 1);
             }
             stage.showAndWait();
 //            reloadView();
@@ -753,20 +755,20 @@ public class UserMainViewController {
         for (HistoryRent rent : rents) {
             historyList.add(
                     new HistoryDTO(
-                            "Alquiler: " + (rent.getEndDate() == null ? "En curso" : "Finalizado"),
-                            rent.getClientRented().getFullName() + ", " + rent.getClientRented().getDni(),
+                            " Alquiler: " + (rent.getEndDate() == null ? "En curso" : "Finalizado"),
+                            " "+rent.getClientRented().getFullName() + ", " + rent.getClientRented().getDni(),
                             rent.getEndDate() == null ? rent.getStartDate() : rent.getExitDate(),
-                            rent.getRentPrice() + "€/mes"
+                            " "+rent.getRentPrice() + " €/mes"
                     )
             );
         }
         for (HistorySale sale : sales) {
             historyList.add(
                     new HistoryDTO(
-                            "Venta",
+                            " Venta",
                             sale.getClientActual().getFullName() + ", " + sale.getClientActual().getDni(),
                             sale.getSaleDate(),
-                            sale.getSalePrice() + "€"
+                            sale.getSalePrice() + " €"
                     )
             );
         }
@@ -1444,11 +1446,11 @@ public class UserMainViewController {
         // En caso de que tenga exit-date no se permitira la edicion
         for (int i = 0; i < historySaleList.size(); i++) {
             var historySale = historySaleList.get(i);
-            gridPaneSaleList.add(new Label(historySale.getEstate().getReference()), 0, i + 1);
-            gridPaneSaleList.add(new Label(historySale.getClientPrevious().getFullName()), 1, i + 1);
-            gridPaneSaleList.add(new Label(historySale.getClientActual().getFullName()), 2, i + 1);
-            gridPaneSaleList.add(new Label(formatter.format(historySale.getSalePrice())+" €"), 3, i + 1);
-            gridPaneSaleList.add(new Label(historySale.getSaleDate().toString()), 4, i + 1);
+            gridPaneSaleList.add(new Label(" "+historySale.getEstate().getReference()), 0, i + 1);
+            gridPaneSaleList.add(new Label(" "+historySale.getClientPrevious().getFullName()), 1, i + 1);
+            gridPaneSaleList.add(new Label(" "+historySale.getClientActual().getFullName()), 2, i + 1);
+            gridPaneSaleList.add(new Label(" "+formatter.format(historySale.getSalePrice())+" €"), 3, i + 1);
+            gridPaneSaleList.add(new Label(" "+historySale.getSaleDate().toString()), 4, i + 1);
         }
     }
 

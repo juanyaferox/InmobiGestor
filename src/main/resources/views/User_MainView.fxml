@@ -19,301 +19,397 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="660" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.feroxdev.inmobigestor.controller.UserMainViewController">
-      <BorderPane prefHeight="660.0" prefWidth="1080.0">
-         <!--MENU DE OCPIONES SUPERIOR-->
-         <top>
+<AnchorPane prefHeight="660" prefWidth="1080.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.feroxdev.inmobigestor.controller.UserMainViewController">
+    <BorderPane prefHeight="660.0" prefWidth="1080.0">
+        <!--MENU DE OCPIONES SUPERIOR-->
+        <top>
             <HBox alignment="TOP_CENTER" prefHeight="56.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="303.0" style="-fx-background-color: #0000;" text="DASHBOARD">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Region HBox.hgrow="ALWAYS" />
-                  <VBox alignment="CENTER">
-                     <MenuBar styleClass="menu-bar">
+                <children>
+                    <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="303.0"
+                            style="-fx-background-color: #0000;" text="DASHBOARD">
                         <cursor>
-                           <Cursor fx:constant="HAND" />
+                            <Cursor fx:constant="HAND"/>
                         </cursor>
-                        <Menu styleClass="menu" text="INMUEBLES">
-                           <MenuItem onAction="#showEstateAll" styleClass="menu-item" text="Todos" />
-                           <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="En venta" /><!---->
-                           <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="En alquiler" /><!---->
-                           <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="Vendidos" /><!--o-->
-                           <MenuItem onAction="#showEstateRented" styleClass="menu-item" text="Alquilados" /><!---->
-                           <MenuItem onAction="#showEstateInactive" styleClass="menu-item" text="Inactivos" /><!---->
-                           <MenuItem onAction="#showEstateAnother" styleClass="menu-item" text="Otros" /><!---->
-                        </Menu>
-                     </MenuBar>
-                  </VBox>
+                    </Button>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <VBox alignment="CENTER">
+                        <MenuBar styleClass="menu-bar">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                            <Menu styleClass="menu" text="INMUEBLES">
+                                <MenuItem onAction="#showEstateAll" styleClass="menu-item" text="Todos"/>
+                                <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="En venta"/><!---->
+                                <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="En alquiler"/><!---->
+                                <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="Vendidos"/><!--o-->
+                                <MenuItem onAction="#showEstateRented" styleClass="menu-item" text="Alquilados"/><!---->
+                                <MenuItem onAction="#showEstateInactive" styleClass="menu-item"
+                                          text="Inactivos"/><!---->
+                                <MenuItem onAction="#showEstateAnother" styleClass="menu-item" text="Otros"/><!---->
+                            </Menu>
+                        </MenuBar>
+                    </VBox>
 
-                  <Region HBox.hgrow="ALWAYS" />
-                  <Region HBox.hgrow="ALWAYS" />
-                  <VBox alignment="CENTER">
-                     <MenuBar styleClass="menu-bar">
-                        <cursor>
-                           <Cursor fx:constant="HAND" />
-                        </cursor>
-                        <Menu styleClass="menu" text="CLIENTES">
-                           <MenuItem onAction="#showClientAll" styleClass="menu-item" text="Todos" />
-                           <MenuItem onAction="#showClientListHouseowner" styleClass="menu-item" text="Dueños" /><!--  -->
-                           <MenuItem onAction="#showClientListRenter" styleClass="menu-item" text="Arrendatarios" /><!-- -->
-                           <MenuItem onAction="#showClientListRenterAndHouseowner" styleClass="menu-item" text="Dueño y arrendatario" /><!-- -->
-                           <MenuItem onAction="#showClientListInactive" styleClass="menu-item" text="Inactivos" /><!-- -->
-                           <MenuItem onAction="#showClientListAnother" styleClass="menu-item" text="Otros" /><!-- -->
-                        </Menu>
-                     </MenuBar>
-                  </VBox>
-                  <Region HBox.hgrow="ALWAYS" />
-                  <Region HBox.hgrow="ALWAYS" />
-                  <VBox alignment="CENTER">
-                     <MenuBar styleClass="menu-bar">
-                        <cursor>
-                           <Cursor fx:constant="HAND" />
-                        </cursor>
-                        <Menu styleClass="menu" text="OPERACIONES">
-                           <MenuItem onAction="#showSale" styleClass="menu-item" text="Gestionar venta" />
-                           <MenuItem onAction="#showRental" styleClass="menu-item" text="Gestionar alquiler" />
-                        </Menu>
-                     </MenuBar>
-                  </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <VBox alignment="CENTER">
+                        <MenuBar styleClass="menu-bar">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                            <Menu styleClass="menu" text="CLIENTES">
+                                <MenuItem onAction="#showClientAll" styleClass="menu-item" text="Todos"/>
+                                <MenuItem onAction="#showClientListHouseowner" styleClass="menu-item"
+                                          text="Dueños"/><!--  -->
+                                <MenuItem onAction="#showClientListRenter" styleClass="menu-item"
+                                          text="Arrendatarios"/><!-- -->
+                                <MenuItem onAction="#showClientListRenterAndHouseowner" styleClass="menu-item"
+                                          text="Dueño y arrendatario"/><!-- -->
+                                <MenuItem onAction="#showClientListInactive" styleClass="menu-item"
+                                          text="Inactivos"/><!-- -->
+                                <MenuItem onAction="#showClientListAnother" styleClass="menu-item"
+                                          text="Otros"/><!-- -->
+                            </Menu>
+                        </MenuBar>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <VBox alignment="CENTER">
+                        <MenuBar styleClass="menu-bar">
+                            <cursor>
+                                <Cursor fx:constant="HAND"/>
+                            </cursor>
+                            <Menu styleClass="menu" text="OPERACIONES">
+                                <MenuItem onAction="#showSale" styleClass="menu-item" text="Gestionar venta"/>
+                                <MenuItem onAction="#showRental" styleClass="menu-item" text="Gestionar alquiler"/>
+                            </Menu>
+                        </MenuBar>
+                    </VBox>
 
-                  <Region HBox.hgrow="ALWAYS" />
-                  <Button fx:id="btnUserModify" mnemonicParsing="false" onAction="#showUserModify" prefHeight="100.0" prefWidth="291.0" style="-fx-background-color: #0000;" text="MODIFICAR USUARIO">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button fx:id="adminLogout" mnemonicParsing="false" onAction="#handleLogout" prefHeight="100.0" prefWidth="285.0" style="-fx-background-color: #0000;" text="LOGOUT">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-               </children></HBox>
-         </top>
-         <center>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnUserModify" mnemonicParsing="false" onAction="#showUserModify" prefHeight="100.0"
+                            prefWidth="291.0" style="-fx-background-color: #0000;" text="MODIFICAR USUARIO">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </Button>
+                    <Button fx:id="adminLogout" mnemonicParsing="false" onAction="#handleLogout" prefHeight="100.0"
+                            prefWidth="285.0" style="-fx-background-color: #0000;" text="LOGOUT">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </Button>
+                </children>
+            </HBox>
+        </top>
+        <center>
             <StackPane>
-               <AnchorPane fx:id="optionModifyUser" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <children>
-                     <Label layoutX="348.0" layoutY="119.0" text="MODIFACIÓN DE DATOS DEL USUARIO">
-                        <font>
-                           <Font size="25.0" />
-                        </font>
-                     </Label>
-                     <GridPane layoutX="120.0" layoutY="195.0" prefHeight="215.0" prefWidth="842.0">
-                        <columnConstraints>
-                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="728.0" minWidth="10.0" prefWidth="260.0" />
-                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="820.0" minWidth="10.0" prefWidth="820.0" />
-                        </columnConstraints>
-                        <rowConstraints>
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        </rowConstraints>
-                        <children>
-                           <Label alignment="CENTER_RIGHT" prefHeight="23.0" prefWidth="145.0" text="Usuario:  ">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <TextField fx:id="textUser" prefHeight="25.0" prefWidth="977.0" GridPane.columnIndex="1" />
-                           <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="134.0" text="Email:  " GridPane.rowIndex="2">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <TextField fx:id="textPassword" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                           <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0" text="Primer apellido:  " GridPane.rowIndex="4">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <TextField fx:id="text1Surname" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                           <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="175.0" text="Segundo apellido:  " textAlignment="RIGHT" GridPane.rowIndex="5">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="138.0" text="DNI:  " GridPane.rowIndex="6">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="139.0" text="Contraseña:  " GridPane.rowIndex="1">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <TextField fx:id="text2Surname" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                           <TextField fx:id="textID" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                           <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="147.0" text="Nombre:  " GridPane.rowIndex="3">
-                              <font>
-                                 <Font size="14.0" />
-                              </font>
-                           </Label>
-                           <TextField fx:id="textName" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                           <TextField fx:id="textEmail" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        </children>
-                     </GridPane>
-                     <Button fx:id="btnConfirmChanges" layoutX="795.0" layoutY="419.0" mnemonicParsing="false" onAction="#handleUserModify" prefHeight="54.0" prefWidth="167.0" text="Confirmar" />
-                  </children>
-               </AnchorPane>
-               <AnchorPane fx:id="optionListEstates" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <ScrollPane fx:id="scrollPaneEstateList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
-                     <content>
-                        <GridPane fx:id="gridPaneEstateList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
-                           <columnConstraints>
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <children>
-                              <Label styleClass="label-bold" text="Imagen" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Referencia" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Estado" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Ciudad" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                           </children>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
+                <AnchorPane fx:id="optionModifyUser" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                    <children>
+                        <Label layoutX="348.0" layoutY="119.0" text="MODIFACIÓN DE DATOS DEL USUARIO">
+                            <font>
+                                <Font size="25.0"/>
+                            </font>
+                        </Label>
+                        <GridPane layoutX="120.0" layoutY="195.0" prefHeight="215.0" prefWidth="842.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="728.0" minWidth="10.0"
+                                                   prefWidth="260.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="820.0" minWidth="10.0"
+                                                   prefWidth="820.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Label alignment="CENTER_RIGHT" prefHeight="23.0" prefWidth="145.0" text="Usuario:  ">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <TextField fx:id="textUser" prefHeight="25.0" prefWidth="977.0"
+                                           GridPane.columnIndex="1"/>
+                                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="134.0" text="Email:  "
+                                       GridPane.rowIndex="2">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <TextField fx:id="textPassword" prefHeight="25.0" prefWidth="245.0"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="167.0"
+                                       text="Primer apellido:  " GridPane.rowIndex="4">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <TextField fx:id="text1Surname" prefHeight="25.0" prefWidth="245.0"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="175.0"
+                                       text="Segundo apellido:  " textAlignment="RIGHT" GridPane.rowIndex="5">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="138.0" text="DNI:  "
+                                       GridPane.rowIndex="6">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="139.0" text="Contraseña:  "
+                                       GridPane.rowIndex="1">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <TextField fx:id="text2Surname" prefHeight="25.0" prefWidth="245.0"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                <TextField fx:id="textID" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="6"/>
+                                <Label alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="147.0" text="Nombre:  "
+                                       GridPane.rowIndex="3">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <TextField fx:id="textName" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1"
+                                           GridPane.rowIndex="3"/>
+                                <TextField fx:id="textEmail" prefHeight="25.0" prefWidth="245.0"
+                                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            </children>
                         </GridPane>
-                     </content>
-                  </ScrollPane>
-                  <!--onAction="#showModalUserAdd"-->
-               <Button fx:id="btnAddNewEstate" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalEstateAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo inmueble" />
-               </AnchorPane>
-               <AnchorPane fx:id="optionListClients" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <ScrollPane fx:id="scrollPaneClientList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
-                     <content>
-                        <GridPane fx:id="gridPaneClientList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
-                           <columnConstraints>
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints />
-                           </columnConstraints>
-                           <children>
-                              <Label styleClass="label-bold" text="Nombre completo" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Teléfono" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Nº de propiedades" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Está de alquiler" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                           </children>
-                           <rowConstraints>
-                              <RowConstraints />
-                              <RowConstraints />
-                           </rowConstraints>
-                        </GridPane>
-                     </content>
-                  </ScrollPane>
-                  <Button fx:id="btnAddNewClient" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
-               </AnchorPane>
-               <AnchorPane fx:id="optionListRentals" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <ScrollPane fx:id="scrollPaneRentalList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0">
-                     <content>
-                        <VBox>
-                           <GridPane fx:id="gridPaneRentalListHeader" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="40.0" prefWidth="1078.0">
-                              <columnConstraints>
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              <ColumnConstraints />
-                              </columnConstraints>
-                              <children>
-                                 <Label styleClass="label-bold" text="Inmueble" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Arrendador" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Arrendatario" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Arrendo" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Inicio" GridPane.columnIndex="4" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Fin" GridPane.columnIndex="5" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Salida" GridPane.columnIndex="6" GridPane.rowIndex="0" />
-
-                              </children>
-                           <rowConstraints>
-                              <RowConstraints />
-                           </rowConstraints>
-                           </GridPane>
-                           <GridPane fx:id="gridPaneRentalList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
-                              <columnConstraints>
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              </columnConstraints>
-                              <rowConstraints>
-                                 <RowConstraints />
-                                 <RowConstraints />
-                              </rowConstraints>
-                           </GridPane>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
-                  <Button fx:id="btnAddNewRental" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalRentalAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo alquiler" />
-               <TextField fx:id="textSearchRental" layoutX="791.0" layoutY="27.0" />
-               <Button fx:id="btnSearchRental" layoutX="948.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" onAction="#handleSearchRental"/>
-               </AnchorPane>
-               <AnchorPane fx:id="optionListSales" prefHeight="607.0" prefWidth="1080.0" visible="false">
-                  <ScrollPane fx:id="scrollPaneSaleList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0">
-                     <content>
-                        <VBox>
-                           <GridPane fx:id="gridPaneSaleListHeader" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="40.0" prefWidth="1078.0">
-                              <columnConstraints>
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                        <Button fx:id="btnConfirmChanges" layoutX="795.0" layoutY="419.0" mnemonicParsing="false"
+                                onAction="#handleUserModify" prefHeight="54.0" prefWidth="167.0" text="Confirmar"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane fx:id="optionListEstates" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                            <VBox layoutX="100.0" layoutY="60.0">
+                                <GridPane fx:id="gridPaneEstateListHeader" alignment="TOP_CENTER"
+                                          gridLinesVisible="true" prefHeight="40.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="280"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="133"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <Label styleClass="label-bold" text=" Imagen" GridPane.columnIndex="0"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Referencia" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Estado" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Ciudad" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="0"/>
+                                    </children>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <ScrollPane fx:id="scrollPaneEstateList" fitToHeight="true" fitToWidth="true" layoutX="100.0"
+                                            pannable="true" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
+                                    <content>
+                            <GridPane fx:id="gridPaneEstateList" alignment="TOP_CENTER" gridLinesVisible="true"
+                                      prefHeight="480.0" prefWidth="880.0">
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"  minWidth="280"/>
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"  minWidth="150"/>
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"  minWidth="150"/>
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"  minWidth="150"/>
+                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"  minWidth="133"/>
                                 </columnConstraints>
-                              <children>
-                                 <Label styleClass="label-bold" text="Inmueble" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Vendedor" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Comprador" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Precio de venta" GridPane.columnIndex="3" GridPane.rowIndex="0" />
-                                 <Label styleClass="label-bold" text="Fecha de venta" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+                                <rowConstraints>
+                                    <RowConstraints/>
+                                    <RowConstraints/>
+                                </rowConstraints>
+                            </GridPane>
+                                    </content>
+                                </ScrollPane>
+                                <Button fx:id="btnAddNewEstate" layoutX="914.0" layoutY="507.0" mnemonicParsing="false"
+                                onAction="#showModalEstateAdd" prefHeight="43.0" prefWidth="166.0"
+                                text="Añadir nuevo inmueble"/>
+                            </VBox>
+                    <!--onAction="#showModalUserAdd"-->
+                </AnchorPane>
+                <AnchorPane fx:id="optionListClients" prefHeight="607.0" prefWidth="1080.0" visible="false">
 
-                              </children>
-                           <rowConstraints>
-                              <RowConstraints />
-                           </rowConstraints>
-                           </GridPane>
-                           <GridPane fx:id="gridPaneSaleList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0" prefWidth="1078.0">
-                              <columnConstraints>
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                              </columnConstraints>
-                              <rowConstraints>
-                                 <RowConstraints />
-                                 <RowConstraints />
-                              </rowConstraints>
-                           </GridPane>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
-                  <Button fx:id="btnAddNewSale" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalSaleAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nueva venta" />
-                  <TextField fx:id="textSearchSale" layoutX="791.0" layoutY="27.0" />
-                  <Button fx:id="btnSearchSale" layoutX="948.0" layoutY="27.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="32.0" onAction="#handleSearchSale"/>
-               </AnchorPane>
+                            <VBox layoutX="100.0" layoutY="60.0">
+                                <GridPane fx:id="gridPaneClientListHeader" alignment="TOP_CENTER"
+                                          gridLinesVisible="true" prefHeight="40.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <Label styleClass="label-bold" text=" Nombre completo" GridPane.columnIndex="0"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Teléfono" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Nº de propiedades"
+                                               GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Está de alquiler" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="0"/>
+                                    </children>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <ScrollPane fx:id="scrollPaneClientList" fitToHeight="true" fitToWidth="true" layoutX="100.0"
+                                            layoutY="60.0" prefHeight="438.0" prefWidth="880.0" pannable="true">
+                                    <content>
+                                <GridPane fx:id="gridPaneClientList" alignment="TOP_CENTER" gridLinesVisible="true"
+                                          prefHeight="480.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                                </content>
+                                </ScrollPane>
+                                <Button fx:id="btnAddNewClient" layoutX="914.0" layoutY="507.0" mnemonicParsing="false"
+                                        onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0"
+                                        text="Añadir nuevo cliente"/>
+                            </VBox>
+                </AnchorPane>
+                <AnchorPane fx:id="optionListRentals" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                    <ScrollPane fx:id="scrollPaneRentalList" fitToHeight="true" fitToWidth="true" layoutX="100.0"
+                                layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0">
+                        <content>
+                            <VBox>
+                                <GridPane fx:id="gridPaneRentalListHeader" alignment="TOP_CENTER"
+                                          gridLinesVisible="true" prefHeight="40.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <!--<ColumnConstraints/>-->
+                                    </columnConstraints>
+                                    <children>
+                                        <Label styleClass="label-bold" text=" Inmueble" GridPane.columnIndex="0"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Arrendador" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Arrendatario" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Arrendo" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Inicio" GridPane.columnIndex="4"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Fin" GridPane.columnIndex="5"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Salida" GridPane.columnIndex="6"
+                                               GridPane.rowIndex="0"/>
+                                    </children>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <GridPane fx:id="gridPaneRentalList" alignment="TOP_CENTER" gridLinesVisible="true"
+                                          prefHeight="480.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="125"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                            </VBox>
+                        </content>
+                    </ScrollPane>
+                    <Button fx:id="btnAddNewRental" layoutX="814.0" layoutY="507.0" mnemonicParsing="false"
+                            onAction="#showModalRentalAdd" prefHeight="43.0" prefWidth="166.0"
+                            text="Añadir nuevo alquiler"/>
+                    <TextField fx:id="textSearchRental" layoutX="791.0" layoutY="27.0"/>
+                    <Button fx:id="btnSearchRental" layoutX="948.0" layoutY="27.0" mnemonicParsing="false"
+                            prefHeight="25.0" prefWidth="32.0" onAction="#handleSearchRental"/>
+                </AnchorPane>
+                <AnchorPane fx:id="optionListSales" prefHeight="607.0" prefWidth="1080.0" visible="false">
+                    <ScrollPane fx:id="scrollPaneSaleList" fitToHeight="true" fitToWidth="true" layoutX="100.0"
+                                layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0">
+                        <content>
+                            <VBox>
+                                <GridPane fx:id="gridPaneSaleListHeader" alignment="TOP_CENTER" gridLinesVisible="true"
+                                          prefHeight="40.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <Label styleClass="label-bold" text=" Inmueble" GridPane.columnIndex="0"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Vendedor" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Comprador" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Precio de venta" GridPane.columnIndex="3"
+                                               GridPane.rowIndex="0"/>
+                                        <Label styleClass="label-bold" text=" Fecha de venta" GridPane.columnIndex="4"
+                                               GridPane.rowIndex="0"/>
+
+                                    </children>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                                <GridPane fx:id="gridPaneSaleList" alignment="TOP_CENTER" gridLinesVisible="true"
+                                          prefHeight="480.0" prefWidth="880.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175"/>
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints/>
+                                        <RowConstraints/>
+                                    </rowConstraints>
+                                </GridPane>
+                            </VBox>
+                        </content>
+                    </ScrollPane>
+                    <Button fx:id="btnAddNewSale" layoutX="814.0" layoutY="507.0" mnemonicParsing="false"
+                            onAction="#showModalSaleAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nueva venta"/>
+                    <TextField fx:id="textSearchSale" layoutX="791.0" layoutY="27.0"/>
+                    <Button fx:id="btnSearchSale" layoutX="948.0" layoutY="27.0" mnemonicParsing="false"
+                            prefHeight="25.0" prefWidth="32.0" onAction="#handleSearchSale"/>
+                </AnchorPane>
             </StackPane>
 
 
-
-
-         </center>
-      </BorderPane>
+        </center>
+    </BorderPane>
 </AnchorPane>

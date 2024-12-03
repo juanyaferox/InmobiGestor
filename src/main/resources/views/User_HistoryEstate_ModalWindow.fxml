@@ -18,20 +18,19 @@
         <content>
             <VBox>
                 <GridPane fx:id="gridPaneHistoryEstateListHeader" alignment="TOP_CENTER" gridLinesVisible="true"
-                          prefHeight="40.0" prefWidth="1078.0">
+                          prefHeight="40.0" prefWidth="1080.0">
                     <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
                     </columnConstraints>
                     <children>
-                        <Label styleClass="label-bold" text="Tipo operación" GridPane.columnIndex="0"
+                        <Label styleClass="label-bold" text=" Tipo operación" GridPane.columnIndex="0"
                                GridPane.rowIndex="0"/>
-                        <Label styleClass="label-bold" text="Receptor" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                        <Label styleClass="label-bold" text="Precio" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                        <Label styleClass="label-bold" text="Fecha" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+                        <Label styleClass="label-bold" text=" Receptor" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label styleClass="label-bold" text=" Precio" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                        <Label styleClass="label-bold" text=" Fecha" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
 
                     </children>
                     <rowConstraints>
@@ -39,12 +38,12 @@
                     </rowConstraints>
                 </GridPane>
                 <GridPane fx:id="gridPaneHistoryEstateList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0"
-                          prefWidth="1078.0">
+                          prefWidth="1080.0">
                     <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints/>

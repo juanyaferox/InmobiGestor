@@ -18,31 +18,31 @@
         <content>
             <VBox>
                 <GridPane fx:id="gridPaneEstatesListHeader" alignment="TOP_CENTER" gridLinesVisible="true"
-                          prefHeight="40.0" prefWidth="1078.0">
+                          prefHeight="40.0" prefWidth="1080.0">
                     <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
                         <ColumnConstraints />
                     </columnConstraints>
                     <children>
-                        <Label styleClass="label-bold" text="Imagen" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Label styleClass="label-bold" text="Referencia" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label styleClass="label-bold" text="Estado" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                        <Label styleClass="label-bold" text="Ciudad" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+                        <Label styleClass="label-bold" text=" Imagen" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label styleClass="label-bold" text=" Referencia" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Label styleClass="label-bold" text=" Estado" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                        <Label styleClass="label-bold" text=" Ciudad" GridPane.columnIndex="3" GridPane.rowIndex="0" />
                     </children>
                     <rowConstraints>
                         <RowConstraints/>
                     </rowConstraints>
                 </GridPane>
                 <GridPane fx:id="gridPaneEstatesList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="480.0"
-                          prefWidth="1078.0">
+                          prefWidth="1080.0">
                     <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
-                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="270"/>
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints/>
