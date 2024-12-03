@@ -37,6 +37,7 @@ import org.springframework.stereotype.Controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 @Slf4j
 @Controller
@@ -100,6 +101,7 @@ public class AdminMainViewController {
 
     //variable global del usuario actual
     User user;
+    ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
 
     /**
      * A ejecutar al acceder a la vista asociada al controlador
@@ -162,8 +164,8 @@ public class AdminMainViewController {
             userService.changeInfoUser(user);
             showUserModify();
             Notifications.create()
-                    .title("Éxito")
-                    .text("Se han realizado los cambios correctamente")
+                    .title(resourceBundle.getString("sucess"))
+                    .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
             reloadView();
             showUserModify();
@@ -186,7 +188,7 @@ public class AdminMainViewController {
     private void showAllBranchsList() {
         changeVisibility(optionListBranchs);
         List<Branch> branchList = branchService.findAllBranch();
-        log.warn("LISTA DE SUCURSALES;---------------------- " + branchList.toString());
+        log.warn("LISTA DE SUCURSALES;----------------------" + branchList.toString());
         for (int i = 0; i < branchList.size(); i++) {
             Branch branch = branchList.get(i);
             // Añadir las celdas correspondientes en cada columna de la fila actual
@@ -229,7 +231,7 @@ public class AdminMainViewController {
             log.warn("CAMPOS A ENVIAR;------" + branch.toString());
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Modificar Sucursal");
+            stage.setTitle(resourceBundle.getString("modify.branch"));
             stage.setScene(new Scene(root));
 
             stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
@@ -252,7 +254,6 @@ public class AdminMainViewController {
             stage.showAndWait();//Bloquea la interacción con la ventana principal hasta que cierre la emergente
             reloadView();//recargo la ventana
             showAllBranchsList();//muestro la lista de usuarios
-            //if (btnConfirmEditUserModal != null)
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -280,8 +281,8 @@ public class AdminMainViewController {
             showAllBranchsList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
-                    .title("Éxito")
-                    .text("Se han realizado los cambios correctamente")
+                    .title(resourceBundle.getString("sucess"))
+                    .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
         }
     }
@@ -291,13 +292,13 @@ public class AdminMainViewController {
         var branchDeleted = branchService.deleteBranch(branch);
         if (branchDeleted == null) {
             Notifications.create()
-                    .title("Error")
-                    .text("No se puede borrar una sucursal con algun usuario asignado")
+                    .title(resourceBundle.getString("error"))
+                    .text(resourceBundle.getString("branch.asigned"))
                     .showError();
         } else if (branchDeleted.equals(new Branch())) {
             Notifications.create()
-                    .title("Error")
-                    .text("No ha encontrado la sucursal en la base de datos")
+                    .title(resourceBundle.getString("error"))
+                    .text(resourceBundle.getString("branch.not.found"))
                     .showError();
         }
         //si devuelve null notification de error, caso contrario de éxito
@@ -312,7 +313,7 @@ public class AdminMainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_Branch_ModalWindow.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Añadir Sucursal");
+            stage.setTitle(resourceBundle.getString("add.branch"));
             stage.setScene(new Scene(root));
 
             stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
@@ -368,8 +369,8 @@ public class AdminMainViewController {
             showAllBranchsList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
-                    .title("Éxito")
-                    .text("Se han realizado los cambios correctamente")
+                    .title(resourceBundle.getString("sucess"))
+                    .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
         }
     }
@@ -443,7 +444,7 @@ public class AdminMainViewController {
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Modificar Usuario");
+            stage.setTitle(resourceBundle.getString("edit.user"));
             stage.setScene(new Scene(root));
 
             stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
@@ -536,8 +537,8 @@ public class AdminMainViewController {
             showAllUsersList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
-                    .title("Éxito")
-                    .text("Se han realizado los cambios correctamente")
+                    .title(resourceBundle.getString("sucess"))
+                    .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
         }
     }
@@ -568,7 +569,7 @@ public class AdminMainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Admin_EditUser_ModalWindow.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Añadir Usuario");
+            stage.setTitle(resourceBundle.getString("add.user"));
             stage.setScene(new Scene(root));
 
             stage.initModality(Modality.APPLICATION_MODAL);//Hace la ventana emergente bloqueante
@@ -632,8 +633,8 @@ public class AdminMainViewController {
             showAllUsersList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
-                    .title("Éxito")
-                    .text("Se han realizado los cambios correctamente")
+                    .title(resourceBundle.getString("sucess"))
+                    .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
         }
     }

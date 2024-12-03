@@ -1,5 +1,6 @@
 package com.feroxdev.inmobigestor.controller;
 
+import com.feroxdev.inmobigestor.dto.HistoryDTO;
 import com.feroxdev.inmobigestor.enums.EnumClient;
 import com.feroxdev.inmobigestor.enums.EnumEstate;
 import com.feroxdev.inmobigestor.model.*;
@@ -9,7 +10,6 @@ import com.feroxdev.inmobigestor.service.*;
 import com.feroxdev.inmobigestor.validation.Validation;
 import jakarta.annotation.Nullable;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,8 +37,6 @@ import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -128,6 +126,8 @@ public class UserMainViewController {
     User user;
 
     DecimalFormat formatter = new DecimalFormat("#,##0.00");
+
+    ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
 
     public void initialize() {
         if (userSessionService != null)
@@ -311,6 +311,7 @@ public class UserMainViewController {
             buttonColumn1.getChildren().add(btnEdit);
             btnEdit.setOnAction(e -> showModalUserEdit(client)); // Aquí tiene que abrirse
 
+            // Botón para ????
             Button btnHouseHistory = new Button();
             FontIcon houseHistoryIcon = new FontIcon();
             houseHistoryIcon.setIconColor(Color.GREY);
@@ -320,7 +321,13 @@ public class UserMainViewController {
             Tooltip tooltipHistory = new Tooltip("Ver historial de inmuebles");
             btnHouseHistory.setTooltip(tooltipHistory);
             buttonColumn1.getChildren().add(btnHouseHistory);
-            //houseHistoryIcon.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+            var history = new ArrayList<HistoryDTO>();
+            client.getEstates().forEach(estate -> {
+                history.addAll(getHistoryDTOS(new ArrayList<>(), estate.getHistorySales()));
+            });
+            if (history.isEmpty())
+                btnHouseHistory.setDisable(true);
+            btnHouseHistory.setOnAction(e -> showModalEstateHistory(history)); // Aquí tiene que abrirse
 
             if (isRented) {
                 Button btnViewRented = new Button();
@@ -349,20 +356,8 @@ public class UserMainViewController {
                     buttonColumn1.getChildren().add(btnViewEstates);
                 else
                     buttonColumn2.getChildren().add(btnViewEstates);
-                //btnViewEstates.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
-            }
-
-            if (client.getType() == EnumClient.ANOTHER) {
-                Button btnRelatedHouses = new Button();
-                FontIcon relatedHousesIcon = new FontIcon();
-                relatedHousesIcon.setIconColor(Color.DARKRED);
-                relatedHousesIcon.setIconLiteral("mdi2h-home-search");
-                relatedHousesIcon.setIconSize(14);
-                Tooltip tooltipRelatedHouses = new Tooltip("Ver inmuebles relacionados");
-                btnRelatedHouses.setTooltip(tooltipRelatedHouses);
-                btnRelatedHouses.setGraphic(relatedHousesIcon);
-                buttonColumn2.getChildren().add(btnRelatedHouses);
-                //btnViewRented.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+                // Función para ver los inmuebles que le pertenecen en un grid
+                btnViewEstates.setOnAction(e -> showModalEstatesOwner(client)); // Aquí tiene que abrirse
             }
 
             // Ajustar márgenes
@@ -373,6 +368,41 @@ public class UserMainViewController {
 
             gridPaneClientList.add(buttonBox, 4, i + 1);
         }
+    }
+
+    private void showModalEstatesOwner(Client client) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_EstatesList_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Editar Inmueble");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            var estateList = client.getEstates();
+
+            for (int i = 0; i < estateList.size(); i++) {
+                var estate = estateList.get(i);
+
+                ImageView imageView = getImageView(estate, null);
+                var stringState = estate.getState() != null ? estate.getState().getDescription() : "Sin estado";
+                ScrollPane scrollPane = (ScrollPane) root.lookup("#scrollPaneEstatesList");
+                GridPane gridPaneEstatesList = (GridPane) scrollPane.getContent().lookup("#gridPaneEstatesList");
+                // Añadir las celdas correspondientes en cada columna de la fila actual
+                gridPaneEstatesList.add(imageView, 0, i + 1);
+                GridPane.setHalignment(imageView, HPos.CENTER);
+                GridPane.setMargin(imageView, new Insets(20, 0, 20, 0));
+                gridPaneEstatesList.add(new Label(estate.getReference()), 1, i + 1);
+                gridPaneEstatesList.add(new Label(stringState), 2, i + 1);
+                gridPaneEstatesList.add(new Label(String.valueOf(estate.getBranch().getTown().getName())), 3, i + 1);
+            }
+            stage.showAndWait();
+            } catch (IOException e) {
+                log.error("Error: {}", e.getMessage());
+            }
     }
     //endregion
 
@@ -555,45 +585,7 @@ public class UserMainViewController {
         for (int i = 0; i < estateList.size(); i++) {
             var estate = estateList.get(i);
 
-            ImageView imageView = null;
-            try {
-                String imagePath = System.getProperty("user.dir") + estate.getImagePath();
-                File file = new File(imagePath);
-                if (!file.exists()) {
-                    throw new Exception("No se ha encontrado la imagen");
-                }
-                Image image = new Image(file.toURI().toString());
-                imageView = new ImageView(image);
-
-                double fixedWidth = 200;
-                double fixedHeight = 150;
-
-                imageView.setFitWidth(fixedWidth);
-                imageView.setFitHeight(fixedHeight);
-
-                imageView.setPreserveRatio(false);
-                imageView.setSmooth(true);
-
-            } catch (Exception e) {
-
-                log.error("CATCH1: Error al cargar la imagen del inmueble: {}{} - {}", System.getProperty("user.dir"), estate.getImagePath(), e.getMessage());
-                try {
-                    Image image = new Image("/images/no_found_house.jpg");
-                    imageView = new ImageView(image);
-
-                    double fixedWidth = 200;
-                    double fixedHeight = 150;
-
-                    imageView.setFitWidth(fixedWidth);
-                    imageView.setFitHeight(fixedHeight);
-
-                    imageView.setPreserveRatio(false);
-                    imageView.setSmooth(true);
-                } catch (Exception ex) {
-                    log.error("CATCH2: Error al cargar la imagen del inmueble: {}", estate.getImagePath());
-                }
-
-            }
+            ImageView imageView = getImageView(estate, null);
             var stringState = estate.getState() != null ? estate.getState().getDescription() : "Sin estado";
 
             // Añadir las celdas correspondientes en cada columna de la fila actual
@@ -661,7 +653,7 @@ public class UserMainViewController {
             houseHistoryIcon.setIconSize(14);
             btnHouseHistory.setGraphic(houseHistoryIcon);
             buttonColumn1.getChildren().add(btnHouseHistory);
-            //houseHistoryIcon.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
+            btnHouseHistory.setOnAction(e -> showModalEstateHistory(estate)); // Aquí tiene que abrirse
 
             // Ajustar márgenes
             HBox.setMargin(buttonColumn1, new Insets(10));
@@ -671,6 +663,114 @@ public class UserMainViewController {
 
             gridPaneEstateList.add(buttonBox, 4, i + 1);
         }
+    }
+
+    private static ImageView getImageView(Estate estate, ImageView imageView) {
+        try {
+            String imagePath = System.getProperty("user.dir") + estate.getImagePath();
+            File file = new File(imagePath);
+            if (!file.exists()) {
+                throw new Exception("No se ha encontrado la imagen");
+            }
+            Image image = new Image(file.toURI().toString());
+            imageView = new ImageView(image);
+
+            double fixedWidth = 200;
+            double fixedHeight = 150;
+
+            imageView.setFitWidth(fixedWidth);
+            imageView.setFitHeight(fixedHeight);
+
+            imageView.setPreserveRatio(false);
+            imageView.setSmooth(true);
+
+        } catch (Exception e) {
+
+            log.error("CATCH1: Error al cargar la imagen del inmueble: {}{} - {}", System.getProperty("user.dir"), estate.getImagePath(), e.getMessage());
+            try {
+                Image image = new Image("/images/no_found_house.jpg");
+                imageView = new ImageView(image);
+
+                double fixedWidth = 200;
+                double fixedHeight = 150;
+
+                imageView.setFitWidth(fixedWidth);
+                imageView.setFitHeight(fixedHeight);
+
+                imageView.setPreserveRatio(false);
+                imageView.setSmooth(true);
+            } catch (Exception ex) {
+                log.error("CATCH2: Error al cargar la imagen del inmueble: {}", estate.getImagePath());
+            }
+
+        }
+        return imageView;
+    }
+
+    private void showModalEstateHistory(Estate estate) {
+        var rents = estate.getHistoryRents();
+        var sales = estate.getHistorySales();
+
+        // Juntar las listas y ordenarlas por fecha
+        List<HistoryDTO> historyList = getHistoryDTOS(rents, sales);
+        showModalEstateHistory(historyList);
+    }
+
+    private void showModalEstateHistory(List<HistoryDTO> historyList) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_HistoryEstate_ModalWindow.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Historial de inmueble");
+            stage.setScene(new Scene(root));
+
+            stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
+            Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
+            stage.initOwner(primaryStage);
+
+            historyList.sort(Comparator.comparing(HistoryDTO::getDate));
+            ScrollPane scrollPane = (ScrollPane) root.lookup("#scrollPaneHistoryEstateList");
+            GridPane gridPaneHistoryEstateList = (GridPane) scrollPane.getContent().lookup("#gridPaneHistoryEstateList");
+            for (int i = 0; i < historyList.size(); i++) {
+                var historyDTO = historyList.get(i);
+                log.warn("Historial: {}", historyDTO.toString());
+                gridPaneHistoryEstateList.add(new Label(historyDTO.getOperation()), 0, i + 1);
+                gridPaneHistoryEstateList.add(new Label(historyDTO.getClient()), 1, i + 1);
+                gridPaneHistoryEstateList.add(new Label(historyDTO.getPrecio()), 2, i + 1);
+                gridPaneHistoryEstateList.add(new Label(historyDTO.getDate().toString()), 3, i + 1);
+            }
+            stage.showAndWait();
+//            reloadView();
+//            showEstateAll();
+        } catch (IOException e) {
+            log.error("Error: {}", e.getMessage());
+        }
+
+    }
+
+    private static List<HistoryDTO> getHistoryDTOS(List<HistoryRent> rents, List<HistorySale> sales) {
+        List<HistoryDTO> historyList = new ArrayList<>();
+        for (HistoryRent rent : rents) {
+            historyList.add(
+                    new HistoryDTO(
+                            "Alquiler: " + (rent.getEndDate() == null ? "En curso" : "Finalizado"),
+                            rent.getClientRented().getFullName() + ", " + rent.getClientRented().getDni(),
+                            rent.getEndDate() == null ? rent.getStartDate() : rent.getExitDate(),
+                            rent.getRentPrice() + "€/mes"
+                    )
+            );
+        }
+        for (HistorySale sale : sales) {
+            historyList.add(
+                    new HistoryDTO(
+                            "Venta",
+                            sale.getClientActual().getFullName() + ", " + sale.getClientActual().getDni(),
+                            sale.getSaleDate(),
+                            sale.getSalePrice() + "€"
+                    )
+            );
+        }
+        return historyList;
     }
 
     //endregion

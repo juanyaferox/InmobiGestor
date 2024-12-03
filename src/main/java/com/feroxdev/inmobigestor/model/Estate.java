@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "estates")
 @Data
-@ToString(exclude = { "clientRenter","historyRents"})
+@ToString(exclude = { "clientRenter","historyRents", "historySales" })
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -43,4 +43,7 @@ public class Estate {
 
     @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER)
     private List<HistoryRent> historyRents;
+
+    @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER)
+    private List<HistorySale> historySales;
 }
