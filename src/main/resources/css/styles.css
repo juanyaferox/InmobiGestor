@@ -58,16 +58,17 @@
 #gridPaneUserList,
 #gridPaneBranchList,
 #gridPaneEstateList,
-#gridPaneClientList
+#gridPaneEstateListHeader,
+#gridPaneClientList,
+#gridPaneClientListHeader
 {
     -fx-alignment: CENTER;
 
 }
 
 #gridPaneUserList .label,
-#gridPaneBranchList .label,
-#gridPaneEstateList .label,
-#gridPaneClientList .label {
+#gridPaneBranchList .label
+{
     -fx-font-size: 14px;
     -fx-text-fill: #333333;
     -fx-padding: 10px;

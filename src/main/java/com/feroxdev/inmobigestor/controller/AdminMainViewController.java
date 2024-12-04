@@ -193,8 +193,8 @@ public class AdminMainViewController {
             Branch branch = branchList.get(i);
             // Añadir las celdas correspondientes en cada columna de la fila actual
             gridPaneBranchList.add(new Label(String.valueOf(branch.getIdBranch())), 0, i + 1);
-            gridPaneBranchList.add(new Label(branch.getTown().getName()), 1, i + 1);
-            gridPaneBranchList.add(new Label(String.valueOf(branch.getTown().getIdTown())), 2, i + 1);
+            gridPaneBranchList.add(new Label(branch.getReference()), 1, i + 1);
+            gridPaneBranchList.add(new Label(branch.getTown().getName()), 2, i + 1);
 
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();

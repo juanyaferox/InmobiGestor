@@ -267,7 +267,7 @@
                                     </rowConstraints>
                                 </GridPane>
                                 <ScrollPane fx:id="scrollPaneClientList" fitToHeight="true" fitToWidth="true" layoutX="100.0"
-                                            layoutY="60.0" prefHeight="438.0" prefWidth="880.0" pannable="true">
+                                            layoutY="60.0" prefHeight="480.0" prefWidth="880.0" pannable="true">
                                     <content>
                                 <GridPane fx:id="gridPaneClientList" alignment="TOP_CENTER" gridLinesVisible="true"
                                           prefHeight="480.0" prefWidth="880.0">
