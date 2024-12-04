@@ -60,7 +60,8 @@ public class ClientServiceImpl implements ClientService {
             client.setType(EnumClient.RENTER_AND_HOUSE_OWNER);
             return saveClient(client);
         }
-        else if (client.getType() == EnumClient.ANOTHER || client.getType() == EnumClient.INACTIVE) {
+//        client.getType() == EnumClient.ANOTHER ||
+        else if (client.getType() == EnumClient.INACTIVE) {
             client.setType(EnumClient.HOUSE_OWNER);
             return saveClient(client);
         }

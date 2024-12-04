@@ -18,6 +18,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -98,6 +100,8 @@ public class AdminMainViewController {
     GridPane gridPaneUserList;
     @FXML
     GridPane gridPaneBranchList;
+    @FXML
+    Canvas canvasUser;
 
     //variable global del usuario actual
     User user;
@@ -109,6 +113,18 @@ public class AdminMainViewController {
     public void initialize() {
         if (userSessionService != null)
             user = userSessionService.getLoggedInUser();
+        if (canvasUser!= null)
+            drawCanvasUser();
+    }
+
+    private void drawCanvasUser() {
+        GraphicsContext gc = canvasUser.getGraphicsContext2D();
+        double width = canvasUser.getWidth();
+        double height = canvasUser.getHeight();
+
+        // Mitad derecha diagonal
+        gc.setFill(Color.web("#ECFADC"));
+        gc.fillPolygon(new double[]{width, width, 0}, new double[]{0, height, height}, 3);
     }
 
     //region Logout
@@ -175,14 +191,6 @@ public class AdminMainViewController {
 
     //region GESTIÓN
 
-    //MÉTODOS A CREAR
-    //metodo para que al acceder a sucursales se muestre un listado con la información básica de las sucursales
-    //método para crear sucursal <-crear ventana modal para editar
-    //método para editar sucursal <-crear ventana modal para editar
-    //método para borrar sucursal
-    //método para crear usuario desde el listado <-crear ventana modal para editar
-    //(practicamente es copiar usuarios cambiando 3 cosas)
-
     //region SUCURSALES
     @FXML
     private void showAllBranchsList() {
@@ -239,6 +247,8 @@ public class AdminMainViewController {
             stage.initOwner(primaryStage);
             @SuppressWarnings ("unchecked")
             ComboBox<Town> boxTown = (ComboBox<Town>) root.lookup("#boxCity");
+            TextField txtReference = (TextField) root.lookup("#txtReference");
+            txtReference.setText(branch.getReference());
             Button btnConfirmEditBranchModal = (Button) root.lookup("#btnConfirmEditBranchModal");
 
             // Cargar los datos y configurar el ComboBox

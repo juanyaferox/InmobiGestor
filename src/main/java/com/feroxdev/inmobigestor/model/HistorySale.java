@@ -2,6 +2,9 @@ package com.feroxdev.inmobigestor.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -19,14 +22,17 @@ public class HistorySale {
 
     @ManyToOne
     @JoinColumn(name = "idEstate")
+    @OnDelete (action = OnDeleteAction.SET_NULL)
     private Estate estate;
 
     @ManyToOne
     @JoinColumn(name = "idClientPrevious")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Client clientPrevious;
 
     @ManyToOne
     @JoinColumn(name = "idClientActual")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Client clientActual;
 
     @Column(precision = 10, scale = 2)

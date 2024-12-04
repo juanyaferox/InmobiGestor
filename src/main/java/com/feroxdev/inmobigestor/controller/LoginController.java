@@ -61,8 +61,8 @@ public class LoginController  {
         User user = isValidCredentials(username, password);
         if (user != null) {
             Notifications.create()
-                    .title("Login Successful")
-                    .text("Welcome, " + username)
+                    .title("Login éxitoso")
+                    .text("Bienvenido, " + username)
                     .showInformation();
             Stage stage = (Stage) usernameField.getScene().getWindow();
             if (user.getIdUser()==0){
@@ -73,8 +73,8 @@ public class LoginController  {
 
         } else {
             Notifications.create()
-                    .title("Login Failed")
-                    .text("Invalid username or password")
+                    .title("Login ha fallado")
+                    .text("Usuario o contraseña incorrectos")
                     .showError();
         }
     }

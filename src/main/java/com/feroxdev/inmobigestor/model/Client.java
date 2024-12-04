@@ -56,7 +56,7 @@ public class Client {
     @Enumerated(EnumType.ORDINAL)
     private EnumClient type;
 
-    @OneToMany (mappedBy = "client", fetch = FetchType.EAGER)
+    @OneToMany (mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Estate> estates;
 
     public String getFullName() {

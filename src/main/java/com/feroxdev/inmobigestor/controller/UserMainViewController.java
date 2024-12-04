@@ -17,6 +17,8 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -119,6 +121,9 @@ public class UserMainViewController {
     @FXML
     AnchorPane optionListSales;
 
+    @FXML
+    Canvas canvasUser;
+
 //    @FXML
 //    AnchorPane optionListDashboard;
 
@@ -132,6 +137,19 @@ public class UserMainViewController {
     public void initialize() {
         if (userSessionService != null)
             user = userSessionService.getLoggedInUser();
+
+        if (canvasUser!= null)
+            drawCanvasUser();
+    }
+
+    private void drawCanvasUser() {
+        GraphicsContext gc = canvasUser.getGraphicsContext2D();
+        double width = canvasUser.getWidth();
+        double height = canvasUser.getHeight();
+
+        // Mitad derecha diagonal
+        gc.setFill(Color.web("#ECFADC"));
+        gc.fillPolygon(new double[]{width, width, 0}, new double[]{0, height, height}, 3);
     }
 
     /**
@@ -225,11 +243,11 @@ public class UserMainViewController {
 
     @FXML
     private void showClientListAnother() {
-        reloadView();
-        changeVisibility(optionListClients);
-        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.ANOTHER);
-        log.warn("LISTA DE CLIENTES: {}", clientList.toString());
-        showClientGrid(clientList);
+//        reloadView();
+//        changeVisibility(optionListClients);
+//        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.ANOTHER);
+//        log.warn("LISTA DE CLIENTES: {}", clientList.toString());
+//        showClientGrid(clientList);
     }
 
     @FXML
@@ -594,9 +612,9 @@ public class UserMainViewController {
             gridPaneEstateList.add(imageView, 0, i + 1);
             GridPane.setHalignment(imageView, HPos.CENTER);
             GridPane.setMargin(imageView, new Insets(20, 0, 20, 0));
-            gridPaneEstateList.add(new Label(estate.getReference()), 1, i + 1);
-            gridPaneEstateList.add(new Label(stringState), 2, i + 1);
-            gridPaneEstateList.add(new Label(String.valueOf(estate.getBranch().getTown().getName())), 3, i + 1);
+            gridPaneEstateList.add(new Label(" "+estate.getReference()), 1, i + 1);
+            gridPaneEstateList.add(new Label(" "+stringState), 2, i + 1);
+            gridPaneEstateList.add(new Label(" "+estate.getBranch().getTown().getName()), 3, i + 1);
 
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();
@@ -617,7 +635,7 @@ public class UserMainViewController {
             deleteIcon.setIconLiteral("mdi2d-delete");
             deleteIcon.setIconSize(14);
             btnDelete.setGraphic(deleteIcon);
-            buttonColumn1.getChildren().add(btnDelete);
+            buttonColumn2.getChildren().add(btnDelete);
             btnDelete.setOnAction(e -> {
                 handleEstateDelete(estate);
                 reloadView();
@@ -631,7 +649,7 @@ public class UserMainViewController {
                 editIcon.setIconLiteral("mdi2h-home-edit");
                 editIcon.setIconSize(14);
                 btnEdit.setGraphic(editIcon);
-                buttonColumn2.getChildren().add(btnEdit);
+                buttonColumn1.getChildren().add(btnEdit);
                 btnEdit.setOnAction(e -> showModalEstateEdit(estate)); // Aquí tiene que abrirse
             } else {
                 Button btnViewRental = new Button();
@@ -640,7 +658,7 @@ public class UserMainViewController {
                 viewRentalIcon.setIconLiteral("mdi2n-newspaper-variant-outline");
                 viewRentalIcon.setIconSize(14);
                 btnViewRental.setGraphic(viewRentalIcon);
-                buttonColumn2.getChildren().add(btnViewRental);
+                buttonColumn1.getChildren().add(btnViewRental);
                 btnViewRental.setOnAction(e -> showModalRentalEdit(
                         estate.getHistoryRents().stream()
                         .max(Comparator.comparing(HistoryRent::getStartDate))
@@ -730,7 +748,7 @@ public class UserMainViewController {
             Stage primaryStage = (Stage) adminLogout.getScene().getWindow(); // Hace que la ventana principal sea dueña de la emergente
             stage.initOwner(primaryStage);
 
-            historyList.sort(Comparator.comparing(HistoryDTO::getDate));
+            historyList.sort(Comparator.comparing(HistoryDTO::getDate, Comparator.nullsLast(Comparator.naturalOrder())));
             ScrollPane scrollPane = (ScrollPane) root.lookup("#scrollPaneHistoryEstateList");
             GridPane gridPaneHistoryEstateList = (GridPane) scrollPane.getContent().lookup("#gridPaneHistoryEstateList");
             for (int i = 0; i < historyList.size(); i++) {
@@ -739,7 +757,7 @@ public class UserMainViewController {
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getOperation()), 0, i + 1);
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getClient()), 1, i + 1);
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getPrecio()), 2, i + 1);
-                gridPaneHistoryEstateList.add(new Label(" "+historyDTO.getDate().toString()), 3, i + 1);
+                gridPaneHistoryEstateList.add(new Label(" "+(historyDTO.getDate() != null ? historyDTO.getDate().toString() : "N/A")), 3, i + 1);
             }
             stage.showAndWait();
 //            reloadView();
@@ -755,9 +773,9 @@ public class UserMainViewController {
         for (HistoryRent rent : rents) {
             historyList.add(
                     new HistoryDTO(
-                            " Alquiler: " + (rent.getEndDate() == null ? "En curso" : "Finalizado"),
+                            " Alquiler: " + (rent.getExitDate() == null ? "En curso" : "Finalizado"),
                             " "+rent.getClientRented().getFullName() + ", " + rent.getClientRented().getDni(),
-                            rent.getEndDate() == null ? rent.getStartDate() : rent.getExitDate(),
+                            rent.getExitDate() == null ? rent.getStartDate() : rent.getExitDate(),
                             " "+rent.getRentPrice() + " €/mes"
                     )
             );
@@ -1164,6 +1182,8 @@ public class UserMainViewController {
     //endregion
 
     //region ALQUILERES
+
+    //region Listado de alquileres
     @FXML
     private void handleSearchRental() {
         String search = textSearchRental.getText();
@@ -1183,8 +1203,6 @@ public class UserMainViewController {
         log.warn("LISTA DE ALQUILERES;---------------------- {}", historyRentList.toString());
         showRental(historyRentList);
     }
-
-
 
     private void showRental(List<HistoryRent> historyRentList) {
         reloadView();
@@ -1210,6 +1228,7 @@ public class UserMainViewController {
 
         }
     }
+    //endregion
 
     @FXML
     private void showModalRentalAdd(){
@@ -1367,6 +1386,7 @@ public class UserMainViewController {
                     .endDate(dateEnd.getValue())
                     .rentPrice(price)
                     .build();
+            log.warn("HISTORY RENT: {}", historyRent);
         } else {
             historyRent.setExitDate(exitDate.getValue());
         }
@@ -1393,12 +1413,15 @@ public class UserMainViewController {
                 return;
             }
             //Caso de que el contrato no haya finalizado (nuevo contrato)
+            log.warn(historyRent.toString());
             hRentService.saveHistoryRent(historyRent);
             var client = historyRent.getClientRented();
             client.setEstateRented(historyRent.getEstate());
+            log.warn(client.toString());
             client = clientService.saveClientAsRenter(client);
             var estate = historyRent.getEstate();
             estate.setState(EnumEstate.RENTED);
+            log.warn(estate.toString());
             estateService.saveEstate(estate);
             Notifications.create()
                     .title("Éxito")

@@ -2,13 +2,16 @@ package com.feroxdev.inmobigestor.validation;
 
 import com.feroxdev.inmobigestor.model.*;
 import com.feroxdev.inmobigestor.utilities.CsvUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.controlsfx.control.Notifications;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Component
+@Slf4j
 public class Validation {
 
     ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
@@ -66,6 +69,10 @@ public class Validation {
             validationNotification(resourceBundle.getString("town"));
             isValid = false;
         }
+        if (branch.getReference() == null || branch.getReference().isEmpty() || branch.getReference().length() > 255) {
+            validationNotification(resourceBundle.getString("reference"));
+            isValid = false;
+        }
         return isValid;
     }
 
@@ -109,14 +116,6 @@ public class Validation {
         if (client == null) {   // evitamos posible nullPointerException
             validationNotification(resourceBundle.getString("client"));
             return false;
-        }
-        if (client.getBranch() == null || client.getBranch().equals(new Branch())) {
-            validationNotification(resourceBundle.getString("branch"));
-            isValid = false;
-        }
-        if (client.getUser() == null || client.getUser().equals(new User())) {
-            validationNotification(resourceBundle.getString("user"));
-            isValid = false;
         }
         if (client.getName() == null || client.getName().isEmpty() || client.getName().length() > 50) {
             validationNotification(resourceBundle.getString("name"));
@@ -187,7 +186,8 @@ public class Validation {
             validationNotification(resourceBundle.getString("rent.price"));
             isValid = false;
         }
-        if (historyRent.getClient() == historyRent.getClientRented()) {
+        //log.info("historyRent.getClient() == historyRent.getClientRented() = " + (historyRent.getClient() == historyRent.getClientRented()));
+        if (Objects.equals(historyRent.getClient().getIdClient(), historyRent.getClientRented().getIdClient())) {
             validationNotification(resourceBundle.getString("lessor"));
             isValid = false;
         }
