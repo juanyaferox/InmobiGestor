@@ -99,7 +99,6 @@
                                    <MenuItem onAction="#showClientListRenter" styleClass="menu-item" text="Arrendatarios" /><!-- -->
                                    <MenuItem onAction="#showClientListRenterAndHouseowner" styleClass="menu-item" text="Dueño y arrendatario" /><!-- -->
                                    <MenuItem onAction="#showClientListInactive" styleClass="menu-item" text="Inactivos" /><!-- -->
-                                   <MenuItem onAction="#showClientListAnother" styleClass="menu-item" text="Otros" /><!-- -->
                                    <graphic>
                                        <Region prefHeight="91.0" prefWidth="47.0" />
                                    </graphic>

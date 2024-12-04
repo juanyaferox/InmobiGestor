@@ -242,15 +242,6 @@ public class UserMainViewController {
     }
 
     @FXML
-    private void showClientListAnother() {
-//        reloadView();
-//        changeVisibility(optionListClients);
-//        List<Client> clientList = (List<Client>) clientService.getAllClientsByBranchAndType(user.getBranch(), EnumClient.ANOTHER);
-//        log.warn("LISTA DE CLIENTES: {}", clientList.toString());
-//        showClientGrid(clientList);
-    }
-
-    @FXML
     private void showClientListInactive() {
         reloadView();
         changeVisibility(optionListClients);
