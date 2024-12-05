@@ -3,6 +3,8 @@ package com.feroxdev.inmobigestor.model;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -38,4 +40,8 @@ public class User {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "idBranch")
     private Branch branch;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Client> client;
+
 }

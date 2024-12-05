@@ -59,11 +59,20 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userToChange);
     }
 
+    /**
+     * Obtiene todos los usuarios
+     * @return lista de usuarios
+     */
     @Override
     public List<User> allUsersList() {
         return userRepository.findAll();
     }
 
+    /**
+     * Elimina un usuario
+     * @param user usuario a eliminar
+     * @return usuario eliminado
+     */
     @Override
     public User deleteUser(User user) {
         Integer id= user.getIdUser();

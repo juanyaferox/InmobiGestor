@@ -9,5 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface BranchRepository extends JpaRepository<Branch, Integer> {
+    /**
+     * Encuentra una sucursal por el nombre de la ciudad
+     * @param town Ciudad
+     * @return Sucursal
+     */
     Optional<Branch> findByTown(Town town);
 }

@@ -13,7 +13,8 @@ public enum EnumEstate {
     SOLD("Vendido"), //2
     FOR_RENT("En alquiler"), //3
     RENTED("Alquilado"), //4
-    INACTIVE("Inactivo"); //5
+    INACTIVE("Inactivo"), //5
+    FOR_RENT_AND_SALE("En venta y en alquiler"); //6
 
     private final String description;
 }

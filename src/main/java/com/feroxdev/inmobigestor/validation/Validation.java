@@ -58,6 +58,10 @@ public class Validation {
         return isValid;
     }
 
+    /**
+     * @param branch Sucursal a ser validada
+     * @return true si está todo correcto, false si no paso alguna validacion
+     */
     public boolean validationBranch(Branch branch) {
         boolean isValid = true;
 
@@ -76,6 +80,11 @@ public class Validation {
         return isValid;
     }
 
+    /**
+     *
+     * @param estate Propiedad a ser validada
+     * @return true si está todo correcto, false si no paso alguna validacion
+     */
     public boolean validationEstate(Estate estate) {
         boolean isValid = true;
 
@@ -110,6 +119,11 @@ public class Validation {
         return isValid;
     }
 
+    /**
+     *
+     * @param client Cliente a ser validado
+     * @return true si está todo correcto, false si no paso alguna validacion
+     */
     public boolean validationClient(Client client) {
         boolean isValid = true;
 
@@ -148,6 +162,11 @@ public class Validation {
         return isValid;
     }
 
+    /**
+     *
+     * @param historyRent Historial de alquiler a ser validado
+     * @return true si está todo correcto, false si no paso alguna validacion
+     */
     public boolean validationHistoryRent(HistoryRent historyRent) {
         boolean isValid = true;
 
@@ -194,6 +213,11 @@ public class Validation {
         return isValid;
     }
 
+    /**
+     *
+     * @param historySale Historial de venta a ser validado
+     * @return true si está todo correcto, false si no paso alguna validacion
+     */
     public boolean validationHistorySale(HistorySale historySale) {
         boolean isValid = true;
 
@@ -224,7 +248,10 @@ public class Validation {
         return isValid;
     }
 
-
+    /**
+     * Crea una notificación de error de validación
+     * @param text Propiedad no cumplida a mostrar en la notificación
+     */
     private void validationNotification(String text) {
         Notifications.create()
                 .title(resourceBundle.getString("field") +" "+text+" "+resourceBundle.getString("invalid"))

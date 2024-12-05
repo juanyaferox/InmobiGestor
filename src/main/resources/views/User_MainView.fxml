@@ -192,7 +192,7 @@
                                 </content>
                                 </ScrollPane>
                             </VBox>
-                    <Button fx:id="btnAddNewClient" layoutX="822.0" layoutY="544.0" mnemonicParsing="false" onAction="#showModalEstateAdd" prefHeight="43.0" prefWidth="167.0" styleClass="custom-btn" text="Añadir nuevo cliente" />
+                    <Button fx:id="btnAddNewClient" layoutX="822.0" layoutY="544.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="167.0" styleClass="custom-btn" text="Añadir nuevo cliente" />
                 </AnchorPane>
                 <AnchorPane fx:id="optionListRentals" prefHeight="607.0" prefWidth="1080.0" visible="false">
                     <ScrollPane fx:id="scrollPaneRentalList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" pannable="true" prefHeight="438.0" prefWidth="880.0" styleClass="scrollpane">

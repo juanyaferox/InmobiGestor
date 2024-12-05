@@ -17,6 +17,11 @@ public class HRentServiceImpl implements HRentService{
     @Autowired
     private HRentRepository hRentRepository;
 
+    /**
+     * Obtiene todos los historiales de renta de una sucursal
+     * @param branch Sucursal
+     * @return Lista de historiales de renta ordenados por id
+     */
     @Override
     public List<HistoryRent> getHistoryRentByBranch(Branch branch) {
 
@@ -26,11 +31,22 @@ public class HRentServiceImpl implements HRentService{
                 ).toList();
     }
 
+    /**
+     * Guarda un historial de renta
+     * @param historyRent Historial de renta
+     * @return Historial de renta guardado
+     */
     @Override
     public HistoryRent saveHistoryRent(HistoryRent historyRent) {
         return hRentRepository.save(historyRent);
     }
 
+    /**
+     * Obtiene todos los historiales de renta de una sucursal y referencia
+     * @param idBranch Sucursal
+     * @param reference Referencia
+     * @return Lista de historiales de renta ordenados por id
+     */
     @Override
     public List<HistoryRent> getHistoryRentByBranchAndReference(Branch idBranch, String reference) {
         return hRentRepository.findByBranchIdAndReference(idBranch.getIdBranch(), reference)

@@ -15,6 +15,11 @@ public class HSaleServiceImpl implements HSaleService {
     @Autowired
     private HSaleRepository hSaleRepository;
 
+    /**
+     * Obtiene todos los historiales de venta de una sucursal
+     * @param idBranch Sucursal
+     * @return Lista de historiales de venta ordenados por id
+     */
     @Override
     public List<HistorySale> getHistorySaleByBranch(Branch idBranch) {
             return hSaleRepository.findByBranchId(idBranch.getIdBranch())
@@ -23,11 +28,22 @@ public class HSaleServiceImpl implements HSaleService {
                     ).toList();
     }
 
+    /**
+     * Guarda un historial de venta
+     * @param historySale Historial de venta
+     * @return Historial de venta guardado
+     */
     @Override
     public HistorySale saveHistorySale(HistorySale historySale) {
         return hSaleRepository.save(historySale);
     }
 
+    /**
+     * Obtiene todos los historiales de venta de una sucursal y referencia
+     * @param idBranch Sucursal
+     * @param reference Referencia
+     * @return Lista de historiales de venta ordenados por id
+     */
     @Override
     public List<HistorySale> getHistorySaleByBranchAndReference(Branch idBranch, String reference) {
         return hSaleRepository.findByBranchIdAndReference(idBranch.getIdBranch(), reference)

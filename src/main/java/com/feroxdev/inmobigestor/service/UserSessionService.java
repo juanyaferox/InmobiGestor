@@ -9,5 +9,8 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 public class UserSessionService {
+    /**
+     * Usuario logueado
+     */
     private User loggedInUser;
 }

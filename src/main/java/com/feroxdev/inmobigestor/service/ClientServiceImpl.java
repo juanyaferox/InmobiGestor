@@ -14,26 +14,51 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    /**
+     * Obtiene todos los clientes
+     * @return Lista de clientes
+     */
     @Override
     public Iterable<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
+    /**
+     * Obtiene todos los clientes por sucursal
+     * @param branch Sucursal
+     * @return Lista de clientes
+     */
     @Override
     public Iterable<Client> getAllClientsByBranch(Branch branch) {
         return clientRepository.findAllByBranch(branch);
     }
 
+    /**
+     * Obtiene todos los clientes por sucursal y tipo de cliente
+     * @param branch Sucursal
+     * @param type Tipo de cliente
+     * @return Lista de clientes
+     */
     @Override
     public Iterable<Client> getAllClientsByBranchAndType(Branch branch, EnumClient type) {
         return clientRepository.findAllByBranchAndType(branch, type);
     }
 
+    /**
+     * Obtiene un cliente por id
+     * @param idClient Id del cliente
+     * @return Cliente
+     */
     @Override
     public Client getClientById(Integer idClient) {
         return clientRepository.findById(idClient).orElse(null);
     }
 
+    /**
+     * Guarda un cliente como arrendatario
+     * @param client Cliente
+     * @return Cliente guardado que puede ser arrendatario o arrendatario y dueño
+     */
     @Override
     public Client saveClientAsRenter(Client client) {
         if (!client.getEstates().isEmpty()){
@@ -44,6 +69,11 @@ public class ClientServiceImpl implements ClientService {
         return saveClient(client);
     }
 
+    /**
+     * Guarda un cliente como no arrendatario
+     * @param client Cliente
+     * @return Cliente guardado que puede ser dueño o inactivo
+     */
     @Override
     public Client saveClientAsNoRenter(Client client) {
         if (!client.getEstates().isEmpty()){
@@ -54,6 +84,11 @@ public class ClientServiceImpl implements ClientService {
         return saveClient(client);
     }
 
+    /**
+     * Guarda un cliente como dueño
+     * @param client Cliente
+     * @return Cliente guardado que puede ser dueño o arrendatario y dueño
+     */
     @Override
     public Client saveClientAsOwner(Client client) {
         if (client.getType() == EnumClient.RENTER){
@@ -68,6 +103,11 @@ public class ClientServiceImpl implements ClientService {
         return client;
     }
 
+    /**
+     * Guarda un cliente como no dueño
+     * @param client Cliente
+     * @return Cliente guardado que puede ser arrendatario o inactivo
+     */
     @Override
     public Client saveClientAsNoOwner(Client client) {
 
@@ -82,11 +122,21 @@ public class ClientServiceImpl implements ClientService {
         return client;
     }
 
+    /**
+     * Guarda un cliente
+     * @param client Cliente
+     * @return Cliente guardado
+     */
     @Override
     public Client saveClient(Client client) {
         return clientRepository.save(client);
     }
 
+    /**
+     * Elimina un cliente
+     * @param client Cliente
+     * @return Cliente eliminado
+     */
     @Override
     public Client deleteClient(Client client) {
         if (clientRepository.findById(client.getIdClient()).isEmpty())

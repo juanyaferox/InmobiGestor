@@ -23,6 +23,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Autowired
     private UserService userService;
+
     /**
      * Verifica si existe una sucursal en esa ciudad
      * @param town: ciudad a hacer comprobacion
@@ -34,6 +35,10 @@ public class BranchServiceImpl implements BranchService {
         return branchCoincident.orElse(new Branch());
     }
 
+    /**
+     * Encuentra todas las sucursales
+     * @return Lista de sucursales ordenadas por id
+     */
     @Override
     public List<Branch> findAllBranch() {
         return branchRepository.findAll(Sort.by(Sort.Direction.ASC, "idBranch"));
@@ -70,6 +75,11 @@ public class BranchServiceImpl implements BranchService {
         return new Branch();
     }
 
+    /**
+     * Añade una sucursal a la bbdd
+     * @param branch sucursal a añadir
+     * @return la sucursal añadida si la ciudad existe, null si no existe
+     */
     @Override
     public Branch addBranch(Branch branch) {
         if (branch != null && townRepository.findById(branch.getTown().getIdTown()).isPresent()){
@@ -78,6 +88,11 @@ public class BranchServiceImpl implements BranchService {
         return null;
     }
 
+    /**
+     * Actualiza una sucursal
+     * @param branch sucursal a actualizar
+     * @return la sucursal actualizada si la ciudad existe y la sucursal también, null si no existe
+     */
     @Override
     public Branch updateBranch(Branch branch) {
         if (branch != null && townRepository.findById(branch.getTown().getIdTown()).isPresent()){

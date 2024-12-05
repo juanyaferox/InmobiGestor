@@ -103,8 +103,10 @@ public class AdminMainViewController {
     @FXML
     Canvas canvasUser;
 
-    //variable global del usuario actual
+    // Variable global del usuario actual
     User user;
+
+    // Archivo de propiedades para los mensajes
     ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
 
     /**
@@ -117,6 +119,9 @@ public class AdminMainViewController {
             drawCanvasUser();
     }
 
+    /**
+     * Dibuja un triángulo en la mitad derecha de la pantalla que actuará de fondo
+     */
     private void drawCanvasUser() {
         GraphicsContext gc = canvasUser.getGraphicsContext2D();
         double width = canvasUser.getWidth();
@@ -192,6 +197,10 @@ public class AdminMainViewController {
     //region GESTIÓN
 
     //region SUCURSALES
+
+    /**
+     * Muestra la lista de sucursales
+     */
     @FXML
     private void showAllBranchsList() {
         changeVisibility(optionListBranchs);
@@ -232,6 +241,10 @@ public class AdminMainViewController {
     }
     //endregion
 
+    /**
+     * Muestra la ventana modal para editar sucursal
+     * @param branch Sucursal a editar
+     */
     @FXML
     private void showModalBranchEdit(Branch branch) {
         try {
@@ -272,6 +285,11 @@ public class AdminMainViewController {
 
     }
 
+    /**
+     * Obtiene los datos de la sucursal a editar desde la ventana modal
+     * @param branch Sucursal a editar
+     * @param root Ventana modal
+     */
     @FXML
     private void handleListBranchEdit(Branch branch, Parent root) {
         @SuppressWarnings ("unchecked")
@@ -297,6 +315,10 @@ public class AdminMainViewController {
         }
     }
 
+    /**
+     * Borra la sucursal, si tiene usuarios asignados no se puede borrar
+     * @param branch Sucursal a borrar
+     */
     @FXML
     private void handleBranchDelete(Branch branch) {
         var branchDeleted = branchService.deleteBranch(branch);
@@ -317,6 +339,9 @@ public class AdminMainViewController {
         showAllBranchsList();
     }
 
+    /**
+     * Muestra la ventana modal para añadir sucursal
+     */
     @FXML
     private void showModalBranchAdd() {
         try {
@@ -357,6 +382,10 @@ public class AdminMainViewController {
 
     }
 
+    /**
+     * Obtiene los datos de la sucursal a añadir desde la ventana modal
+     * @param root Ventana modal
+     */
     @FXML
     private void handleListBranchAdd(Parent root) {
         @SuppressWarnings ("unchecked")
@@ -573,6 +602,9 @@ public class AdminMainViewController {
 
     //region Creación de usuarios del listado
 
+    /**
+     * Muestra la ventana modal para añadir usuario
+     */
     @FXML
     private void showModalUserAdd() {
         try {
@@ -610,6 +642,10 @@ public class AdminMainViewController {
 
     }
 
+    /**
+     * Obtiene los datos del usuario  a añadir desde la ventana modal
+     * @param root Ventana modal
+     */
     @FXML
     private void handleListUserAdd(Parent root) {
         TextField textUser = (TextField) root.lookup("#textUser");
@@ -694,6 +730,11 @@ public class AdminMainViewController {
         }
     }
 
+    /**
+     * Configura el ComboBox de sucursales para que muestre la referencia de la sucursal y permita filtrar por la referencia
+     * @param boxBranch ComboBox de sucursales
+     * @param branchItems Lista de sucursales
+     */
     private void configureBranchComboBox(ComboBox<Branch> boxBranch, ObservableList<Branch> branchItems) {
         boxBranch.setConverter(new StringConverter<>() {
             @Override
@@ -728,7 +769,12 @@ public class AdminMainViewController {
         });
     }
 
-    private void configureTownComboBox(ComboBox<Town> boxTown, ObservableList<Town> branchItems) {
+    /**
+     * Configura el ComboBox de ciudades para que muestre el nombre de la ciudad y permita filtrar por el nombre
+     * @param boxTown ComboBox de ciudades
+     * @param townItems Lista de ciudades
+     */
+    private void configureTownComboBox(ComboBox<Town> boxTown, ObservableList<Town> townItems) {
         boxTown.setConverter(new StringConverter<>() {
             @Override
             public String toString(Town town) {
@@ -737,7 +783,7 @@ public class AdminMainViewController {
 
             @Override
             public Town fromString(String string) {
-                return branchItems.stream()
+                return townItems.stream()
                         .filter(town -> town.getName().equals(string))
                         .findFirst()
                         .orElse(null);
@@ -746,7 +792,7 @@ public class AdminMainViewController {
 
         // Configurar el filtrado del ComboBox mediante el editor de texto
         TextField editor = boxTown.getEditor();
-        FilteredList<Town> filteredItems = new FilteredList<>(branchItems, p -> true);
+        FilteredList<Town> filteredItems = new FilteredList<>(townItems, p -> true);
         boxTown.setItems(filteredItems);
 
         editor.textProperty().addListener((obs, oldValue, newValue) -> {

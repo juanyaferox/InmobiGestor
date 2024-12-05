@@ -6,12 +6,18 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
 
+
 public class EmailUtils {
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final int SMTP_PORT = 587;
     private static final String EMAIL = "juaniago2001@gmail.com";
     private static final String PASSWORD = "mpsc qnjm kblf ztvj";
 
+    /**
+     * Envia un correo de recuperación de contraseña
+     * @param toEmail Correo de destino
+     * @param newPassword Nueva contraseña
+     */
     public static void sendPasswordRecoveryEmail(String toEmail, String newPassword) {
 
         Properties props = new Properties();

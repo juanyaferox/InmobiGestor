@@ -11,12 +11,25 @@ import java.text.Normalizer;
 import java.util.Locale;
 
 public class CsvUtils {
+
+    /**
+     * Normaliza una cadena de texto
+     * @param input Cadena de texto
+     * @return Cadena de texto normalizada
+     */
     private static String normalizeString(String input) {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         normalized = normalized.replaceAll("[^\\p{ASCII}]", "");
         return normalized.toLowerCase(Locale.ROOT);
     }
 
+    /**
+     * Busca una cadena de texto en un archivo CSV
+     * @param searchString Cadena de texto a buscar
+     * @return Array con los datos encontrados
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public static String[] searchInCsv(String searchString) throws IOException, URISyntaxException {
         URL resource = CsvUtils.class.getClassLoader().getResource("docs/municipios.csv");
         if (resource == null) {

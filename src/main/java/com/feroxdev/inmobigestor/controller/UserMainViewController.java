@@ -51,6 +51,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @Controller
 @Slf4j
 public class UserMainViewController {
+    //region Inyeccion de dependencias
+
+    // Servicios
     @Autowired
     UserSessionService userSessionService;
     @Autowired
@@ -64,18 +67,21 @@ public class UserMainViewController {
     @Autowired
     HSaleService hSaleService;
 
+    // Vistas
     @Autowired
     LoginView loginView;
     @Autowired
     UserView userView;
 
+    // Validaciones
     @Autowired
     Validation validation;
 
+    // Botón, se utilizara para obtener la vista actual
     @FXML
     Button adminLogout;
 
-    //busqueda
+    // Búsqueda
     @FXML
     Button btnSearchRental;
     @FXML
@@ -86,6 +92,7 @@ public class UserMainViewController {
     TextField textSearchSale;
 
 
+    // TextFields
     @FXML
     TextField textUser;
     @FXML
@@ -101,6 +108,7 @@ public class UserMainViewController {
     @FXML
     TextField textEmail;
 
+    // GridPanes
     @FXML
     GridPane gridPaneEstateList;
     @FXML
@@ -110,6 +118,7 @@ public class UserMainViewController {
     @FXML
     GridPane gridPaneSaleList;
 
+    // AnchorPanes
     @FXML
     AnchorPane optionModifyUser;
     @FXML
@@ -121,19 +130,21 @@ public class UserMainViewController {
     @FXML
     AnchorPane optionListSales;
 
+    // Canvas
     @FXML
     Canvas canvasUser;
+    //endregion
 
-//    @FXML
-//    AnchorPane optionListDashboard;
-
-    //variable global del usuario actual
+    // Variable global del usuario actual
     User user;
 
     DecimalFormat formatter = new DecimalFormat("#,##0.00");
 
     ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
 
+    /**
+     * Inicializa los datos necesarios de la vista
+     */
     public void initialize() {
         if (userSessionService != null)
             user = userSessionService.getLoggedInUser();
@@ -142,6 +153,9 @@ public class UserMainViewController {
             drawCanvasUser();
     }
 
+    /**
+     * Dibuja un triángulo en la mitad derecha de la pantalla que actuará de fondo
+     */
     private void drawCanvasUser() {
         GraphicsContext gc = canvasUser.getGraphicsContext2D();
         double width = canvasUser.getWidth();
@@ -155,7 +169,7 @@ public class UserMainViewController {
     /**
      * Obtiene el Stage actual y lo sustituye por la pantalla de Login
      *
-     * @throws IOException :
+     * @throws IOException
      */
     @FXML
     private void handleLogout() throws IOException {
@@ -214,6 +228,10 @@ public class UserMainViewController {
     //region CLIENTES
 
     //region Listado de clientes
+
+    /**
+     * Muestra todos los clientes de la sucursal
+     */
     @FXML
     private void showClientAll() {
         reloadView();
@@ -223,6 +241,9 @@ public class UserMainViewController {
         showClientGrid(clientList);
     }
 
+    /**
+     * Muestra los clientes propietarios de la sucursal
+     */
     @FXML
     private void showClientListHouseowner() {
         reloadView();
@@ -232,6 +253,9 @@ public class UserMainViewController {
         showClientGrid(clientList);
     }
 
+    /**
+     * Muestra los clientes arrendatarios de la sucursal
+     */
     @FXML
     private void showClientListRenter() {
         reloadView();
@@ -241,6 +265,9 @@ public class UserMainViewController {
         showClientGrid(clientList);
     }
 
+    /**
+     * Muestra los clientes inactivos de la sucursal
+     */
     @FXML
     private void showClientListInactive() {
         reloadView();
@@ -250,6 +277,9 @@ public class UserMainViewController {
         showClientGrid(clientList);
     }
 
+    /**
+     * Muestra los clientes propietarios y arrendatarios de la sucursal
+     */
     @FXML
     private void showClientListRenterAndHouseowner() {
         reloadView();
@@ -259,6 +289,10 @@ public class UserMainViewController {
         showClientGrid(clientList);
     }
 
+    /**
+     * Muestra los clientes por tipo
+     * @param type
+     */
     private void showClientListByType(EnumClient type) {
         reloadView();
         changeVisibility(optionListClients);
@@ -267,6 +301,10 @@ public class UserMainViewController {
         showClientGrid(clientList);
     }
 
+    /**
+     * Muestra por pantalla los clientes
+     * @param clientList Lista de clientes
+     */
     private void showClientGrid(List<Client> clientList) {
 
         for (int i = 0; i < clientList.size(); i++) {
@@ -381,6 +419,10 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Muestra en una ventana emergen la lista de inmuebles adquiridos de un cliente
+     * @param client Cliente a obtener los inmuebles
+     */
     private void showModalEstatesOwner(Client client) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_EstatesList_ModalWindow.fxml"));
@@ -418,16 +460,28 @@ public class UserMainViewController {
     //endregion
 
     //region Añadir y edición cliente
+
+    /**
+     * Muestra la ventana emergente para añadir un nuevo cliente
+     */
     @FXML
     public void showModalUserAdd() {
         showModalUser(new Client());
     }
 
+    /**
+     * Muestra la ventana emergente para editar un cliente
+     * @param client Cliente a editar
+     */
     @FXML
     public void showModalUserEdit(Client client) {
         showModalUser(client);
     }
 
+    /**
+     * Muestra la ventana emergente para crear o editar un cliente
+     * @param client
+     */
     private void showModalUser(Client client) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Client_ModalWindow.fxml"));
@@ -481,6 +535,12 @@ public class UserMainViewController {
 
     }
 
+    /**
+     * Guarda los datos del cliente en la bbdd
+     * @param root Ventana emergente
+     * @param client Cliente a guardar
+     * @param stage Stage de la ventana emergente
+     */
     private void handleClientSave(Parent root, Client client, Stage stage){
 
         //Obtener los datos del cliente
@@ -513,6 +573,11 @@ public class UserMainViewController {
     //endregion
 
     //region Eliminar cliente
+
+    /**
+     * Elimina un cliente de la bbdd
+     * @param client Cliente a eliminar
+     */
     private void handleClienteDelete(Client client) {
         log.warn("Eliminar cliente: {}", client.getDni());
         if (clientService.deleteClient(client)==null) {
@@ -529,6 +594,10 @@ public class UserMainViewController {
     //region INMUEBLES
 
     //region Listado de inmuebles
+
+    /**
+     * Muestra todos los inmuebles de la sucursal
+     */
     @FXML
     private void showEstateAll() {
         reloadView();
@@ -538,6 +607,9 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles en venta de la sucursal
+     */
     @FXML
     private void showEstateSale() {
         reloadView();
@@ -547,6 +619,9 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles en alquiler de la sucursal
+     */
     @FXML
     private void showEstateRent() {
         reloadView();
@@ -556,6 +631,9 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles vendidos de la sucursal
+     */
     @FXML
     private void showEstateSold() {
         reloadView();
@@ -565,6 +643,9 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles alquilados de la sucursal
+     */
     @FXML
     private void showEstateRented() {
         reloadView();
@@ -574,6 +655,9 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles en estado otro de la sucursal
+     */
     @FXML
     private void showEstateAnother() {
         reloadView();
@@ -583,6 +667,9 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles inactivos de la sucursal
+     */
     @FXML
     private void showEstateInactive() {
         reloadView();
@@ -592,6 +679,22 @@ public class UserMainViewController {
         showEstateGrid(estateList);
     }
 
+    /**
+     * Muestra los inmuebles en venta y alquiler de la sucursal
+     */
+    @FXML
+    private void showEstateRentSale() {
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT_AND_SALE, user.getBranch());
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
+        showEstateGrid(estateList);
+    }
+
+    /**
+     * Muestra los inmuebles segun la lista de inmuebles
+     * @param estateList Lista de inmuebles
+     */
     private void showEstateGrid(List<Estate> estateList) {
         for (int i = 0; i < estateList.size(); i++) {
             var estate = estateList.get(i);
@@ -676,6 +779,12 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Obtiene la imagen del inmueble, caso no haya imagen se carga una por defecto
+     * @param estate Inmueble
+     * @param imageView ImageView a devolver
+     * @return ImageView con la imagen del inmueble
+     */
     private static ImageView getImageView(Estate estate, ImageView imageView) {
         try {
             String imagePath = System.getProperty("user.dir") + estate.getImagePath();
@@ -718,6 +827,10 @@ public class UserMainViewController {
         return imageView;
     }
 
+    /**
+     * Sobrecarga de metodo: Muestra en una ventana emergente el historial de un inmueble
+     * @param estate Inmueble a obtener el historial
+     */
     private void showModalEstateHistory(Estate estate) {
         var rents = estate.getHistoryRents();
         var sales = estate.getHistorySales();
@@ -727,6 +840,10 @@ public class UserMainViewController {
         showModalEstateHistory(historyList);
     }
 
+    /**
+     * Muestra en una ventana emergente el historial de operaciones de un inmueble
+     * @param historyList Lista de historial de operaciones
+     */
     private void showModalEstateHistory(List<HistoryDTO> historyList) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_HistoryEstate_ModalWindow.fxml"));
@@ -759,6 +876,12 @@ public class UserMainViewController {
 
     }
 
+    /**
+     * Contruye la lista de historial de operaciones de un inmueble
+     * @param rents Historial de alquileres
+     * @param sales Historial de ventas
+     * @return Lista de historial de operaciones
+     */
     private static List<HistoryDTO> getHistoryDTOS(List<HistoryRent> rents, List<HistorySale> sales) {
         List<HistoryDTO> historyList = new ArrayList<>();
         for (HistoryRent rent : rents) {
@@ -787,6 +910,10 @@ public class UserMainViewController {
     //endregion
 
     //region Añadir inmueble
+
+    /**
+     * Muestra la ventana emergente para añadir un nuevo inmueble
+     */
     @FXML
     private void showModalEstateAdd(){
         try {
@@ -923,6 +1050,11 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Guarda los datos del inmueble en la bbdd
+     * @param root Ventana emergente
+     * @param imageFile Archivo de la imagen
+     */
     private void handleListEstateAdd(Parent root, @Nullable File imageFile) {
         TextField textReference = (TextField) root.lookup("#textReference");
         TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
@@ -972,10 +1104,20 @@ public class UserMainViewController {
 
     //region Editar inmueble
 
+    /**
+     * Sobrecarga de metodo:
+     * Muestra la ventana emergente para editar un inmueble que no esté alquilado
+     * @param estate Inmueble a editar
+     */
     private void showModalEstateEdit(Estate estate) {
         showModalEstateEdit(estate, false);
     }
 
+    /**
+     * Muestra la ventana emergente para editar un inmueble
+     * @param estate
+     * @param isRentedCase
+     */
     private void showModalEstateEdit(Estate estate, boolean isRentedCase) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Estate_ModalWindow.fxml"));
@@ -1104,8 +1246,12 @@ public class UserMainViewController {
 
     }
 
-
-
+    /**
+     * Guarda los datos del inmueble editado en la bbdd
+     * @param estate Inmueble a editar
+     * @param root Ventana emergente
+     * @param imageFile Archivo de la imagen
+     */
     private void handleListEstateEdit(Estate estate, Parent root, File imageFile) {
 
         TextField textReference = (TextField) root.lookup("#textReference");
@@ -1155,6 +1301,11 @@ public class UserMainViewController {
     //endregion
 
     //region Borrar inmueble
+
+    /**
+     * Elimina un inmueble de la bbdd
+     * @param estate Inmueble a eliminar
+     */
     private void handleEstateDelete(Estate estate) {
         log.warn("Eliminar inmueble: {}", estate.getReference());
         if (estate.getClientRenter()!=null){
@@ -1175,6 +1326,10 @@ public class UserMainViewController {
     //region ALQUILERES
 
     //region Listado de alquileres
+
+    /**
+     * Apartir de un texto de busqueda muestra los alquileres que coincidan con la referencia
+     */
     @FXML
     private void handleSearchRental() {
         String search = textSearchRental.getText();
@@ -1188,6 +1343,10 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Sobrecarga de método:
+     * Muestra el historial de todos los alquileres de la sucursal
+     */
     @FXML
     private void showRental(){
         List<HistoryRent> historyRentList = hRentService.getHistoryRentByBranch(user.getBranch());
@@ -1195,6 +1354,10 @@ public class UserMainViewController {
         showRental(historyRentList);
     }
 
+    /**
+     * Muestra el historial de alquileres apartir de una lista
+     * @param historyRentList Lista de historial de alquileres
+     */
     private void showRental(List<HistoryRent> historyRentList) {
         reloadView();
         changeVisibility(optionListRentals);
@@ -1221,16 +1384,29 @@ public class UserMainViewController {
     }
     //endregion
 
+    /**
+     * Muestra la ventana emergente para añadir un nuevo alquiler
+     */
     @FXML
     private void showModalRentalAdd(){
         showModalRental(new HistoryRent());
     }
 
+    /**
+     * Muestra la ventana emergente para editar un alquiler
+     * @param historyRent Alquiler a editar
+     */
     @FXML
     private void showModalRentalEdit(HistoryRent historyRent){
         showModalRental(historyRent);
     }
 
+    /**
+     * Muestra la ventana emergente para añadir o editar un alquiler
+     * En el caso de editar, solo se puede modificar el campo fecha de salida y el precio de alquiler
+     * En el caso de añadir, se puede modificar todos los campos excepto fecha de salida
+     * @param historyRent
+     */
     private void showModalRental(HistoryRent historyRent){
         try {
             log.warn("HISTORY RENT: {}", historyRent);
@@ -1350,6 +1526,12 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Guarda los datos del alquiler en la bbdd
+     * @param root Ventana emergente
+     * @param stage Ventana emergente
+     * @param historyRent Alquiler a guardar
+     */
     private void handleRentalSave(Parent root, Stage stage, HistoryRent historyRent) {
         @SuppressWarnings("unchecked")
         ComboBox<Estate> boxEstate = (ComboBox<Estate>) root.lookup("#boxEstate");
@@ -1426,6 +1608,9 @@ public class UserMainViewController {
 
     //region VENTAS
 
+    /**
+     * Apartir de un texto de busqueda muestra las ventas que coincidan con la referencia
+     */
     @FXML
     private void handleSearchSale() {
         String search = textSearchSale.getText();
@@ -1439,6 +1624,10 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Sobrecarga de método:
+     * Muestra el historial de todas las ventas de la sucursal
+     */
     @FXML
     private void showSale(){
         List<HistorySale> historySaleList = hSaleService.getHistorySaleByBranch(user.getBranch());
@@ -1446,6 +1635,10 @@ public class UserMainViewController {
         showSale(historySaleList);
     }
 
+    /**
+     * Muestra el historial de ventas apartir de una lista
+     * @param historySaleList Lista de historial de ventas
+     */
     @FXML
     private void showSale(List<HistorySale> historySaleList) {
         reloadView();
@@ -1468,11 +1661,18 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Muestra la ventana emergente para añadir una nueva venta
+     */
     @FXML
     private void showModalSaleAdd(){
         showModalSale(new HistorySale());
     }
 
+    /**
+     * Muestra la ventana emergente para añadir una venta
+     * @param historySale Venta a añadir
+     */
     private void showModalSale(HistorySale historySale){
         try {
             log.warn("HISTORY RENT: {}", historySale);
@@ -1567,6 +1767,12 @@ public class UserMainViewController {
         }
     }
 
+    /**
+     * Guarda los datos de la venta en la bbdd
+     * @param root Ventana emergente
+     * @param stage Ventana emergente
+     * @param historySale Historial de venta a guardar
+     */
     private void handleSaleSave(Parent root, Stage stage, HistorySale historySale) {
         @SuppressWarnings("unchecked")
         ComboBox<Estate> boxEstate = (ComboBox<Estate>) root.lookup("#boxEstate");
@@ -1613,6 +1819,10 @@ public class UserMainViewController {
 
     //endregion
 
+    /**
+     * Método para cambiar entre las opciones del menu, comodificando la visilibidad de los paneles
+     * @param anchorPane Panel a mostrar
+     */
     private void changeVisibility(AnchorPane anchorPane) {
 
         optionModifyUser.setVisible(false);
@@ -1624,6 +1834,9 @@ public class UserMainViewController {
         anchorPane.setVisible(true);
     }
 
+    /**
+     * Recarga la vista de usuario
+     */
     @FXML
     private void reloadView() {
         try {

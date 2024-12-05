@@ -1,6 +1,11 @@
 package com.feroxdev.inmobigestor.utilities;
 
 public class GenericUtils {
+    /**
+     * Comprueba si un DNI es válido
+     * @param dni DNI a comprobar
+     * @return true si es válido, false en caso contrario
+     */
     private static boolean isDNIValid(String dni) {
         if (dni == null || !dni.matches("\\d{8}[A-Z]")) {
             return false;
