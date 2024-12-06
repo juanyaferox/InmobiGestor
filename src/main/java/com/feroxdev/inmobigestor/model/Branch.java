@@ -27,6 +27,9 @@ public class Branch {
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Estate> estates;
 
-    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<User> users;
+
+    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Client> clients;
 }
