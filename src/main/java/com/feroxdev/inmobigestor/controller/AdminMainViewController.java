@@ -418,6 +418,7 @@ public class AdminMainViewController {
                     .title(resourceBundle.getString("sucess"))
                     .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
+
             reloadView();
             showAllBranchsList();
 

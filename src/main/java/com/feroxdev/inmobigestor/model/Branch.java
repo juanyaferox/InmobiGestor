@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "branchs")
 @Data
-@ToString(exclude = { "estates", "users" })
+@ToString(exclude = { "estates", "users","clients" })
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
