@@ -437,7 +437,7 @@ public class UserMainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_EstatesList_ModalWindow.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Editar Inmueble");
+            stage.setTitle("Inmuebles adquiridos por " + client.getFullName());
             stage.setScene(new Scene(root));
 
             stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
@@ -942,7 +942,7 @@ public class UserMainViewController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/User_Estate_ModalWindow.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Editar Inmueble");
+            stage.setTitle("Nuevo Inmueble");
             stage.setScene(new Scene(root));
 
             stage.initModality(Modality.APPLICATION_MODAL); // Hace la ventana emergente bloqueante
@@ -1523,6 +1523,7 @@ public class UserMainViewController {
             // Caso de edición
             if (!Objects.equals(historyRent, new HistoryRent())){
 
+                stage.setTitle("Editar Alquiler");
 
                 boxEstate.setValue(historyRent.getEstate());
                 boxEstate.setDisable(true);
