@@ -73,7 +73,7 @@ public class Validation {
             validationNotification(resourceBundle.getString("town"));
             isValid = false;
         }
-        if (branch.getReference() == null || branch.getReference().isEmpty() || branch.getReference().length() > 255) {
+        if (branch.getReference() == null || branch.getReference().isEmpty() || branch.getReference().length() > 255) { // Validar para no repetir referencia
             validationNotification(resourceBundle.getString("reference"));
             isValid = false;
         }
@@ -112,7 +112,7 @@ public class Validation {
             validationNotification(resourceBundle.getString("address"));
             isValid = false;
         }
-        if (estate.getImagePath().length() > 500) {
+        if (estate.getImagePath() != null && estate.getImagePath().length() > 500) {
             validationNotification(resourceBundle.getString("image"));
             isValid = false;
         }
@@ -190,10 +190,6 @@ public class Validation {
             validationNotification(resourceBundle.getString("start.date"));
             isValid = false;
         }
-        if (historyRent.getEndDate() == null) {
-            validationNotification(resourceBundle.getString("end.date"));
-            isValid = false;
-        }
         if (historyRent.getEndDate() != null && historyRent.getStartDate() != null && historyRent.getStartDate().isAfter(historyRent.getEndDate())) {
             validationNotification(
                     resourceBundle.getString("start.date") +
@@ -234,6 +230,10 @@ public class Validation {
             isValid = false;
         }
         if (historySale.getClientPrevious() == null || historySale.getClientPrevious().equals(new Client())) {
+            validationNotification(resourceBundle.getString("buyer"));
+            isValid = false;
+        }
+        if (Objects.equals(historySale.getClientActual().getIdClient(), historySale.getClientPrevious().getIdClient())) {
             validationNotification(resourceBundle.getString("buyer"));
             isValid = false;
         }

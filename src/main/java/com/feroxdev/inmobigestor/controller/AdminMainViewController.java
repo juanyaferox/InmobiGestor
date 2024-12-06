@@ -171,6 +171,7 @@ public class AdminMainViewController {
      */
     @FXML
     private void handleUserModify() {
+        String oldDni = user.getDni();
         log.warn(user.toString());
         user.setUser(textUser.getText());
         user.setPassword(textPassword.getText());
@@ -182,7 +183,7 @@ public class AdminMainViewController {
         //VALIDACIONES
         if (validation.validationUser(user)) {
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
-            userService.changeInfoUser(user);
+            userService.changeInfoUser(user, oldDni);
             showUserModify();
             Notifications.create()
                     .title(resourceBundle.getString("sucess"))
@@ -404,7 +405,10 @@ public class AdminMainViewController {
 
             log.warn("CAMPOS A ENVIAR;------\n"
                     + "---------------------" + branch.toString());
-            branchService.addBranch(branch);
+            Branch branchSaved = branchService.addBranch(branch);
+            log.warn(user.toString());
+            userService.addAdminUserBranch(branchSaved, user); // Se crea usuario por defecto de admin para sucursal
+            log.warn(user.toString());
             showAllBranchsList();
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()

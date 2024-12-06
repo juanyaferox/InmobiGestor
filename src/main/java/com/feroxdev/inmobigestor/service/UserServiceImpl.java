@@ -1,5 +1,6 @@
 package com.feroxdev.inmobigestor.service;
 
+import com.feroxdev.inmobigestor.model.Branch;
 import com.feroxdev.inmobigestor.model.User;
 import com.feroxdev.inmobigestor.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,33 @@ public class UserServiceImpl implements UserService {
         return optUser.orElse(null);
     }
 
+    @Override
+    public User changeInfoUser(User user) {
+        return changeInfoUser(user, null);
+    }
+
     /**
      * Se cambia la información del usuario en la bbdd
      * @param user usuario a cambiar la informacion
      * @return usuario con la información alterada
      */
     @Override
-    public User changeInfoUser(User user) {
+    public User changeInfoUser(User user, String oldDni) {
+
+        if (user.getBranch() == null && user.getIdUser() == 0) { // Caso no sea el admin no entra aquí
+            var listUsersAdmin = userRepository.findByDni(oldDni);
+            for (User userAdminBranch : listUsersAdmin) {
+                if (userAdminBranch.getIdUser() != 0) { // Evitamos volver a modificar el admin general
+                    userAdminBranch.setPassword(user.getPassword());
+                    userAdminBranch.setLastname1(user.getLastname1());
+                    userAdminBranch.setLastname2(user.getLastname2());
+                    userAdminBranch.setDni(user.getDni());
+                    userAdminBranch.setName(user.getName());
+                    userAdminBranch.setEmail(user.getEmail());
+                    userRepository.save(userAdminBranch);
+                }
+            }
+        }
 
         //copia del usuario de la bbdd
         User userToChange = userRepository.getReferenceById(user.getIdUser());
@@ -55,6 +76,7 @@ public class UserServiceImpl implements UserService {
             userToChange.setName(user.getName());
             userToChange.setEmail(user.getEmail());
             userToChange.setBranch(user.getBranch());
+
 
         return userRepository.save(userToChange);
     }
@@ -93,5 +115,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    
+    /**
+     * Añade un usuario al administrador a una sucursal concreta
+     * @param branch sucursal a la que se le añade el usuario
+     * @param user usuario a añadir
+     * @return usuario añadido
+     */
+    @Override
+    public User addAdminUserBranch(Branch branch, User user) {
+        var userToSave = new User();
+        userToSave = user.toBuilder().build(); // se copia el usuario para no setear los campos 1x1
+        userToSave.setUser(branch.getTown().getIdTown().toString());
+        userToSave.setIdUser(null); // para que no se sobreescriba el usuario
+        userToSave.setBranch(branch);
+        return userRepository.save(userToSave);
+    }
+
+
 }

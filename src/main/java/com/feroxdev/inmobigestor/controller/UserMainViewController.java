@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -313,15 +314,16 @@ public class UserMainViewController {
             String fullName = client.getName() + " " + client.getLastname1() + " " + (client.getLastname2() != null ? client.getLastname2() : "");
 
             // Añadir las celdas correspondientes en cada columna de la fila actual
-            gridPaneClientList.add(new Label(" "+fullName), 0, i + 1);
-            gridPaneClientList.add(new Label(" "+client.getPhone()), 1, i + 1);
+            gridPaneClientList.add(new Label(fullName), 0, i + 1);
+            gridPaneClientList.add(new Label(client.getPhone()), 1, i + 1);
             int numEstates = client.getEstates().size();
-            gridPaneClientList.add(new Label(" "+String.valueOf(numEstates)), 2, i + 1);
+            gridPaneClientList.add(new Label(String.valueOf(numEstates)), 2, i + 1);
             boolean isRented = client.getEstateRented() != null;
-            gridPaneClientList.add(new Label(isRented ? " Si" : " No"), 3, i + 1);
+            gridPaneClientList.add(new Label(isRented ? "Sí" : "No"), 3, i + 1);
 
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();
+            buttonBox.setAlignment(Pos.CENTER);
 
             // Crear un VBox para organizar los botones en dos filas
             VBox buttonColumn1 = new VBox();
@@ -706,12 +708,13 @@ public class UserMainViewController {
             gridPaneEstateList.add(imageView, 0, i + 1);
             GridPane.setHalignment(imageView, HPos.CENTER);
             GridPane.setMargin(imageView, new Insets(20, 0, 20, 0));
-            gridPaneEstateList.add(new Label(" "+estate.getReference()), 1, i + 1);
-            gridPaneEstateList.add(new Label(" "+stringState), 2, i + 1);
-            gridPaneEstateList.add(new Label(" "+estate.getBranch().getTown().getName()), 3, i + 1);
+            gridPaneEstateList.add(new Label(estate.getReference()), 1, i + 1);
+            gridPaneEstateList.add(new Label(stringState), 2, i + 1);
+            gridPaneEstateList.add(new Label(estate.getBranch().getTown().getName()), 3, i + 1);
 
             // Crear un HBox para contener los botones
             HBox buttonBox = new HBox();
+            buttonBox.setAlignment(Pos.CENTER);
 
             // Crear un VBox para organizar los botones en dos filas
             VBox buttonColumn1 = new VBox();
@@ -864,7 +867,7 @@ public class UserMainViewController {
                 log.warn("Historial: {}", historyDTO.toString());
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getOperation()), 0, i + 1);
                 gridPaneHistoryEstateList.add(new Label(historyDTO.getClient()), 1, i + 1);
-                gridPaneHistoryEstateList.add(new Label(historyDTO.getPrecio()), 2, i + 1);
+                gridPaneHistoryEstateList.add(new Label(" "+historyDTO.getPrecio()), 2, i + 1);
                 gridPaneHistoryEstateList.add(new Label(" "+(historyDTO.getDate() != null ? historyDTO.getDate().toString() : "N/A")), 3, i + 1);
             }
             stage.showAndWait();
@@ -887,10 +890,10 @@ public class UserMainViewController {
         for (HistoryRent rent : rents) {
             historyList.add(
                     new HistoryDTO(
-                            " Alquiler: " + (rent.getExitDate() == null ? "En curso" : "Finalizado"),
-                            " "+rent.getClientRented().getFullName() + ", " + rent.getClientRented().getDni(),
-                            rent.getExitDate() == null ? rent.getStartDate() : rent.getExitDate(),
-                            " "+rent.getRentPrice() + " €/mes"
+                            " Alquiler: " + (rent.getExitDate() == null ? "En curso" + (rent.getEndDate() != null ? " indefinido" : "") : "Finalizado"),
+                            " "+ rent.getClient().getFullName()+" ,"+rent.getClient().getDni() + " | " + rent.getClientRented().getFullName() + ", " + rent.getClientRented().getDni(),
+                            (rent.getExitDate() == null ? rent.getStartDate() : rent.getExitDate()),
+                            rent.getRentPrice() + " €/mes"
                     )
             );
         }
@@ -898,7 +901,7 @@ public class UserMainViewController {
             historyList.add(
                     new HistoryDTO(
                             " Venta",
-                            sale.getClientActual().getFullName() + ", " + sale.getClientActual().getDni(),
+                            " "+sale.getClientPrevious().getFullName() + ", "+ sale.getClientPrevious().getDni() + " | " + sale.getClientActual().getFullName() + ", " + sale.getClientActual().getDni(),
                             sale.getSaleDate(),
                             sale.getSalePrice() + " €"
                     )
@@ -1038,8 +1041,8 @@ public class UserMainViewController {
             Button btnConfirmEditEstateModal = (Button) root.lookup("#btnConfirmEditEstateModal");
 
             btnConfirmEditEstateModal.setOnAction(e -> {
-                handleListEstateAdd(root, imageFile.get() != null ? imageFile.get() : null);
-                stage.close();
+                handleListEstateAdd(root, imageFile.get() != null ? imageFile.get() : null, stage);
+
             });
             stage.showAndWait();
             reloadView();
@@ -1055,7 +1058,7 @@ public class UserMainViewController {
      * @param root Ventana emergente
      * @param imageFile Archivo de la imagen
      */
-    private void handleListEstateAdd(Parent root, @Nullable File imageFile) {
+    private void handleListEstateAdd(Parent root, @Nullable File imageFile, Stage stage) {
         TextField textReference = (TextField) root.lookup("#textReference");
         TextField textFullAddress = (TextField) root.lookup("#textFullAddress");
         @SuppressWarnings ("unchecked")
@@ -1095,9 +1098,10 @@ public class UserMainViewController {
                     .title("Éxito")
                     .text("Se ha añadido el inmueble correctamente")
                     .showWarning();
+
+            stage.close();
+            reloadView();
         }
-
-
     }
 
     //endregion
@@ -1377,7 +1381,7 @@ public class UserMainViewController {
             gridPaneRentalList.add(new Label(historyRent.getClientRented().getFullName()), 2, i + 1);
             gridPaneRentalList.add(new Label(formatter.format(historyRent.getRentPrice()) + " €"), 3, i + 1);
             gridPaneRentalList.add(new Label(historyRent.getStartDate().toString()), 4, i + 1);
-            gridPaneRentalList.add(new Label(historyRent.getEndDate().toString()), 5, i + 1);
+            gridPaneRentalList.add(new Label(historyRent.getEndDate() != null ? historyRent.getEndDate().toString() : "Indefinido"), 5, i + 1);
             gridPaneRentalList.add(new Label(historyRent.getExitDate() != null ? historyRent.getExitDate().toString() : "Sin salida"), 6, i + 1);
 
         }
@@ -1421,6 +1425,7 @@ public class UserMainViewController {
             stage.initOwner(primaryStage);
 
             var listEstate = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT, user.getBranch());
+            listEstate.addAll((List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT_AND_SALE, user.getBranch()));
             var fxListEstate = FXCollections.observableArrayList(listEstate);
 
             @SuppressWarnings ("unchecked")
@@ -1692,6 +1697,7 @@ public class UserMainViewController {
             stage.initOwner(primaryStage);
 
             var listEstate = (List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.ON_SALE, user.getBranch());
+            listEstate.addAll((List<Estate>) estateService.getEstatesByStateAndBranch(EnumEstate.FOR_RENT_AND_SALE, user.getBranch()));
             var fxListEstate = FXCollections.observableArrayList(listEstate);
 
             @SuppressWarnings ("unchecked")

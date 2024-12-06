@@ -77,13 +77,14 @@
                                    <Cursor fx:constant="HAND" />
                                </cursor>
                                <Menu styleClass="menu" text="INMUEBLES">
-                                   <MenuItem onAction="#showEstateAll" styleClass="menu-item" text="Todos" />
-                                   <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="En venta" /><!---->
-                                   <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="En alquiler" /><!---->
-                                   <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="Vendidos" /><!--o-->
-                                   <MenuItem onAction="#showEstateRented" styleClass="menu-item" text="Alquilados" /><!---->
-                                   <MenuItem onAction="#showEstateInactive" styleClass="menu-item" text="Inactivos" /><!---->
-                                   <MenuItem onAction="#showEstateAnother" styleClass="menu-item" text="Otros" />
+                                   <MenuItem onAction="#showEstateAll" styleClass="menu-item" text="    Todos" />
+                                   <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="   En venta" /><!---->
+                                   <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="   En alquiler" /><!---->
+                                   <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="   Vendidos" /><!--o-->
+                                   <MenuItem onAction="#showEstateRented" styleClass="menu-item" text=" Alquilados" /><!---->
+                                   <MenuItem onAction="#showEstateInactive" styleClass="menu-item" text="   Inactivos" /><!---->
+                                   <MenuItem onAction="#showEstateRentSale" styleClass="menu-item" text="   En venta y alquiler" /><!---->
+                                   <MenuItem onAction="#showEstateAnother" styleClass="menu-item" text="    Otros" />
                            <graphic>
                               <Region prefHeight="91.0" prefWidth="47.0" />
                            </graphic>
@@ -116,11 +117,11 @@
                             <VBox layoutX="100.0" layoutY="60.0" prefHeight="477.0" prefWidth="890.0">
                                 <GridPane fx:id="gridPaneEstateListHeader" alignment="CENTER" gridLinesVisible="true" prefHeight="13.0" prefWidth="889.0" styleClass="header-grid ">
                                     <columnConstraints>
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="280" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="133" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="280" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="133" />
                                     </columnConstraints>
                                     <children>
                                         <Label styleClass="label-bold" text=" Imagen" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -136,11 +137,11 @@
                                     <content>
                             <GridPane fx:id="gridPaneEstateList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="436.0" prefWidth="923.0" styleClass="rounded-grid">
                                 <columnConstraints>
-                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="280" />
-                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150" />
-                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150" />
-                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="150" />
-                                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="133" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="280" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="133" />
                                 </columnConstraints>
                                 <rowConstraints>
                                     <RowConstraints />
@@ -158,11 +159,11 @@
                             <VBox layoutX="100.0" layoutY="60.0" prefHeight="477.0" prefWidth="890.0">
                                 <GridPane fx:id="gridPaneClientListHeader" alignment="CENTER" gridLinesVisible="true" prefHeight="13.0" prefWidth="889.0" styleClass="header-grid">
                                     <columnConstraints>
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
                                     </columnConstraints>
                                     <children>
                                         <Label styleClass="label-bold" text=" Nombre completo" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -178,11 +179,11 @@
                                     <content>
                                 <GridPane fx:id="gridPaneClientList" alignment="TOP_CENTER" gridLinesVisible="true" prefHeight="436.0" prefWidth="923.0" styleClass="rounded-grid">
                                     <columnConstraints>
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
-                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
+                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="175" />
                                     </columnConstraints>
                                     <rowConstraints>
                                         <RowConstraints />

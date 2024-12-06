@@ -165,8 +165,8 @@
                            </columnConstraints>
                            <children>
                               <Label styleClass="label-bold" text="Código" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Municipio" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                              <Label styleClass="label-bold" text="Código del municipio" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Referencia" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                              <Label styleClass="label-bold" text="Municipio" GridPane.columnIndex="2" GridPane.rowIndex="0" />
                               <Label styleClass="label-bold" text="Acciones" GridPane.columnIndex="4" GridPane.rowIndex="0" />
                            </children>
                            <rowConstraints>

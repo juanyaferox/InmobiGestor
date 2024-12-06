@@ -41,9 +41,18 @@ public class Estate {
     @OneToOne(mappedBy = "estateRented", fetch = FetchType.EAGER)
     private Client clientRenter;
 
-    @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<HistoryRent> historyRents;
 
-    @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<HistorySale> historySales;
+
+    @PreRemove
+    private void preRemove() {
+        for (HistoryRent historyRent : historyRents) {
+            if (historyRent.getExitDate() == null) {
+                throw new IllegalStateException("Cannot delete Estate with active HistoryRent records.");
+            }
+        }
+    }
 }

@@ -10,38 +10,40 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idUser;
 
-    @Column(nullable = false, length = 50)
     private String user;
 
-    @Column(nullable = false)
     private String password;
 
     private String email;
 
-    @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 50)
     private String lastname1;
 
-    @Column(nullable = false, length = 50)
     private String lastname2;
 
-    @Column(nullable = false, length = 9)
     private String dni;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "idBranch")
     private Branch branch;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Client> client;
+
+    @PreRemove
+    private void preRemove() {
+        for (Client client : client) {
+            client.setUser(null);
+        }
+    }
 
 }
