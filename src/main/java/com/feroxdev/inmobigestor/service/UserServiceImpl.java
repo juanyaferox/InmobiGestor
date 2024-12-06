@@ -112,6 +112,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(User user) {
+        for (User userdb : allUsersList()){
+            if (userdb.getUser().equals(user.getUser())){
+                return null;
+            }
+        }
         return userRepository.save(user);
     }
 

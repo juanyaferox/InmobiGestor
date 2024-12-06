@@ -10,12 +10,14 @@ import com.feroxdev.inmobigestor.service.*;
 import com.feroxdev.inmobigestor.validation.Validation;
 import jakarta.annotation.Nullable;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -23,6 +25,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -416,7 +420,10 @@ public class UserMainViewController {
 
             buttonBox.getChildren().addAll(buttonColumn1, buttonColumn2);
 
+            buttonBox.setAlignment(Pos.CENTER);
             gridPaneClientList.add(buttonBox, 4, i + 1);
+            GridPane.setHalignment(buttonBox, HPos.CENTER);
+
             System.out.println("Añadiendo fila para cliente: " + fullName + " en fila " + (i + 1));
         }
     }
@@ -569,7 +576,6 @@ public class UserMainViewController {
                     .title("Éxito")
                     .text("Se ha guardado el cliente correctamente")
                     .showWarning();
-            stage.close();
         }
     }
     //endregion
@@ -596,6 +602,15 @@ public class UserMainViewController {
     //region INMUEBLES
 
     //region Listado de inmuebles
+
+    private void showEstateByState(EnumEstate state) {
+        reloadView();
+        changeVisibility(optionListEstates);
+        List<Estate> estateList = (List<Estate>) estateService.getEstatesByStateAndBranch(state, user.getBranch());
+        estateList = estateList != null ? estateList : (List<Estate>) estateService.getAllEstates();
+        log.warn("LISTA DE INMUEBLES;---------------------- {}", estateList.toString());
+        showEstateGrid(estateList);
+    }
 
     /**
      * Muestra todos los inmuebles de la sucursal
@@ -776,9 +791,13 @@ public class UserMainViewController {
             HBox.setMargin(buttonColumn1, new Insets(10));
             HBox.setMargin(buttonColumn2, new Insets(10));
 
+            // Se intentó centrar
             buttonBox.getChildren().addAll(buttonColumn1, buttonColumn2);
+            buttonBox.setAlignment(Pos.CENTER);
 
             gridPaneEstateList.add(buttonBox, 4, i + 1);
+            GridPane.setValignment(buttonBox, VPos.CENTER);
+            GridPane.setHalignment(buttonBox, HPos.CENTER);
         }
     }
 
@@ -940,36 +959,8 @@ public class UserMainViewController {
             @SuppressWarnings ("unchecked")
             ComboBox<Client> boxClient = (ComboBox<Client>) root.lookup("#boxClient");
             boxClient.setPromptText("Elija un cliente");
-            boxClient.setItems(fxListClient);
-            boxClient.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Client client) {
-                    return client != null ? (client.getFullName()+", "+client.getDni()) : "";
-                }
 
-                @Override
-                public Client fromString(String string) {
-                   return fxListClient.stream()
-                           .filter(client -> (client.getFullName()+", "+client.getDni()).equals(string))
-                           .findFirst()
-                           .orElse(null);
-                }
-            });
-
-            TextField editor = boxClient.getEditor();
-            FilteredList<Client> filteredItems = new FilteredList<>(fxListClient, p -> true);
-            boxClient.setItems(filteredItems);
-
-            editor.textProperty().addListener((obs, oldValue, newValue) -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    filteredItems.setPredicate(client -> true); // Muestra todos los elementos
-                } else {
-                    String search = newValue.toLowerCase();
-                    filteredItems.setPredicate(client ->
-                            (client.getFullName()+", "+client.getDni()).toLowerCase().contains(search)); // Filtro aplicado
-                }
-                boxClient.show(); // Mantiene el ComboBox desplegado mientras se escribe
-            });
+            constructClientComboBox(boxClient, fxListClient);
 
             var listState = Arrays.stream(EnumEstate.values())
                       .filter(state -> state != EnumEstate.SOLD && state != EnumEstate.RENTED)
@@ -1045,12 +1036,65 @@ public class UserMainViewController {
 
             });
             stage.showAndWait();
-            reloadView();
-            showEstateAll();
+
 
         } catch (IOException e) {
             log.error("Error", e);
         }
+    }
+
+    private static void constructClientComboBox(ComboBox<Client> boxClient, ObservableList<Client> fxListClient) {
+
+        boxClient.setItems(fxListClient);
+        boxClient.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(Client client) {
+                return client != null ? (client.getFullName()+", "+client.getDni()) : "";
+            }
+
+            @Override
+            public Client fromString(String string) {
+               return fxListClient.stream()
+                       .filter(client -> (client.getFullName()+", "+client.getDni()).equals(string))
+                       .findFirst()
+                       .orElse(null);
+            }
+        });
+
+        // Al hacer el .jar del proyecto el buscador solo trae problemas
+
+//        TextField editor = boxClient.getEditor();
+//        FilteredList<Client> filteredItems = new FilteredList<>(fxListClient, p -> true);
+//        boxClient.setItems(filteredItems);
+//
+//        editor.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+//            if (event.getCode() == KeyCode.SPACE) {
+//                event.consume(); // Ignore the whitespace key press
+//            }
+//        });
+//
+//        boxClient.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+//            if (event.getCode() == KeyCode.SPACE) {
+//                event.consume(); // Ignore the whitespace key press
+//            }
+//        });
+//
+//        editor.textProperty().addListener((obs, oldValue, newValue) -> {
+//            if (newValue == null || newValue.trim().isEmpty()) {
+//                filteredItems.setPredicate(client -> true); // Muestra todos los elementos
+//            } else {
+//                String search = newValue.trim().toLowerCase();
+//                if (!search.isBlank()) {
+//                    filteredItems.setPredicate(client -> {
+//                        String fullNameDni = (client.getFullName() + ", " + client.getDni()).toLowerCase();
+//                        return fullNameDni.contains(search);
+//                    });// Filtro aplicado
+//                }
+//            }
+//            if (!newValue.endsWith(" ")) {
+//                boxClient.show(); // Keep ComboBox open while typing
+//            }
+//        });
     }
 
     /**
@@ -1093,14 +1137,16 @@ public class UserMainViewController {
         }
 
         if (validation.validationEstate(estate)) {
+
             estateService.saveEstate(estate);
+            clientService.saveClientAsOwner(estate.getClient());
+
             Notifications.create()
                     .title("Éxito")
                     .text("Se ha añadido el inmueble correctamente")
                     .showWarning();
-
-            stage.close();
             reloadView();
+            showEstateByState(estate.getState());
         }
     }
 
@@ -1235,13 +1281,7 @@ public class UserMainViewController {
                 btnSelectNewImage.setDisable(true);
                 btnConfirmEditEstateModal.setVisible(false);
             }
-
             stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
-            log.warn("Se ha cerrado la ventana emergente de edición de inmueble");
-            reloadView(); // Recargo la ventana
-            log.warn("Se ha recargado la ventana principal de inmuebles");
-            showEstateAll(); // muestro la lista de inmuebles
-            log.warn("Se ha mostrado la lista de inmuebles");
 
         } catch (IOException e) {
             log.error("Error al abrir la ventana emergente de edición de inmueble{}", e.getMessage());
@@ -1296,6 +1336,8 @@ public class UserMainViewController {
                     .title("Éxito")
                     .text("Se ha editado el inmueble correctamente")
                     .showWarning();
+            reloadView();
+            showEstateByState(estate.getState());
         }
 
 
@@ -1388,6 +1430,7 @@ public class UserMainViewController {
     }
     //endregion
 
+    //region Añadir y editar alquiler
     /**
      * Muestra la ventana emergente para añadir un nuevo alquiler
      */
@@ -1463,22 +1506,7 @@ public class UserMainViewController {
 
             @SuppressWarnings ("unchecked")
             ComboBox<Client> boxRenter = (ComboBox<Client>) root.lookup("#boxRenter");
-            boxRenter.setPromptText("Elija un arrendatario");
-            boxRenter.setItems(fxListClient);
-            boxRenter.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Client client) {
-                    return client != null ? (client.getFullName() + ", " + client.getDni()) : "";
-                }
-
-                @Override
-                public Client fromString(String string) {
-                    return fxListClient.stream()
-                            .filter(client -> (client.getFullName() + ", " + client.getDni()).equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
+            constructClientComboBox(boxRenter, fxListClient);
 
             DatePicker exitDate = (DatePicker) root.lookup("#exitDate");
             exitDate.setVisible(false);
@@ -1605,9 +1633,9 @@ public class UserMainViewController {
                     .title("Éxito")
                     .text("Se ha guardado el alquiler correctamente")
                     .showWarning();
-            stage.close();
         }
     }
+    //endregion
 
     //endregion
 
@@ -1737,20 +1765,8 @@ public class UserMainViewController {
             ComboBox<Client> boxBuyer = (ComboBox<Client>) root.lookup("#boxBuyer");
             boxBuyer.setPromptText("Elija un comprador");
             boxBuyer.setItems(fxListClient);
-            boxBuyer.setConverter(new StringConverter<>() {
-                @Override
-                public String toString(Client client) {
-                    return client != null ? (client.getFullName() + ", " + client.getDni()) : "";
-                }
 
-                @Override
-                public Client fromString(String string) {
-                    return fxListClient.stream()
-                            .filter(client -> (client.getFullName() + ", " + client.getDni()).equals(string))
-                            .findFirst()
-                            .orElse(null);
-                }
-            });
+            constructClientComboBox(boxBuyer, fxListClient);
 
             TextField txtSellPrice = (TextField) root.lookup("#txtSellPrice");
             txtSellPrice.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -1766,7 +1782,7 @@ public class UserMainViewController {
 
             stage.showAndWait();
             reloadView();
-            showRental();
+            showSale();
 
         } catch (IOException e) {
             log.error("Error", e);
@@ -1818,8 +1834,6 @@ public class UserMainViewController {
                     .title("Éxito")
                     .text("Se ha guardado la venta correctamente")
                     .showWarning();
-            stage.close();
-            return;
         }
     }
 

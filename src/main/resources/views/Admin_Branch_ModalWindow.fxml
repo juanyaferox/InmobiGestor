@@ -36,7 +36,7 @@
                           <Font size="14.0" />
                       </font>
                   </Label>
-               <ComboBox fx:id="boxCity" editable="true" prefHeight="29.0" prefWidth="656.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               <ComboBox fx:id="boxCity" prefHeight="29.0" prefWidth="656.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
               </children>
           </GridPane>
           <Button fx:id="btnConfirmEditBranchModal" layoutX="260.0" layoutY="208.0" text="Confirmar" />

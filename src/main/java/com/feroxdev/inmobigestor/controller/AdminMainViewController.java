@@ -24,6 +24,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -184,7 +186,6 @@ public class AdminMainViewController {
         if (validation.validationUser(user)) {
             log.warn("CAMPOS A ENVIAR;------" + user.toString());
             userService.changeInfoUser(user, oldDni);
-            showUserModify();
             Notifications.create()
                     .title(resourceBundle.getString("sucess"))
                     .text(resourceBundle.getString("changes.sucess"))
@@ -307,12 +308,14 @@ public class AdminMainViewController {
             log.warn("CAMPOS A ENVIAR;------\n"
                     + "---------------------" + branch.toString());
             branchService.updateBranch(branch);
-            showAllBranchsList();
+
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
                     .title(resourceBundle.getString("sucess"))
                     .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
+            reloadView();
+            showAllBranchsList();
         }
     }
 
@@ -415,6 +418,9 @@ public class AdminMainViewController {
                     .title(resourceBundle.getString("sucess"))
                     .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
+            reloadView();
+            showAllBranchsList();
+
         }
     }
 
@@ -511,6 +517,7 @@ public class AdminMainViewController {
             List<Branch> branches = branchService.findAllBranch();
 //            List<Town> towns = townRepository.findAllTownsWithBranches();
             var branchItems = FXCollections.observableArrayList(branches);
+
             log.warn("Sucursales---------" + branches.toString());
 
             textUser.setEditable(false);
@@ -577,12 +584,15 @@ public class AdminMainViewController {
             //Crear objeto sucursal basándose en la id
             log.warn("CAMPOS A ENVIAR;------\n" + user.toString() + "\n" + branch.toString());
             userService.changeInfoUser(user);
-            showAllUsersList();
+
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
                     .title(resourceBundle.getString("sucess"))
                     .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
+
+            reloadView();
+            showAllUsersList();
         }
     }
     //endregion
@@ -632,7 +642,7 @@ public class AdminMainViewController {
 
             configureBranchComboBox(boxBranch, branchItems);
 
-            btnConfirmEditUserModal.setOnAction(e -> handleListUserAdd(root));
+            btnConfirmEditUserModal.setOnAction(e -> handleListUserAdd(root, stage));
 
             stage.showAndWait(); // Bloquea la interacción con la ventana principal hasta que cierre la emergente
             reloadView(); // Recargo la ventana
@@ -651,7 +661,7 @@ public class AdminMainViewController {
      * @param root Ventana modal
      */
     @FXML
-    private void handleListUserAdd(Parent root) {
+    private void handleListUserAdd(Parent root, Stage stage) {
         TextField textUser = (TextField) root.lookup("#textUser");
         TextField textPassword = (TextField) root.lookup("#textPassword");
         TextField text1Surname = (TextField) root.lookup("#text1Surname");
@@ -678,14 +688,24 @@ public class AdminMainViewController {
             //Crear objeto sucursal basándose en la id
             log.warn("CAMPOS A ENVIAR;------\n" + user.toString() + "\n" + branch.toString());
             var userSaved = userService.addUser(user);
+            if (userSaved == null) {
+                Notifications.create()
+                        .title(resourceBundle.getString("error"))
+                        .text(resourceBundle.getString("user.exists"))
+                        .showError();
+                return;
+            }
             userSaved.setBranch(branch);
             userService.changeInfoUser(user);
-            showAllUsersList();
+
             //al modificar el texto se ve mal, pero es un bug de java fx, solo se corrige recargando toda la vista
             Notifications.create()
                     .title(resourceBundle.getString("sucess"))
                     .text(resourceBundle.getString("changes.sucess"))
                     .showWarning();
+
+            reloadView();
+            showAllUsersList();
         }
     }
 
@@ -756,21 +776,23 @@ public class AdminMainViewController {
             }
         });
 
-        // Configurar el filtrado del ComboBox mediante el editor de texto
-        TextField editor = boxBranch.getEditor();
-        FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
-        boxBranch.setItems(filteredItems);
+        boxBranch.setItems(branchItems);
 
-        editor.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || newValue.isEmpty()) {
-                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
-            } else {
-                String search = newValue.toLowerCase();
-                filteredItems.setPredicate(branch ->
-                        (branch.getReference() + ", " + branch.getTown().getName()).toLowerCase().contains(search)); // Filtro aplicado
-            }
-            boxBranch.show(); // Mantiene el ComboBox desplegado mientras se escribe
-        });
+//        // Configurar el filtrado del ComboBox mediante el editor de texto
+//        TextField editor = boxBranch.getEditor();
+//        FilteredList<Branch> filteredItems = new FilteredList<>(branchItems, p -> true);
+//
+//
+//        editor.textProperty().addListener((obs, oldValue, newValue) -> {
+//            if (newValue == null || newValue.isEmpty()) {
+//                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+//            } else {
+//                String search = newValue.toLowerCase();
+//                filteredItems.setPredicate(branch ->
+//                        (branch.getReference() + ", " + branch.getTown().getName()).toLowerCase().contains(search)); // Filtro aplicado
+//            }
+//            boxBranch.show(); // Mantiene el ComboBox desplegado mientras se escribe
+//        });
     }
 
     /**
@@ -779,6 +801,7 @@ public class AdminMainViewController {
      * @param townItems Lista de ciudades
      */
     private void configureTownComboBox(ComboBox<Town> boxTown, ObservableList<Town> townItems) {
+
         boxTown.setConverter(new StringConverter<>() {
             @Override
             public String toString(Town town) {
@@ -788,27 +811,29 @@ public class AdminMainViewController {
             @Override
             public Town fromString(String string) {
                 return townItems.stream()
-                        .filter(town -> town.getName().equals(string))
+                        .filter(town -> town.getName().equals(string.trim()))
                         .findFirst()
                         .orElse(null);
             }
         });
 
-        // Configurar el filtrado del ComboBox mediante el editor de texto
-        TextField editor = boxTown.getEditor();
-        FilteredList<Town> filteredItems = new FilteredList<>(townItems, p -> true);
-        boxTown.setItems(filteredItems);
+        boxTown.setItems(townItems);
 
-        editor.textProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || newValue.isEmpty()) {
-                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
-            } else {
-                String search = newValue.toLowerCase();
-                filteredItems.setPredicate(town ->
-                        town.getName().toLowerCase().contains(search)); // Filtro aplicado
-            }
-            boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
-        });
+//        // Configurar el filtrado del ComboBox mediante el editor de texto
+//        TextField editor = boxTown.getEditor();
+//        FilteredList<Town> filteredItems = new FilteredList<>(townItems, p -> true);
+//
+//
+//        editor.textProperty().addListener((obs, oldValue, newValue) -> {
+//            if (newValue == null || newValue.trim().isEmpty()) {
+//                filteredItems.setPredicate(town -> true); // Muestra todos los elementos
+//            } else {
+//                String search = newValue.trim().toLowerCase();
+//                filteredItems.setPredicate(town ->
+//                        town.getName().toLowerCase().contains(search)); // Filtro aplicado
+//            }
+//            boxTown.show(); // Mantiene el ComboBox desplegado mientras se escribe
+//        });
     }
 
 

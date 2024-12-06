@@ -37,11 +37,11 @@ public class User {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Client> client;
+    private List<Client> clients;
 
     @PreRemove
     private void preRemove() {
-        for (Client client : client) {
+        for (Client client : clients) {
             client.setUser(null);
         }
     }

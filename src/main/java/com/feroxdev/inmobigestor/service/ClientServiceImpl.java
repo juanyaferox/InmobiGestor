@@ -96,7 +96,7 @@ public class ClientServiceImpl implements ClientService {
             return saveClient(client);
         }
 //        client.getType() == EnumClient.ANOTHER ||
-        else if (client.getType() == EnumClient.INACTIVE) {
+        else if (client.getType() == EnumClient.INACTIVE || client.getType() == null) {
             client.setType(EnumClient.HOUSE_OWNER);
             return saveClient(client);
         }
@@ -115,7 +115,7 @@ public class ClientServiceImpl implements ClientService {
             client.setType(EnumClient.RENTER);
             return saveClient(client);
         }
-        else if (client.getType() == EnumClient.HOUSE_OWNER){
+        else if (client.getType() == EnumClient.HOUSE_OWNER || client.getType() == null){
             client.setType(EnumClient.INACTIVE);
             return saveClient(client);
         }

@@ -78,12 +78,12 @@
                                </cursor>
                                <Menu styleClass="menu" text="INMUEBLES">
                                    <MenuItem onAction="#showEstateAll" styleClass="menu-item" text="    Todos" />
-                                   <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="   En venta" /><!---->
-                                   <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="   En alquiler" /><!---->
-                                   <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="   Vendidos" /><!--o-->
-                                   <MenuItem onAction="#showEstateRented" styleClass="menu-item" text=" Alquilados" /><!---->
-                                   <MenuItem onAction="#showEstateInactive" styleClass="menu-item" text="   Inactivos" /><!---->
-                                   <MenuItem onAction="#showEstateRentSale" styleClass="menu-item" text="   En venta y alquiler" /><!---->
+                                   <MenuItem onAction="#showEstateSale" styleClass="menu-item" text="    En venta" /><!---->
+                                   <MenuItem onAction="#showEstateRent" styleClass="menu-item" text="    En alquiler" /><!---->
+                                   <MenuItem onAction="#showEstateSold" styleClass="menu-item" text="    Vendidos" /><!--o-->
+                                   <MenuItem onAction="#showEstateRented" styleClass="menu-item" text="    Alquilados" /><!---->
+                                   <MenuItem onAction="#showEstateInactive" styleClass="menu-item" text="    Inactivos" /><!---->
+                                   <MenuItem onAction="#showEstateRentSale" styleClass="menu-item" text="    En venta y alquiler" /><!---->
                                    <MenuItem onAction="#showEstateAnother" styleClass="menu-item" text="    Otros" />
                            <graphic>
                               <Region prefHeight="91.0" prefWidth="47.0" />

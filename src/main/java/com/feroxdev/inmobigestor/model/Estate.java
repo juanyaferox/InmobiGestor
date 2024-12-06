@@ -46,13 +46,4 @@ public class Estate {
 
     @OneToMany(mappedBy = "estate", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<HistorySale> historySales;
-
-    @PreRemove
-    private void preRemove() {
-        for (HistoryRent historyRent : historyRents) {
-            if (historyRent.getExitDate() == null) {
-                throw new IllegalStateException("Cannot delete Estate with active HistoryRent records.");
-            }
-        }
-    }
 }

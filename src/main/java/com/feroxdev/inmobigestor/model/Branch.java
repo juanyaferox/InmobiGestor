@@ -8,7 +8,7 @@ import java.util.List;
 @Entity
 @Table(name = "branchs")
 @Data
-@ToString(exclude = { "Estates", "Users" })
+@ToString(exclude = { "estates", "users" })
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,8 +25,8 @@ public class Branch {
     String reference;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Estate> Estates;
+    private List<Estate> estates;
 
     @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<User> Users;
+    private List<User> users;
 }

@@ -150,7 +150,7 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-               <Button fx:id="btnAddNewUser" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nuevo usuario" />
+               <Button fx:id="btnAddNewUser" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalUserAdd" prefHeight="43.0" prefWidth="166.0" styleClass="custom-btn" text="Añadir nuevo usuario" />
                </AnchorPane>
                <AnchorPane fx:id="optionListBranchs" prefHeight="607.0" prefWidth="1080.0" visible="false">
                   <ScrollPane fx:id="scrollPaneBranchList" fitToHeight="true" fitToWidth="true" layoutX="100.0" layoutY="60.0" prefHeight="438.0" prefWidth="880.0">
@@ -176,7 +176,7 @@
                         </GridPane>
                      </content>
                   </ScrollPane>
-                  <Button fx:id="btnAddNewBranch" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalBranchAdd" prefHeight="43.0" prefWidth="166.0" text="Añadir nueva sucursal" /> <!--o-->
+                  <Button fx:id="btnAddNewBranch" layoutX="814.0" layoutY="507.0" mnemonicParsing="false" onAction="#showModalBranchAdd" prefHeight="43.0" prefWidth="166.0" styleClass="custom-btn" text="Añadir nueva sucursal" /> <!--o-->
                </AnchorPane>
             </StackPane>
 
