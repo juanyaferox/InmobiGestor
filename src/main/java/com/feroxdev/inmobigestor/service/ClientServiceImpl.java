@@ -1,6 +1,7 @@
 package com.feroxdev.inmobigestor.service;
 
 import com.feroxdev.inmobigestor.enums.EnumClient;
+import com.feroxdev.inmobigestor.enums.EnumEstate;
 import com.feroxdev.inmobigestor.model.Branch;
 import com.feroxdev.inmobigestor.model.Client;
 import com.feroxdev.inmobigestor.model.Estate;
@@ -13,6 +14,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private EstateService estateService;
 
     /**
      * Obtiene todos los clientes
@@ -141,8 +145,11 @@ public class ClientServiceImpl implements ClientService {
     public Client deleteClient(Client client) {
         if (clientRepository.findById(client.getIdClient()).isEmpty())
             return null;
-        if (client.getEstates()!=null && !client.getEstates().isEmpty() && client.getEstateRented()!=null)
-            return null;
+       if (client.getEstateRented() != null){
+              Estate estate = client.getEstateRented();
+                estate.setState(EnumEstate.INACTIVE);
+           estateService.saveEstate(estate);
+       }
         clientRepository.delete(client);
         return client;
     }
