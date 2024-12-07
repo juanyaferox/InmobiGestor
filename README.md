@@ -1,4 +1,5 @@
-Lea el Manual-de-ayuda.html para conocer el funcionamiento de la aplicación.
+Lea el manual de ayuda para conocer el funcionamiento de la aplicación:
+https://juanyaferox.github.io/InmobiGestor/
 
 Características Principales:
 
