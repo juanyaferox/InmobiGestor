@@ -1,0 +1,11 @@
+com.feroxdev.inmobigestor.config
+com.feroxdev.inmobigestor.controller
+com.feroxdev.inmobigestor.dto
+com.feroxdev.inmobigestor.enums
+com.feroxdev.inmobigestor
+com.feroxdev.inmobigestor.model
+com.feroxdev.inmobigestor.navigation
+com.feroxdev.inmobigestor.repository
+com.feroxdev.inmobigestor.service
+com.feroxdev.inmobigestor.utilities
+com.feroxdev.inmobigestor.validation
