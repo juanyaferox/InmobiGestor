@@ -1,3 +1,5 @@
+Lea el Manual-de-ayuda.html para conocer el funcionamiento de la aplicación.
+
 Características Principales:
 
 Desarrollada en Java, utilizando JavaFX para la implementación de interfaces de usuario intuitivas y modernas.
